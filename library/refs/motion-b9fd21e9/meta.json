@@ -1,0 +1,32 @@
+{
+  "id": "motion-b9fd21e9",
+  "category": "motion",
+  "kind": "video",
+  "file": "source.mp4",
+  "original_name": "a9423abff29097d4a3a83a795141b52c_720w.mp4",
+  "source_url": null,
+  "title": "Bikes em blueprint — troca de modelo, wireframe e HUD técnico",
+  "tags": [
+    "3d-render",
+    "dark",
+    "hud",
+    "tecnico",
+    "vermelho"
+  ],
+  "niche_fit": [
+    "automotivo",
+    "configurador",
+    "esportes",
+    "produto-tecnico"
+  ],
+  "techniques": [
+    "model-swap",
+    "overlay-hud",
+    "painel-gradiente",
+    "r3f",
+    "wireframe"
+  ],
+  "status": "decoded",
+  "added": "2026-11-18",
+  "notes": ""
+}

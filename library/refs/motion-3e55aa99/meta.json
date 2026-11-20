@@ -1,0 +1,31 @@
+{
+  "id": "motion-3e55aa99",
+  "category": "motion",
+  "kind": "video",
+  "file": "source.mp4",
+  "original_name": "9a310e9df4e07bad25fc4d712c11d787_720w.mp4",
+  "source_url": null,
+  "title": "Baralho em hélice 3D com profundidade de campo",
+  "tags": [
+    "3d",
+    "cards",
+    "dark",
+    "loop"
+  ],
+  "niche_fit": [
+    "colecao",
+    "galeria",
+    "games",
+    "portfolio"
+  ],
+  "techniques": [
+    "aberracao-cromatica",
+    "dof",
+    "helice-de-cards",
+    "instancing",
+    "r3f"
+  ],
+  "status": "decoded",
+  "added": "2026-11-18",
+  "notes": ""
+}

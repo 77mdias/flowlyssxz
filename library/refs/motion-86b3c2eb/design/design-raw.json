@@ -1,0 +1,119 @@
+{
+ "source": "library/refs/motion-86b3c2eb/source.jpg",
+ "viewport_ref": 1440,
+ "ocr": true,
+ "roi": null,
+ "theme": "escuro",
+ "stills": [
+  {
+   "file": "stills/still_01.png",
+   "t": null,
+   "size": [
+    720,
+    900
+   ],
+   "paragraphs": [],
+   "lines": []
+  }
+ ],
+ "colors": [
+  {
+   "hex": "#141314",
+   "lab": [
+    6.1,
+    0.3,
+    -0.1
+   ],
+   "share": 0.6094,
+   "presence": 1.0,
+   "chroma": 0.3,
+   "lightness": 6.1
+  },
+  {
+   "hex": "#343334",
+   "lab": [
+    21.3,
+    1.1,
+    -0.6
+   ],
+   "share": 0.319,
+   "presence": 1.0,
+   "chroma": 1.2,
+   "lightness": 21.3
+  },
+  {
+   "hex": "#514f50",
+   "lab": [
+    33.7,
+    1.2,
+    -0.7
+   ],
+   "share": 0.066,
+   "presence": 1.0,
+   "chroma": 1.4,
+   "lightness": 33.7
+  },
+  {
+   "hex": "#526038",
+   "lab": [
+    38.7,
+    -13.2,
+    21.3
+   ],
+   "share": 0.0047,
+   "presence": 1.0,
+   "chroma": 25.1,
+   "lightness": 38.7
+  },
+  {
+   "hex": "#9acc48",
+   "lab": [
+    76.5,
+    -36.4,
+    58.7
+   ],
+   "share": 0.0008,
+   "presence": 1.0,
+   "chroma": 69.0,
+   "lightness": 76.5
+  }
+ ],
+ "roles": {
+  "bg": "#141314",
+  "bg_alt": [
+   "#343334",
+   "#514f50"
+  ],
+  "text": "#9acc48",
+  "text_alt": [],
+  "accent_candidates": [],
+  "neutral_ramp": [
+   "#141314",
+   "#343334",
+   "#514f50"
+  ]
+ },
+ "contrast": {
+  "text_on_bg": 9.8,
+  "accents_on_bg": {}
+ },
+ "type_scale": [],
+ "body_text": {
+  "blocks": 0,
+  "font_px_ref_median": null,
+  "note": "texto corrido medido pelo passo entre linhas (pitch / 1.45); use isto, e não type_scale, para o corpo"
+ },
+ "layout": {
+  "left_guides_pct": [],
+  "right_guides_pct": [],
+  "centered_lines_ratio": null,
+  "note": "guias = posições x (em % da largura) onde 2+ linhas de texto começam/terminam; a menor guia esquerda frequente costuma ser a margem"
+ },
+ "motion": null,
+ "caveats": [
+  "cores de fotos/3D entram na lista: papéis são sugestões",
+  "tamanho de fonte ±15%; convertido para viewport de referência",
+  "família tipográfica NÃO é detectada: classifique olhando os stills e escolha substituta",
+  "raio, sombra, espaçamento e componentes: medir olhando os stills (frames.py --crop para ampliar)"
+ ]
+}

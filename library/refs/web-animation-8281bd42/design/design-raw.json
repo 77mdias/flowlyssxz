@@ -1,0 +1,1157 @@
+{
+ "source": "library/refs/web-animation-8281bd42/source.mp4",
+ "viewport_ref": 1440,
+ "ocr": true,
+ "roi": [
+  46,
+  264,
+  626,
+  408
+ ],
+ "theme": "escuro",
+ "stills": [
+  {
+   "file": "stills/still_01_000.00s.png",
+   "t": 0.0,
+   "size": [
+    626,
+    408
+   ],
+   "paragraphs": [
+    {
+     "lines": 2,
+     "x_pct": 39.9,
+     "y_pct": 88.5,
+     "width_pct": 20.9,
+     "line_pitch_px_ref": 25.3,
+     "font_px_ref_est": 17.5
+    }
+   ],
+   "lines": [
+    {
+     "x": 299.0,
+     "y": 31.0,
+     "w": 28.666666666666668,
+     "h": 4.333333333333333,
+     "text": "FORGE",
+     "via": "ocr",
+     "reliable": false,
+     "font_px_src": 6.0,
+     "font_px_ref": 13.8,
+     "font_vw": 0.96,
+     "x_pct": 47.8,
+     "y_pct": 7.6,
+     "right_pct": 52.3,
+     "center_pct": 50.1,
+     "color": "#bebbbf",
+     "on": "#3d3a3e",
+     "contrast": 5.9
+    },
+    {
+     "x": 205.33333333333334,
+     "y": 83.33333333333333,
+     "w": 218.0,
+     "h": 34.0,
+     "text": "For Those Who",
+     "via": "ocr",
+     "reliable": true,
+     "font_px_src": 45.3,
+     "font_px_ref": 104.3,
+     "font_vw": 7.24,
+     "x_pct": 32.8,
+     "y_pct": 20.4,
+     "right_pct": 67.6,
+     "center_pct": 50.2,
+     "color": "#e1dee4",
+     "on": "#09060c",
+     "contrast": 15.12
+    },
+    {
+     "x": 200.66666666666666,
+     "y": 131.33333333333334,
+     "w": 228.0,
+     "h": 43.333333333333336,
+     "text": "Refuse Ordinary",
+     "via": "ocr",
+     "reliable": true,
+     "font_px_src": 46.6,
+     "font_px_ref": 107.2,
+     "font_vw": 7.44,
+     "x_pct": 32.1,
+     "y_pct": 32.2,
+     "right_pct": 68.5,
+     "center_pct": 50.3,
+     "color": "#e1dee4",
+     "on": "#09060c",
+     "contrast": 15.12
+    }
+   ]
+  },
+  {
+   "file": "stills/still_02_001.75s.png",
+   "t": 1.75,
+   "size": [
+    626,
+    408
+   ],
+   "paragraphs": [],
+   "lines": [
+    {
+     "x": 156.66666666666666,
+     "y": 167.0,
+     "w": 210.33333333333334,
+     "h": 36.666666666666664,
+     "text": "We Dont Modity",
+     "via": "ocr",
+     "reliable": true,
+     "font_px_src": 39.4,
+     "font_px_ref": 90.7,
+     "font_vw": 6.3,
+     "x_pct": 25.0,
+     "y_pct": 40.9,
+     "right_pct": 58.6,
+     "center_pct": 41.8,
+     "color": "#d1cbd0",
+     "on": "#140e13",
+     "contrast": 11.95
+    },
+    {
+     "x": 169.66666666666666,
+     "y": 208.33333333333334,
+     "w": 151.33333333333334,
+     "h": 29.0,
+     "text": "We Build Th",
+     "via": "ocr",
+     "reliable": true,
+     "font_px_src": 38.7,
+     "font_px_ref": 88.9,
+     "font_vw": 6.18,
+     "x_pct": 27.1,
+     "y_pct": 51.1,
+     "right_pct": 51.3,
+     "center_pct": 39.2,
+     "color": "#e3dde2",
+     "on": "#141015",
+     "contrast": 14.09
+    }
+   ]
+  },
+  {
+   "file": "stills/still_03_005.00s.png",
+   "t": 5.0,
+   "size": [
+    626,
+    408
+   ],
+   "paragraphs": [
+    {
+     "lines": 3,
+     "x_pct": 59.7,
+     "y_pct": 23.0,
+     "width_pct": 20.4,
+     "line_pitch_px_ref": 25.3,
+     "font_px_ref_est": 17.5
+    }
+   ],
+   "lines": [
+    {
+     "x": 375.6666666666667,
+     "y": 30.333333333333332,
+     "w": 110.0,
+     "h": 44.0,
+     "text": "Identity",
+     "via": "ocr",
+     "reliable": true,
+     "font_px_src": 47.3,
+     "font_px_ref": 108.8,
+     "font_vw": 7.56,
+     "x_pct": 60.0,
+     "y_pct": 7.4,
+     "right_pct": 77.6,
+     "center_pct": 68.8,
+     "color": "#ede8ea",
+     "on": "#464246",
+     "contrast": 8.14
+    },
+    {
+     "x": 436.6666666666667,
+     "y": 84.33333333333333,
+     "w": 25.333333333333332,
+     "h": 4.666666666666667,
+     "text": "Wen the",
+     "via": "ocr",
+     "reliable": false,
+     "font_px_src": 6.2,
+     "font_px_ref": 14.3,
+     "font_vw": 0.99,
+     "x_pct": 69.8,
+     "y_pct": 20.7,
+     "right_pct": 73.8,
+     "center_pct": 71.8,
+     "color": "#807b7d",
+     "on": "#575254",
+     "contrast": 1.84
+    },
+    {
+     "x": 412.3333333333333,
+     "y": 95.33333333333333,
+     "w": 18.333333333333332,
+     "h": 4.333333333333333,
+     "text": "wheel",
+     "via": "ocr",
+     "reliable": false,
+     "font_px_src": 5.8,
+     "font_px_ref": 13.3,
+     "font_vw": 0.92,
+     "x_pct": 65.9,
+     "y_pct": 23.4,
+     "right_pct": 68.8,
+     "center_pct": 67.3
+    },
+    {
+     "x": 408.0,
+     "y": 106.0,
+     "w": 14.0,
+     "h": 4.0,
+     "text": "taste",
+     "via": "ocr",
+     "reliable": false,
+     "font_px_src": 5.3,
+     "font_px_ref": 12.3,
+     "font_vw": 0.85,
+     "x_pct": 65.2,
+     "y_pct": 26.0,
+     "right_pct": 67.4,
+     "center_pct": 66.3
+    }
+   ]
+  },
+  {
+   "file": "stills/still_04_008.00s.png",
+   "t": 8.0,
+   "size": [
+    626,
+    408
+   ],
+   "paragraphs": [
+    {
+     "lines": 3,
+     "x_pct": 8.3,
+     "y_pct": 28.7,
+     "width_pct": 30.2,
+     "line_pitch_px_ref": 25.3,
+     "font_px_ref_est": 17.5
+    }
+   ],
+   "lines": [
+    {
+     "x": 52.666666666666664,
+     "y": 61.0,
+     "w": 168.33333333333334,
+     "h": 44.666666666666664,
+     "text": "Bodystyling",
+     "via": "ocr",
+     "reliable": true,
+     "font_px_src": 48.0,
+     "font_px_ref": 110.5,
+     "font_vw": 7.67,
+     "x_pct": 8.4,
+     "y_pct": 15.0,
+     "right_pct": 35.3,
+     "center_pct": 21.9,
+     "color": "#d9d6da",
+     "on": "#100d11",
+     "contrast": 13.41
+    },
+    {
+     "x": 49.0,
+     "y": 115.66666666666667,
+     "w": 158.0,
+     "h": 11.333333333333334,
+     "text": "From aero to carbon and exterior",
+     "via": "ocr",
+     "reliable": true,
+     "font_px_src": 15.1,
+     "font_px_ref": 34.8,
+     "font_vw": 2.41,
+     "x_pct": 7.8,
+     "y_pct": 28.3,
+     "right_pct": 33.1,
+     "center_pct": 20.4,
+     "color": "#4c494d",
+     "on": "#120f13",
+     "contrast": 2.15
+    },
+    {
+     "x": 162.66666666666666,
+     "y": 127.0,
+     "w": 47.0,
+     "h": 11.0,
+     "text": "to change Ihe",
+     "via": "ocr",
+     "reliable": true,
+     "font_px_src": 11.8,
+     "font_px_ref": 27.2,
+     "font_vw": 1.89,
+     "x_pct": 26.0,
+     "y_pct": 31.1,
+     "right_pct": 33.5,
+     "center_pct": 29.7,
+     "color": "#4b484c",
+     "on": "#120f13",
+     "contrast": 2.11
+    },
+    {
+     "x": 82.66666666666667,
+     "y": 137.66666666666666,
+     "w": 143.33333333333334,
+     "h": 10.333333333333334,
+     "text": "wthout ts onginal character,",
+     "via": "ocr",
+     "reliable": true,
+     "font_px_src": 11.1,
+     "font_px_ref": 25.6,
+     "font_vw": 1.77,
+     "x_pct": 13.2,
+     "y_pct": 33.7,
+     "right_pct": 36.1,
+     "center_pct": 24.7,
+     "color": "#4d4a4e",
+     "on": "#110e12",
+     "contrast": 2.2
+    },
+    {
+     "x": 89.33333333333333,
+     "y": 170.33333333333334,
+     "w": 15.666666666666666,
+     "h": 4.333333333333333,
+     "text": "rows",
+     "via": "ocr",
+     "reliable": false,
+     "font_px_src": 5.8,
+     "font_px_ref": 13.3,
+     "font_vw": 0.92,
+     "x_pct": 14.3,
+     "y_pct": 41.7,
+     "right_pct": 16.8,
+     "center_pct": 15.5,
+     "color": "#686569",
+     "on": "#1f1c20",
+     "contrast": 2.93
+    }
+   ]
+  },
+  {
+   "file": "stills/still_05_008.75s.png",
+   "t": 8.75,
+   "size": [
+    626,
+    408
+   ],
+   "paragraphs": [],
+   "lines": [
+    {
+     "x": 117.66666666666667,
+     "y": 8.666666666666666,
+     "w": 12.0,
+     "h": 9.0,
+     "text": "per",
+     "via": "ocr",
+     "reliable": true,
+     "font_px_src": 9.7,
+     "font_px_ref": 22.3,
+     "font_vw": 1.55,
+     "x_pct": 18.8,
+     "y_pct": 2.1,
+     "right_pct": 20.7,
+     "center_pct": 19.8,
+     "color": "#383539",
+     "on": "#131014",
+     "contrast": 1.56
+    },
+    {
+     "x": 140.66666666666666,
+     "y": 18.666666666666668,
+     "w": 70.66666666666667,
+     "h": 8.333333333333334,
+     "text": "of ar",
+     "via": "ocr",
+     "reliable": false,
+     "font_px_src": 11.1,
+     "font_px_ref": 25.6,
+     "font_vw": 1.77,
+     "x_pct": 22.5,
+     "y_pct": 4.6,
+     "right_pct": 33.8,
+     "center_pct": 28.1,
+     "color": "#3c393d",
+     "on": "#120f13",
+     "contrast": 1.67
+    },
+    {
+     "x": 508.6666666666667,
+     "y": 250.33333333333334,
+     "w": 116.66666666666667,
+     "h": 58.666666666666664,
+     "text": "vf Li",
+     "via": "ocr",
+     "reliable": true,
+     "font_px_src": 78.2,
+     "font_px_ref": 179.9,
+     "font_vw": 12.5,
+     "x_pct": 81.3,
+     "y_pct": 61.4,
+     "right_pct": 99.9,
+     "center_pct": 90.6,
+     "color": "#6c554c",
+     "on": "#1e181a",
+     "contrast": 2.53
+    }
+   ]
+  },
+  {
+   "file": "stills/still_06_009.75s.png",
+   "t": 9.75,
+   "size": [
+    626,
+    408
+   ],
+   "paragraphs": [
+    {
+     "lines": 3,
+     "x_pct": 8.5,
+     "y_pct": 55.9,
+     "width_pct": 29.9,
+     "line_pitch_px_ref": 25.3,
+     "font_px_ref_est": 17.5
+    }
+   ],
+   "lines": [
+    {
+     "x": 0.0,
+     "y": 13.0,
+     "w": 39.0,
+     "h": 10.0,
+     "text": null,
+     "via": "morfologia",
+     "reliable": true,
+     "font_px_src": 13.3,
+     "font_px_ref": 30.7,
+     "font_vw": 2.13,
+     "x_pct": 0.0,
+     "y_pct": 3.2,
+     "right_pct": 6.2,
+     "center_pct": 3.1,
+     "color": "#bebbbf",
+     "on": "#100d11",
+     "contrast": 10.16
+    },
+    {
+     "x": 579.0,
+     "y": 45.0,
+     "w": 47.0,
+     "h": 15.0,
+     "text": null,
+     "via": "morfologia",
+     "reliable": true,
+     "font_px_src": 20.0,
+     "font_px_ref": 46.0,
+     "font_vw": 3.19,
+     "x_pct": 92.5,
+     "y_pct": 11.0,
+     "right_pct": 100.0,
+     "center_pct": 96.2,
+     "color": "#f2eff5",
+     "on": "#2d2a30",
+     "contrast": 12.41
+    },
+    {
+     "x": 533.0,
+     "y": 139.0,
+     "w": 27.0,
+     "h": 9.0,
+     "text": null,
+     "via": "morfologia",
+     "reliable": true,
+     "font_px_src": 12.0,
+     "font_px_ref": 27.6,
+     "font_vw": 1.92,
+     "x_pct": 85.1,
+     "y_pct": 34.1,
+     "right_pct": 89.5,
+     "center_pct": 87.3,
+     "color": "#4a474d",
+     "on": "#131117",
+     "contrast": 2.05
+    },
+    {
+     "x": 53.0,
+     "y": 172.0,
+     "w": 125.0,
+     "h": 46.0,
+     "text": null,
+     "via": "morfologia",
+     "reliable": true,
+     "font_px_src": 61.3,
+     "font_px_ref": 141.1,
+     "font_vw": 9.8,
+     "x_pct": 8.5,
+     "y_pct": 42.2,
+     "right_pct": 28.4,
+     "center_pct": 18.5,
+     "color": "#dddade",
+     "on": "#110e12",
+     "contrast": 13.84
+    },
+    {
+     "x": 497.0,
+     "y": 220.0,
+     "w": 47.0,
+     "h": 6.0,
+     "text": null,
+     "via": "morfologia",
+     "reliable": false,
+     "font_px_src": 8.0,
+     "font_px_ref": 18.4,
+     "font_vw": 1.28,
+     "x_pct": 79.4,
+     "y_pct": 53.9,
+     "right_pct": 86.9,
+     "center_pct": 83.1,
+     "color": "#4a474b",
+     "on": "#0a070b",
+     "contrast": 2.19
+    },
+    {
+     "x": 53.0,
+     "y": 229.0,
+     "w": 187.0,
+     "h": 7.0,
+     "text": null,
+     "via": "morfologia",
+     "reliable": false,
+     "font_px_src": 9.3,
+     "font_px_ref": 21.5,
+     "font_vw": 1.49,
+     "x_pct": 8.5,
+     "y_pct": 56.1,
+     "right_pct": 38.3,
+     "center_pct": 23.4,
+     "color": "#504d51",
+     "on": "#141115",
+     "contrast": 2.25
+    },
+    {
+     "x": 53.0,
+     "y": 239.0,
+     "w": 160.0,
+     "h": 8.0,
+     "text": null,
+     "via": "morfologia",
+     "reliable": false,
+     "font_px_src": 10.7,
+     "font_px_ref": 24.5,
+     "font_vw": 1.7,
+     "x_pct": 8.5,
+     "y_pct": 58.6,
+     "right_pct": 34.0,
+     "center_pct": 21.2,
+     "color": "#514e52",
+     "on": "#120f13",
+     "contrast": 2.32
+    },
+    {
+     "x": 207.0,
+     "y": 240.0,
+     "w": 19.0,
+     "h": 6.0,
+     "text": null,
+     "via": "morfologia",
+     "reliable": false,
+     "font_px_src": 8.0,
+     "font_px_ref": 18.4,
+     "font_vw": 1.28,
+     "x_pct": 33.1,
+     "y_pct": 58.8,
+     "right_pct": 36.1,
+     "center_pct": 34.6,
+     "color": "#545155",
+     "on": "#141115",
+     "contrast": 2.4
+    },
+    {
+     "x": 53.0,
+     "y": 250.0,
+     "w": 187.0,
+     "h": 8.0,
+     "text": null,
+     "via": "morfologia",
+     "reliable": false,
+     "font_px_src": 10.7,
+     "font_px_ref": 24.5,
+     "font_vw": 1.7,
+     "x_pct": 8.5,
+     "y_pct": 61.3,
+     "right_pct": 38.3,
+     "center_pct": 23.4,
+     "color": "#535054",
+     "on": "#120f13",
+     "contrast": 2.4
+    },
+    {
+     "x": 67.0,
+     "y": 281.0,
+     "w": 67.0,
+     "h": 6.0,
+     "text": null,
+     "via": "morfologia",
+     "reliable": false,
+     "font_px_src": 8.0,
+     "font_px_ref": 18.4,
+     "font_vw": 1.28,
+     "x_pct": 10.7,
+     "y_pct": 68.9,
+     "right_pct": 21.4,
+     "center_pct": 16.1,
+     "color": "#686569",
+     "on": "#131014",
+     "contrast": 3.29
+    },
+    {
+     "x": 521.0,
+     "y": 353.0,
+     "w": 30.0,
+     "h": 12.0,
+     "text": null,
+     "via": "morfologia",
+     "reliable": true,
+     "font_px_src": 16.0,
+     "font_px_ref": 36.8,
+     "font_vw": 2.56,
+     "x_pct": 83.2,
+     "y_pct": 86.5,
+     "right_pct": 88.0,
+     "center_pct": 85.6,
+     "color": "#fcf9ff",
+     "on": "#1b181d",
+     "contrast": 16.85
+    },
+    {
+     "x": 0.0,
+     "y": 397.0,
+     "w": 362.0,
+     "h": 6.0,
+     "text": null,
+     "via": "morfologia",
+     "reliable": false,
+     "font_px_src": 8.0,
+     "font_px_ref": 18.4,
+     "font_vw": 1.28,
+     "x_pct": 0.0,
+     "y_pct": 97.3,
+     "right_pct": 57.8,
+     "center_pct": 28.9,
+     "color": "#8a878b",
+     "on": "#110e12",
+     "contrast": 5.4
+    }
+   ]
+  },
+  {
+   "file": "stills/still_07_018.25s.png",
+   "t": 18.25,
+   "size": [
+    626,
+    408
+   ],
+   "paragraphs": [],
+   "lines": [
+    {
+     "x": 9.0,
+     "y": 20.0,
+     "w": 36.0,
+     "h": 9.0,
+     "text": null,
+     "via": "morfologia",
+     "reliable": true,
+     "font_px_src": 12.0,
+     "font_px_ref": 27.6,
+     "font_vw": 1.92,
+     "x_pct": 1.4,
+     "y_pct": 4.9,
+     "right_pct": 7.2,
+     "center_pct": 4.3,
+     "color": "#bdbabe",
+     "on": "#030003",
+     "contrast": 10.87
+    },
+    {
+     "x": 575.0,
+     "y": 23.0,
+     "w": 30.0,
+     "h": 5.0,
+     "text": null,
+     "via": "morfologia",
+     "reliable": false,
+     "font_px_src": 6.7,
+     "font_px_ref": 15.3,
+     "font_vw": 1.06,
+     "x_pct": 91.9,
+     "y_pct": 5.6,
+     "right_pct": 96.6,
+     "center_pct": 94.2,
+     "color": "#747175",
+     "on": "#020003",
+     "contrast": 4.34
+    },
+    {
+     "x": 266.3333333333333,
+     "y": 81.0,
+     "w": 95.33333333333333,
+     "h": 57.666666666666664,
+     "text": "Refuse",
+     "via": "ocr",
+     "reliable": true,
+     "font_px_src": 76.9,
+     "font_px_ref": 176.9,
+     "font_vw": 12.28,
+     "x_pct": 42.5,
+     "y_pct": 19.9,
+     "right_pct": 57.8,
+     "center_pct": 50.2,
+     "color": "#d1ced4",
+     "on": "#010002",
+     "contrast": 13.46
+    },
+    {
+     "x": 251.0,
+     "y": 152.0,
+     "w": 131.0,
+     "h": 45.0,
+     "text": null,
+     "via": "morfologia",
+     "reliable": true,
+     "font_px_src": 60.0,
+     "font_px_ref": 138.0,
+     "font_vw": 9.58,
+     "x_pct": 40.1,
+     "y_pct": 37.3,
+     "right_pct": 61.0,
+     "center_pct": 50.6,
+     "color": "#dbd8de",
+     "on": "#030106",
+     "contrast": 14.73
+    },
+    {
+     "x": 293.0,
+     "y": 374.0,
+     "w": 43.0,
+     "h": 5.0,
+     "text": null,
+     "via": "morfologia",
+     "reliable": false,
+     "font_px_src": 6.7,
+     "font_px_ref": 15.3,
+     "font_vw": 1.06,
+     "x_pct": 46.8,
+     "y_pct": 91.7,
+     "right_pct": 53.7,
+     "center_pct": 50.2,
+     "color": "#77747a",
+     "on": "#161319",
+     "contrast": 4.0
+    }
+   ]
+  }
+ ],
+ "colors": [
+  {
+   "hex": "#110d11",
+   "lab": [
+    4.0,
+    2.0,
+    -1.6
+   ],
+   "share": 0.7571,
+   "presence": 1.0,
+   "chroma": 2.6,
+   "lightness": 4.0
+  },
+  {
+   "hex": "#3c3638",
+   "lab": [
+    23.3,
+    3.1,
+    -0.3
+   ],
+   "share": 0.1644,
+   "presence": 1.0,
+   "chroma": 3.1,
+   "lightness": 23.3
+  },
+  {
+   "hex": "#d1c9ca",
+   "lab": [
+    81.5,
+    2.9,
+    0.3
+   ],
+   "share": 0.0165,
+   "presence": 0.43,
+   "chroma": 2.9,
+   "lightness": 81.5
+  },
+  {
+   "hex": "#706665",
+   "lab": [
+    44.0,
+    4.0,
+    2.1
+   ],
+   "share": 0.0146,
+   "presence": 0.57,
+   "chroma": 4.5,
+   "lightness": 44.0
+  },
+  {
+   "hex": "#31060b",
+   "lab": [
+    7.3,
+    21.9,
+    6.7
+   ],
+   "share": 0.0091,
+   "presence": 0.14,
+   "chroma": 22.9,
+   "lightness": 7.3
+  },
+  {
+   "hex": "#888489",
+   "lab": [
+    55.5,
+    2.6,
+    -2.3
+   ],
+   "share": 0.0089,
+   "presence": 0.57,
+   "chroma": 3.4,
+   "lightness": 55.5
+  },
+  {
+   "hex": "#560d15",
+   "lab": [
+    17.1,
+    33.2,
+    15.9
+   ],
+   "share": 0.0072,
+   "presence": 0.29,
+   "chroma": 36.8,
+   "lightness": 17.1
+  },
+  {
+   "hex": "#ad9f99",
+   "lab": [
+    66.4,
+    4.1,
+    4.8
+   ],
+   "share": 0.0046,
+   "presence": 0.14,
+   "chroma": 6.3,
+   "lightness": 66.4
+  },
+  {
+   "hex": "#b29784",
+   "lab": [
+    64.4,
+    6.7,
+    14.0
+   ],
+   "share": 0.0044,
+   "presence": 0.29,
+   "chroma": 15.5,
+   "lightness": 64.4
+  },
+  {
+   "hex": "#595458",
+   "lab": [
+    36.2,
+    3.3,
+    -1.8
+   ],
+   "share": 0.0043,
+   "presence": 0.14,
+   "chroma": 3.8,
+   "lightness": 36.2
+  },
+  {
+   "hex": "#4a1a1f",
+   "lab": [
+    16.9,
+    23.5,
+    8.4
+   ],
+   "share": 0.003,
+   "presence": 0.29,
+   "chroma": 24.9,
+   "lightness": 16.9
+  },
+  {
+   "hex": "#9d1b24",
+   "lab": [
+    34.2,
+    51.9,
+    29.7
+   ],
+   "share": 0.0022,
+   "presence": 0.29,
+   "chroma": 59.8,
+   "lightness": 34.2
+  },
+  {
+   "hex": "#a8373d",
+   "lab": [
+    40.2,
+    46.9,
+    22.1
+   ],
+   "share": 0.002,
+   "presence": 0.14,
+   "chroma": 51.8,
+   "lightness": 40.2
+  },
+  {
+   "hex": "#ed1b29",
+   "lab": [
+    50.6,
+    73.6,
+    49.0
+   ],
+   "share": 0.0017,
+   "presence": 0.14,
+   "chroma": 88.4,
+   "lightness": 50.6
+  }
+ ],
+ "roles": {
+  "bg": "#110d11",
+  "bg_alt": [
+   "#3c3638"
+  ],
+  "text": "#d1c9ca",
+  "text_alt": [
+   "#595458",
+   "#706665"
+  ],
+  "accent_candidates": [
+   "#560d15",
+   "#9d1b24",
+   "#a8373d"
+  ],
+  "neutral_ramp": [
+   "#110d11",
+   "#3c3638",
+   "#595458",
+   "#706665",
+   "#888489",
+   "#ad9f99",
+   "#d1c9ca"
+  ]
+ },
+ "contrast": {
+  "text_on_bg": 11.86,
+  "accents_on_bg": {
+   "#560d15": 1.34,
+   "#9d1b24": 2.4,
+   "#a8373d": 3.01
+  }
+ },
+ "type_scale": [
+  {
+   "confidence": "baixa",
+   "px_ref": 13.3,
+   "vw": 0.92,
+   "count": 4,
+   "sample": "taste",
+   "uppercase": false
+  },
+  {
+   "confidence": "baixa",
+   "px_ref": 15.3,
+   "vw": 1.06,
+   "count": 3,
+   "sample": "Wen the",
+   "uppercase": false
+  },
+  {
+   "confidence": "baixa",
+   "px_ref": 18.4,
+   "vw": 1.28,
+   "count": 4,
+   "sample": null,
+   "uppercase": false
+  },
+  {
+   "confidence": "baixa",
+   "px_ref": 23.4,
+   "vw": 1.62,
+   "count": 4,
+   "sample": "per",
+   "uppercase": false
+  },
+  {
+   "confidence": "baixa",
+   "px_ref": 27.2,
+   "vw": 1.89,
+   "count": 5,
+   "sample": "wthout ts onginal character,",
+   "uppercase": false
+  },
+  {
+   "confidence": "ok",
+   "px_ref": 32.8,
+   "vw": 2.27,
+   "count": 2,
+   "sample": "From aero to carbon and exterior",
+   "uppercase": false
+  },
+  {
+   "confidence": "baixa",
+   "px_ref": 36.8,
+   "vw": 2.56,
+   "count": 1,
+   "sample": null,
+   "uppercase": false
+  },
+  {
+   "confidence": "baixa",
+   "px_ref": 46.0,
+   "vw": 3.19,
+   "count": 1,
+   "sample": null,
+   "uppercase": false
+  },
+  {
+   "confidence": "ok",
+   "px_ref": 89.8,
+   "vw": 6.24,
+   "count": 2,
+   "sample": "We Dont Modity",
+   "uppercase": false
+  },
+  {
+   "confidence": "ok",
+   "px_ref": 108.0,
+   "vw": 7.5,
+   "count": 4,
+   "sample": "Refuse Ordinary",
+   "uppercase": false
+  },
+  {
+   "confidence": "ok",
+   "px_ref": 139.6,
+   "vw": 9.69,
+   "count": 2,
+   "sample": null,
+   "uppercase": false
+  },
+  {
+   "confidence": "ok",
+   "px_ref": 178.4,
+   "vw": 12.39,
+   "count": 2,
+   "sample": "Refuse",
+   "uppercase": false
+  }
+ ],
+ "body_text": {
+  "blocks": 4,
+  "font_px_ref_median": 17.5,
+  "note": "texto corrido medido pelo passo entre linhas (pitch / 1.45); use isto, e não type_scale, para o corpo"
+ },
+ "layout": {
+  "left_guides_pct": [
+   {
+    "pct": 8.0,
+    "count": 6
+   },
+   {
+    "pct": 0.0,
+    "count": 2
+   },
+   {
+    "pct": 33.0,
+    "count": 2
+   },
+   {
+    "pct": 92.0,
+    "count": 2
+   }
+  ],
+  "right_guides_pct": [
+   {
+    "pct": 34.0,
+    "count": 3
+   },
+   {
+    "pct": 21.0,
+    "count": 2
+   },
+   {
+    "pct": 36.0,
+    "count": 2
+   },
+   {
+    "pct": 38.0,
+    "count": 2
+   },
+   {
+    "pct": 58.0,
+    "count": 2
+   },
+   {
+    "pct": 68.0,
+    "count": 2
+   }
+  ],
+  "centered_lines_ratio": 0.18,
+  "note": "guias = posições x (em % da largura) onde 2+ linhas de texto começam/terminam; a menor guia esquerda frequente costuma ser a margem"
+ },
+ "motion": {
+  "events": 14,
+  "active_ratio": 0.57,
+  "duration_s": {
+   "p25": 0.52,
+   "p50": 0.8,
+   "p75": 0.93,
+   "max": 1.67
+  },
+  "easing_votes": {
+   "linear / none": 5,
+   "power1.out (ease-out leve)": 4,
+   "sine.inOut": 3,
+   "power4.out": 1,
+   "power4.inOut": 1
+  },
+  "css_for": {
+   "power1.out (ease-out leve)": "cubic-bezier(0.5, 1, 0.89, 1)",
+   "linear / none": "linear",
+   "power4.out": "cubic-bezier(0.22, 1, 0.36, 1)",
+   "sine.inOut": "cubic-bezier(0.37, 0, 0.63, 1)",
+   "power4.inOut": "cubic-bezier(0.83, 0, 0.17, 1)",
+   "power1.in": "cubic-bezier(0.11, 0, 0.5, 0)"
+  },
+  "parallax_events": 4,
+  "pin_events": 2,
+  "scroll_events": 3,
+  "cuts": 1,
+  "note": "estimativas do analyze_video.py; confirme no breakdown antes de virar token"
+ },
+ "caveats": [
+  "cores de fotos/3D entram na lista: papéis são sugestões",
+  "tamanho de fonte ±15%; convertido para viewport de referência",
+  "família tipográfica NÃO é detectada: classifique olhando os stills e escolha substituta",
+  "raio, sombra, espaçamento e componentes: medir olhando os stills (frames.py --crop para ampliar)"
+ ]
+}

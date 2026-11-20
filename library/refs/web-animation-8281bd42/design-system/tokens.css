@@ -1,0 +1,94 @@
+/* Ateliê Noturno — gerado por ds_build.py a partir de tokens.json. Não edite à mão. */
+:root {
+  --color-bg: #110d11;
+  --color-surface: #3c3638;
+  --color-text: #e1dee4;
+  --color-text-muted: #8a878b;
+  --color-border: #595458;
+  --color-accent: #ed1b29;
+  --color-accent-deep: #9d1b24;
+  --color-sand: #b29784;
+  --font-display: 'Instrument Serif', 'Times New Roman', serif;
+  --font-body: 'Hanken Grotesk', system-ui, sans-serif;
+  --text-hero-size: clamp(4rem, 12.4vw, 11.5rem);
+  --text-hero-line: 0.92;
+  --text-hero-tracking: -0.015em;
+  --text-hero-weight: 400;
+  --text-display-size: clamp(3.25rem, 7.5vw, 7.5rem);
+  --text-display-line: 0.98;
+  --text-display-tracking: -0.01em;
+  --text-display-weight: 400;
+  --text-statement-size: clamp(2.5rem, 6.2vw, 6rem);
+  --text-statement-line: 1.02;
+  --text-statement-tracking: -0.01em;
+  --text-statement-weight: 400;
+  --text-body-size: clamp(0.9375rem, 1.18vw, 1.125rem);
+  --text-body-line: 1.45;
+  --text-body-tracking: 0;
+  --text-body-weight: 300;
+  --text-label-size: 0.625rem;
+  --text-label-line: 1;
+  --text-label-tracking: 0.24em;
+  --text-label-weight: 500;
+  --text-counter-size: 1.375rem;
+  --text-counter-line: 1;
+  --text-counter-tracking: 0.02em;
+  --text-counter-weight: 400;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 72px;
+  --space-9: 112px;
+  --radius-none: 0;
+  --radius-dot: 999px;
+  --border-hairline: 1px solid var(--color-border);
+  --layout-margin: 8vw;
+  --layout-columns: 12;
+  --layout-gutter: 24px;
+  --layout-text-measure: 30vw;
+  --layout-split: 50% / 50%;
+  --layout-section-y: 100vh;
+  --dur-xs: 0.15s;
+  --dur-s: 0.3s;
+  --dur-m: 0.6s;
+  --dur-l: 0.9s;
+  --dur-xl: 1.4s;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.76, 0, 0.24, 1);
+  --ease-scrub: linear;
+  --stagger-char: 0.03s;
+  --stagger-line: 0.09s;
+}
+
+.ds-text-hero { font-family: var(--font-display); font-size: var(--text-hero-size); line-height: var(--text-hero-line); letter-spacing: var(--text-hero-tracking); font-weight: var(--text-hero-weight); }
+.ds-text-display { font-family: var(--font-display); font-size: var(--text-display-size); line-height: var(--text-display-line); letter-spacing: var(--text-display-tracking); font-weight: var(--text-display-weight); }
+.ds-text-statement { font-family: var(--font-display); font-size: var(--text-statement-size); line-height: var(--text-statement-line); letter-spacing: var(--text-statement-tracking); font-weight: var(--text-statement-weight); }
+.ds-text-body { font-family: var(--font-body); font-size: var(--text-body-size); line-height: var(--text-body-line); letter-spacing: var(--text-body-tracking); font-weight: var(--text-body-weight); }
+.ds-text-label { font-family: var(--font-body); font-size: var(--text-label-size); line-height: var(--text-label-line); letter-spacing: var(--text-label-tracking); font-weight: var(--text-label-weight); text-transform: uppercase; }
+.ds-text-counter { font-family: var(--font-display); font-size: var(--text-counter-size); line-height: var(--text-counter-line); letter-spacing: var(--text-counter-tracking); font-weight: var(--text-counter-weight); }
+
+.ds-nav { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: var(--space-5) var(--space-6); font-family: var(--font-body); font-size: var(--text-label-size); line-height: var(--text-label-line); letter-spacing: var(--text-label-tracking); font-weight: var(--text-label-weight); text-transform: uppercase; color: var(--color-text); }
+.ds-nav .ds-nav__mark { font-family: var(--font-display); font-size: 1.25rem; letter-spacing: 0; text-transform: none; }
+.ds-eyebrow { font-family: var(--font-body); font-size: var(--text-label-size); line-height: var(--text-label-line); letter-spacing: var(--text-label-tracking); font-weight: var(--text-label-weight); text-transform: uppercase; color: var(--color-text-muted); display: block; margin-bottom: var(--space-5); }
+.ds-cta { font-family: var(--font-body); font-size: var(--text-label-size); line-height: var(--text-label-line); letter-spacing: var(--text-label-tracking); font-weight: var(--text-label-weight); text-transform: uppercase; color: var(--color-text); display: inline-block; position: relative; padding: var(--space-4) 0; text-decoration: none; transition: letter-spacing var(--dur-m) var(--ease-out); }
+.ds-cta::before { content: ''; position: absolute; top: 0; left: 0; width: 28px; height: 1px; background: var(--color-border); transition: width var(--dur-m) var(--ease-out); }
+.ds-cta::after { content: ''; position: absolute; bottom: 0; right: 0; width: 28px; height: 1px; background: var(--color-border); transition: width var(--dur-m) var(--ease-out); }
+.ds-cta:hover { letter-spacing: 0.3em; }
+.ds-cta:hover::before { width: 100%; }
+.ds-cta:hover::after { width: 100%; }
+.ds-cta:focus-visible { outline: 1px solid var(--color-text); outline-offset: var(--space-2); }
+.ds-media { display: block; width: min(320px, 100%); aspect-ratio: 1 / 1; overflow: hidden; border-radius: var(--radius-none); background: linear-gradient(160deg, var(--color-sand), var(--color-accent-deep) 55%, var(--color-bg)); }
+.ds-progress { position: relative; width: min(420px, 100%); height: 1px; background: var(--color-border); }
+.ds-progress::after { content: ''; position: absolute; inset: 0 60% 0 0; background: var(--color-text); }
+.ds-counter { font-family: var(--font-display); font-size: var(--text-counter-size); line-height: var(--text-counter-line); letter-spacing: var(--text-counter-tracking); font-weight: var(--text-counter-weight); color: var(--color-text-muted); }
+.ds-counter .is-current { color: var(--color-text); }
+.ds-service { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-7); align-items: center; width: 100%; }
+.ds-service p { max-width: 34ch; color: var(--color-text-muted); margin: var(--space-5) 0 var(--space-6); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+}

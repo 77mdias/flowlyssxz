@@ -1,0 +1,32 @@
+{
+  "id": "motion-b9780bff",
+  "category": "motion",
+  "kind": "video",
+  "file": "source.mp4",
+  "original_name": "d5dc2b65d55590f32d5a0c5252d895b9_720w.mp4",
+  "source_url": null,
+  "title": "Ilustrações vetoriais com glow e cortes em flash (casa, olho, espada, coroas)",
+  "tags": [
+    "2d",
+    "escuro",
+    "ilustracao",
+    "neon",
+    "storytelling"
+  ],
+  "niche_fit": [
+    "editorial",
+    "eventos",
+    "games"
+  ],
+  "techniques": [
+    "glow",
+    "light-sweep",
+    "steps-easing",
+    "strobe",
+    "svg-motion",
+    "zoom-through"
+  ],
+  "status": "decoded",
+  "added": "2026-11-18",
+  "notes": ""
+}
