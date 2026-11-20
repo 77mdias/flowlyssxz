@@ -1,0 +1,1416 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NOIR Design System</title>
+<meta name="description" content="NOIR Nº 01 is an immersive eau de parfum shaped by mineral smoke, warm amber and dry cedar. Explore the collection and discover a scent built from shadow.">
+<meta name="theme-color" content="#040302">
+<link rel="icon" href="assets/noir-luxury-fragrance.aura.build/favicon.ico">
+<script src="assets/cdn.tailwindcss.com/3.4.17.js"></script>
+<style>
+/* 3D Transform utilities */
+</style>
+<script>
+// Configure Tailwind to include our custom 3D transform utilities
+tailwind.config = {
+theme: {
+extend: {
+// Add any custom theme extensions here if needed
+}
+},
+plugins: [
+function({ addUtilities }) {
+const rotateXUtilities = {};
+const rotateYUtilities = {};
+const rotateZUtilities = {};
+const rotateValues = [0, 5, 10, 15, 20, 30, 45, 75];
+// Generate rotate-x utilities
+rotateValues.forEach((value) => {
+rotateXUtilities[`.rotate-x-${value}`] = {
+'--tw-rotate-x': `${value}deg`,
+transform: `
+translate3d(var(--tw-translate-x, 0), var(--tw-translate-y, 0), var(--tw-translate-z, 0))
+rotateX(var(--tw-rotate-x, 0))
+rotateY(var(--tw-rotate-y, 0))
+rotateZ(var(--tw-rotate-z, 0))
+skewX(var(--tw-skew-x, 0))
+skewY(var(--tw-skew-y, 0))
+scaleX(var(--tw-scale-x, 1))
+scaleY(var(--tw-scale-y, 1))
+`.replace(/\\s+/g, ' ').trim(),
+};
+if (value !== 0) {
+rotateXUtilities[`.-rotate-x-${value}`] = {
+'--tw-rotate-x': `-${value}deg`,
+transform: `
+translate3d(var(--tw-translate-x, 0), var(--tw-translate-y, 0), var(--tw-translate-z, 0))
+rotateX(var(--tw-rotate-x, 0))
+rotateY(var(--tw-rotate-y, 0))
+rotateZ(var(--tw-rotate-z, 0))
+skewX(var(--tw-skew-x, 0))
+skewY(var(--tw-skew-y, 0))
+scaleX(var(--tw-scale-x, 1))
+scaleY(var(--tw-scale-y, 1))
+`.replace(/\\s+/g, ' ').trim(),
+};
+}
+});
+// Generate rotate-y utilities
+rotateValues.forEach((value) => {
+rotateYUtilities[`.rotate-y-${value}`] = {
+'--tw-rotate-y': `${value}deg`,
+transform: `
+translate3d(var(--tw-translate-x, 0), var(--tw-translate-y, 0), var(--tw-translate-z, 0))
+rotateX(var(--tw-rotate-x, 0))
+rotateY(var(--tw-rotate-y, 0))
+rotateZ(var(--tw-rotate-z, 0))
+skewX(var(--tw-skew-x, 0))
+skewY(var(--tw-skew-y, 0))
+scaleX(var(--tw-scale-x, 1))
+scaleY(var(--tw-scale-y, 1))
+`.replace(/\\s+/g, ' ').trim(),
+};
+if (value !== 0) {
+rotateYUtilities[`.-rotate-y-${value}`] = {
+'--tw-rotate-y': `-${value}deg`,
+transform: `
+translate3d(var(--tw-translate-x, 0), var(--tw-translate-y, 0), var(--tw-translate-z, 0))
+rotateX(var(--tw-rotate-x, 0))
+rotateY(var(--tw-rotate-y, 0))
+rotateZ(var(--tw-rotate-z, 0))
+skewX(var(--tw-skew-x, 0))
+skewY(var(--tw-skew-y, 0))
+scaleX(var(--tw-scale-x, 1))
+scaleY(var(--tw-scale-y, 1))
+`.replace(/\\s+/g, ' ').trim(),
+};
+}
+});
+// Generate rotate-z utilities
+rotateValues.forEach((value) => {
+rotateZUtilities[`.rotate-z-${value}`] = {
+'--tw-rotate-z': `${value}deg`,
+transform: `
+translate3d(var(--tw-translate-x, 0), var(--tw-translate-y, 0), var(--tw-translate-z, 0))
+rotateX(var(--tw-rotate-x, 0))
+rotateY(var(--tw-rotate-y, 0))
+rotateZ(var(--tw-rotate-z, 0))
+skewX(var(--tw-skew-x, 0))
+skewY(var(--tw-skew-y, 0))
+scaleX(var(--tw-scale-x, 1))
+scaleY(var(--tw-scale-y, 1))
+`.replace(/\\s+/g, ' ').trim(),
+};
+if (value !== 0) {
+rotateZUtilities[`.-rotate-z-${value}`] = {
+'--tw-rotate-z': `-${value}deg`,
+transform: `
+translate3d(var(--tw-translate-x, 0), var(--tw-translate-y, 0), var(--tw-translate-z, 0))
+rotateX(var(--tw-rotate-x, 0))
+rotateY(var(--tw-rotate-y, 0))
+rotateZ(var(--tw-rotate-z, 0))
+skewX(var(--tw-skew-x, 0))
+skewY(var(--tw-skew-y, 0))
+scaleX(var(--tw-scale-x, 1))
+scaleY(var(--tw-scale-y, 1))
+`.replace(/\\s+/g, ' ').trim(),
+};
+}
+});
+// Perspective utilities
+const perspectiveUtilities = {
+".perspective-none": { perspective: "none" },
+".perspective-dramatic": { perspective: "100px" },
+".perspective-near": { perspective: "300px" },
+".perspective-normal": { perspective: "500px" },
+".perspective-midrange": { perspective: "800px" },
+".perspective-distant": { perspective: "1200px" },
+};
+// Transform style utilities
+const transformStyleUtilities = {
+".transform-style-preserve-3d": { "transform-style": "preserve-3d" },
+".transform-style-flat": { "transform-style": "flat" },
+};
+addUtilities({
+...rotateXUtilities,
+...rotateYUtilities,
+...rotateZUtilities,
+...perspectiveUtilities,
+...transformStyleUtilities,
+});
+}
+]
+};
+</script>
+<script>document.addEventListener('click', event => {
+const anchor = event.target.closest?.('a[href]');
+const href = anchor?.getAttribute('href');
+if (event.defaultPrevented || !href?.startsWith('#')) return;
+event.preventDefault();
+if (href === '#') { window.scrollTo({top: 0, behavior: 'smooth'}); return; }
+try {
+const id = decodeURIComponent(href.slice(1));
+const target = document.getElementById(id) || document.getElementsByName(id)[0];
+target?.scrollIntoView({behavior: 'smooth', block: 'start'});
+} catch { /* Invalid fragments remain in the saved document. */ }
+});</script>
+<script>document.addEventListener('click', event => {
+if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+const anchor = event.target.closest?.('a[href]');
+if (!anchor || anchor.hasAttribute('download')) return;
+const target = anchor.getAttribute('target')?.toLowerCase();
+if (target && target !== '_self' && target !== '_top') return;
+try {
+const destination = new URL(anchor.href, document.baseURI);
+const base = new URL(document.baseURI);
+if (!['http:', 'https:'].includes(destination.protocol) || destination.origin === base.origin) return;
+event.preventDefault();
+window.open(destination.href, '_blank', 'noopener,noreferrer');
+} catch { /* Leave invalid links to the browser. */ }
+}, true);</script>
+<script>window.__resources = {"https://unpkg.com/react@18.3.1/umd/react.production.min.js":"assets/unpkg.com/react@18.3.1/umd/react.production.min.js","https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js":"assets/unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"};</script>
+<script src="assets/unpkg.com/three@0.160.0/build/three.classic.js"></script>
+<script src="assets/noir-luxury-fragrance.aura.build/noir-scene.js"></script>
+<script src="assets/noir-luxury-fragrance.aura.build/noir-wordmark.js"></script>
+<style>
+/* design-system catalog bridge. Inside the catalog frame the glass header is drawn by the catalog over this
+   page (hidden here; it is fixed, so nothing moves). "bg" mode (Components view): the page parks on a pose and
+   only its fixed stage stays visible — the WebGL bottle scene and its vignette. */
+html.ds-embed header { visibility: hidden !important; }
+html.ds-bg-only { overflow: hidden !important; }
+html.ds-bg-only main, html.ds-bg-only [data-bag-layer] { visibility: hidden !important; }
+html.ds-bg-only [data-threeui-cta] { display: none !important; }
+</style>
+<script>
+(function () {
+  if (window.parent === window) return;
+  var root = document.documentElement, bg = false, saved = 0, pose = 'hero';
+  root.classList.add('ds-embed');
+  function post(m) { try { window.parent.postMessage(m, '*'); } catch (e) {} }
+  function $(s) { return document.querySelector(s); }
+  function jump(y) { window.scrollTo({ top: Math.max(0, Math.round(y)), behavior: 'instant' }); }
+  /* scene poses = the page's own scroll positions (ScrollTrigger + scene zones read them) */
+  function poseY(id) {
+    var vh = innerHeight, el = document.getElementById(id === 'hero' ? 'hero' : id);
+    if (!el || id === 'hero') return 0;
+    var top = el.getBoundingClientRect().top + scrollY, h = el.offsetHeight;
+    if (id === 'scent') return top + (h - vh) * 0.02;
+    if (id === 'ritual') return top + (h - vh) * 0.45;
+    if (id === 'immersion') return top + (h - vh) * 0.62;
+    if (id === 'craft') { var it = document.querySelector('[data-craft-item="1"]'); return it ? it.getBoundingClientRect().top + scrollY - vh * 0.2 : top; }
+    if (id === 'final') return top + h * 0.34;
+    return top;
+  }
+  addEventListener('DOMContentLoaded', function () {
+    /* ready = the stage has its canvas (or the still fallback) and the hero intro has played */
+    var t0 = Date.now();
+    (function wait() {
+      var st = $('[data-noir-stage]');
+      if ((st && st.querySelector('canvas, img')) || Date.now() - t0 > 15000) { setTimeout(function () { post({ ds: 'ready' }); }, 3800); return; }
+      setTimeout(wait, 120);
+    })();
+    /* the catalog navbar mirrors the bag count and opens the page's own drawer */
+    var count = -1, open = false;
+    setInterval(function () {
+      var c = $('[data-bag-count]'), b = $('[data-bag-btn]');
+      var n = c ? parseInt(c.textContent, 10) || 0 : 0, o = !!(b && b.getAttribute('aria-expanded') === 'true');
+      if (n !== count) { count = n; post({ ds: 'bag', n: n }); }
+      if (o !== open) { open = o; post({ ds: 'bagOpen', open: o }); }
+    }, 250);
+  });
+  addEventListener('message', function (e) {
+    var d = e.data;
+    if (e.source !== window.parent || !d || !d.ds) return;
+    if (d.ds === 'bg' && !bg) { bg = true; saved = scrollY; root.classList.add('ds-bg-only'); jump(poseY(pose)); }
+    else if (d.ds === 'page' && bg) { bg = false; root.classList.remove('ds-bg-only'); jump(saved); }
+    else if (d.ds === 'pose') { pose = d.id || 'hero'; if (bg) jump(poseY(pose)); }
+    else if (d.ds === 'openBag') { var b = $('[data-bag-btn]'); if (b) b.click(); }
+    else if (d.ds === 'scrollBy' && !bg) { window.scrollBy(0, d.dy || 0); }
+    else if (d.ds === 'ptr') { window.dispatchEvent(new PointerEvent('pointermove', { clientX: d.x * innerWidth, clientY: d.y * innerHeight })); }
+  });
+})();
+</script>
+
+
+<script src="assets/noir-luxury-fragrance.aura.build/dc-runtime.js"></script>
+</head>
+<body>
+
+<x-dc>
+<helmet>
+<style>/* latin-ext */
+@font-face {
+  font-family: 'Cinzel';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/fonts.gstatic.com/s/cinzel/cinzel-latin-ext.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Cinzel';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/fonts.gstatic.com/s/cinzel/cinzel-latin.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Cinzel';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("assets/fonts.gstatic.com/s/cinzel/cinzel-latin-ext.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Cinzel';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("assets/fonts.gstatic.com/s/cinzel/cinzel-latin.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Jost';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url("assets/fonts.gstatic.com/s/jost/jost-cyrillic.woff2") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Jost';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url("assets/fonts.gstatic.com/s/jost/jost-latin-ext.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Jost';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url("assets/fonts.gstatic.com/s/jost/jost-latin.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Jost';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/fonts.gstatic.com/s/jost/jost-cyrillic.woff2") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Jost';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/fonts.gstatic.com/s/jost/jost-latin-ext.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Jost';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/fonts.gstatic.com/s/jost/jost-latin.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+</style>
+<script src="assets/cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="assets/cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<style>
+html,body{margin:0;padding:0;background:#040302;color:#ede3d1;overflow-x:clip;-webkit-font-smoothing:antialiased;}
+a{color:#ede3d1;text-decoration:none;}
+a:hover{color:#e8b25a;}
+:where(a,button):focus-visible{outline:2px solid #e8b25a;outline-offset:5px;}
+button{font:inherit;}
+@media (max-width:640px){:where(a,button){min-height:44px;} }
+</style>
+</helmet>
+
+<div data-noir-stage="1" style="position:fixed;inset:0;z-index:0;background:#040302;pointer-events:none;">
+  <sc-if value="{{ glFail }}" hint-placeholder-val="{{ false }}">
+    <img src="assets/noir-luxury-fragrance.aura.build/export/noir-hero.jpg" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.75;">
+  </sc-if>
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 80% 70% at 50% 45%, rgba(4,3,2,0) 55%, rgba(4,3,2,.75) 100%);"></div>
+</div>
+
+<header style="position: fixed; top: clamp(12px,1.6vw,22px); left: clamp(12px,2.4vw,40px); right: clamp(12px,2.4vw,40px); z-index: 30; display: grid; grid-template-columns: minmax(0,1fr) auto minmax(0,1fr); align-items: center; gap: 24px; padding: 16px clamp(18px,2.4vw,36px); font-family: 'Jost',sans-serif; background: linear-gradient(180deg,rgba(237,227,209,.07),rgba(237,227,209,.02)); backdrop-filter: blur(22px) saturate(150%); -webkit-backdrop-filter: blur(22px) saturate(150%); border: 1px solid rgba(237,227,209,.12); border-radius: 10px; box-shadow: inset 0 1px 0 rgba(255,244,222,.08),0 20px 50px -30px rgba(0,0,0,.8)">
+  <a href="#hero" data-intro="1" sc-camel-on-click="{{ goHero }}" style="grid-column:1;justify-self:start;font-family:'Cinzel',serif;font-size:19px;font-weight:500;letter-spacing:.5em;color:#ede3d1;transition:letter-spacing .7s cubic-bezier(.2,.7,.2,1);" style-hover="letter-spacing:.64em;color:#ede3d1;">NOIR</a>
+  <nav data-intro="1" style="grid-column:2;display:{{ navDisplay }};gap:clamp(22px,3vw,52px);padding-top:9px;">
+    <a href="#hero" sc-camel-on-mouse-enter="{{ navEnter0 }}" sc-camel-on-mouse-leave="{{ navLeave }}" sc-camel-on-click="{{ goHero }}" style="display:flex;flex-direction:column;gap:9px;font-size:11px;letter-spacing:.28em;color:#cfc4b0;" style-hover="color:#ede3d1;">
+      <span style="display:flex;gap:10px;align-items:baseline;"><span>FRAGRANCE</span></span>
+      <span style="display:block;height:1px;background:#e8b25a;transform-origin:left;transition:transform .6s cubic-bezier(.2,.7,.2,1);transform:{{ nl0 }};"></span>
+    </a>
+    <a href="#scent" sc-camel-on-mouse-enter="{{ navEnter1 }}" sc-camel-on-mouse-leave="{{ navLeave }}" sc-camel-on-click="{{ goScent }}" style="display:flex;flex-direction:column;gap:9px;font-size:11px;letter-spacing:.28em;color:#cfc4b0;" style-hover="color:#ede3d1;">
+      <span style="display:flex;gap:10px;align-items:baseline;"><span>COMPOSITION</span></span>
+      <span style="display:block;height:1px;background:#e8b25a;transform-origin:left;transition:transform .6s cubic-bezier(.2,.7,.2,1);transform:{{ nl1 }};"></span>
+    </a>
+    <a href="#collection" sc-camel-on-mouse-enter="{{ navEnter2 }}" sc-camel-on-mouse-leave="{{ navLeave }}" sc-camel-on-click="{{ goCollection }}" style="display:flex;flex-direction:column;gap:9px;font-size:11px;letter-spacing:.28em;color:#cfc4b0;" style-hover="color:#ede3d1;">
+      <span style="display:flex;gap:10px;align-items:baseline;"><span>COLLECTION</span></span>
+      <span style="display:block;height:1px;background:#e8b25a;transform-origin:left;transition:transform .6s cubic-bezier(.2,.7,.2,1);transform:{{ nl2 }};"></span>
+    </a>
+    <a href="#ritual" sc-camel-on-mouse-enter="{{ navEnter3 }}" sc-camel-on-mouse-leave="{{ navLeave }}" sc-camel-on-click="{{ goRitual }}" style="display:flex;flex-direction:column;gap:9px;font-size:11px;letter-spacing:.28em;color:#cfc4b0;" style-hover="color:#ede3d1;">
+      <span style="display:flex;gap:10px;align-items:baseline;"><span>STORY</span></span>
+      <span style="display:block;height:1px;background:#e8b25a;transform-origin:left;transition:transform .6s cubic-bezier(.2,.7,.2,1);transform:{{ nl3 }};"></span>
+    </a>
+  </nav>
+  <a href="#" role="button" data-bag-btn="1" data-intro="1" sc-camel-on-click="{{ openBag }}" sc-camel-on-key-down="{{ bagBtnKey }}" aria-haspopup="dialog" aria-expanded="{{ bagExp }}" style="grid-column:3;justify-self:end;display:flex;gap:8px;align-items:baseline;white-space:nowrap;font-size:11px;letter-spacing:.3em;color:#ede3d1;padding:8px 0;" style-hover="color:#e8b25a;">BAG <span style="display:inline-flex;color:#e8b25a;">(<span style="display:inline-block;overflow:hidden;"><span data-bag-count="1" style="display:inline-block;">{{ bag }}</span></span>)</span></a>
+</header>
+
+<div data-bag-layer="1" style="position:fixed;inset:0;z-index:60;visibility:hidden;font-family:'Jost',sans-serif;color:#ede3d1;">
+  <div data-bag-scrim="1" sc-camel-on-click="{{ closeBag }}" style="position:absolute;inset:0;background:rgba(2,2,1,.58);opacity:0;"></div>
+  <div style="position:absolute;top:0;right:0;bottom:0;width:min(calc(100vw - 16px), clamp(400px, 36vw, 600px));perspective:1600px;pointer-events:none;">
+    <aside data-bag-drawer="1" role="dialog" aria-modal="true" aria-label="Your bag" sc-camel-on-key-down="{{ bagKey }}" style="position:absolute;inset:0;pointer-events:auto;transform-origin:100% 50%;display:flex;flex-direction:column;background:linear-gradient(180deg, rgba(16,13,11,.93), rgba(7,6,5,.95));backdrop-filter:blur(10px) saturate(115%);-webkit-backdrop-filter:blur(10px) saturate(115%);border-left:1px solid rgba(237,227,209,.12);box-shadow:-50px 0 90px -30px rgba(0,0,0,.85), inset 1px 0 0 rgba(255,236,205,.04);">
+      <span style="position:absolute;left:-1px;top:0;bottom:0;width:1px;background:linear-gradient(180deg, rgba(232,178,90,0), rgba(232,178,90,.45) 30%, rgba(232,178,90,.08) 75%, rgba(232,178,90,0));pointer-events:none;"></span>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:20px;padding:clamp(22px,4vh,36px) clamp(22px,2.6vw,44px);border-bottom:1px solid rgba(237,227,209,.1);">
+        <div style="display:flex;align-items:baseline;gap:18px;">
+          <span style="font-family:'Cinzel',serif;font-size:clamp(18px,1.5vw,24px);letter-spacing:.22em;">YOUR BAG</span>
+          <span style="font-size:10px;letter-spacing:.38em;color:#a8916a;">{{ bagLabel }}</span>
+        </div>
+        <button type="button" data-bag-close="1" sc-camel-on-click="{{ closeBag }}" aria-label="Close bag" style="position:relative;width:44px;height:44px;margin-right:-12px;border:0;background:transparent;cursor:pointer;color:#ede3d1;" style-hover="color:#e8b25a;">
+          <span style="position:absolute;left:13px;top:21px;width:18px;height:1px;background:currentColor;transform:rotate(45deg);"></span>
+          <span style="position:absolute;left:13px;top:21px;width:18px;height:1px;background:currentColor;transform:rotate(-45deg);"></span>
+        </button>
+      </div>
+
+      <div data-bag-body="1" style="flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:0 clamp(22px,2.6vw,44px);">
+        <sc-if value="{{ bagHas }}" hint-placeholder-val="{{ false }}">
+          <sc-for list="{{ cart }}" as="it" hint-placeholder-count="0">
+            <div data-bag-row="{{ it.id }}" style="overflow:hidden;">
+              <div style="display:grid;grid-template-columns:clamp(72px,6vw,96px) minmax(0,1fr) auto;gap:clamp(16px,1.6vw,26px);padding:clamp(22px,3.4vh,34px) 0;border-bottom:1px solid rgba(237,227,209,.1);align-items:start;">
+                <div style="position:relative;aspect-ratio:4 / 5;overflow:hidden;background:#050403;">
+                  <img src="assets/noir-luxury-fragrance.aura.build/export/noir-hero.jpg" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 58%;transform-origin:50% 58%;scale:2.2;display:{{ it.d0 }};">
+                  <img src="assets/noir-luxury-fragrance.aura.build/export/ember.jpg" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 44%;transform-origin:50% 44%;scale:1.35;display:{{ it.d1 }};">
+                  <img src="assets/noir-luxury-fragrance.aura.build/export/veil.jpg" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 45%;transform-origin:50% 45%;scale:1.35;display:{{ it.d2 }};">
+                  <span style="position:absolute;inset:0;box-shadow:inset 0 0 0 1px rgba(237,227,209,.08);"></span>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:9px;min-width:0;">
+                  <span style="font-size:9px;letter-spacing:.4em;color:#a8916a;">EXPRESSION Nº {{ it.idx }}</span>
+                  <span style="font-family:'Cinzel',serif;font-size:clamp(18px,1.5vw,24px);letter-spacing:.18em;">{{ it.name }}</span>
+                  <span style="font-size:10px;letter-spacing:.22em;white-space:nowrap;color:#cfc4b0;">EAU DE PARFUM — 100 ML</span>
+                  <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:12px;">
+                    <div style="display:flex;align-items:center;border:1px solid rgba(237,227,209,.16);">
+                      <button type="button" sc-camel-on-click="{{ it.dec }}" aria-label="Decrease quantity" style="width:36px;height:36px;border:0;background:transparent;color:#ede3d1;font-size:14px;cursor:pointer;opacity:{{ it.minusO }};" style-hover="color:#e8b25a;">−</button>
+                      <span style="display:inline-flex;justify-content:center;width:34px;overflow:hidden;font-family:'Cinzel',serif;font-size:12px;letter-spacing:.12em;"><span data-qty="{{ it.id }}" style="display:inline-block;">{{ it.qtyS }}</span></span>
+                      <button type="button" sc-camel-on-click="{{ it.inc }}" aria-label="Increase quantity" style="width:36px;height:36px;border:0;background:transparent;color:#ede3d1;font-size:14px;cursor:pointer;" style-hover="color:#e8b25a;">+</button>
+                    </div>
+                    <button type="button" sc-camel-on-click="{{ it.rm }}" style="padding:6px 0;border:0;border-bottom:1px solid rgba(237,227,209,.2);background:transparent;color:#a8916a;font-family:'Jost',sans-serif;font-size:9px;letter-spacing:.36em;cursor:pointer;" style-hover="color:#ede3d1;border-color:#e8b25a;">REMOVE</button>
+                  </div>
+                </div>
+                <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;text-align:right;">
+                  <span style="display:inline-block;overflow:hidden;font-family:'Cinzel',serif;font-size:clamp(15px,1.2vw,18px);letter-spacing:.06em;"><span data-line="{{ it.id }}" style="display:inline-block;">{{ it.total }}</span></span>
+                  <span style="font-size:9px;letter-spacing:.3em;color:#a8916a;">{{ it.unit }}</span>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+        </sc-if>
+        <sc-if value="{{ bagEmpty }}" hint-placeholder-val="{{ false }}">
+          <div data-bag-empty="1" style="min-height:100%;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:22px;padding:48px 0;">
+            <span style="display:block;width:40px;height:1px;background:#e8b25a;"></span>
+            <span style="font-family:'Cinzel',serif;font-size:clamp(24px,2.2vw,34px);line-height:1.15;letter-spacing:.12em;">YOUR BAG IS EMPTY</span>
+            <p style="margin:0;font-size:15px;font-weight:300;line-height:1.75;letter-spacing:.04em;color:#cfc4b0;">Lorem ipsum dolor sit amet elit sed.</p>
+            <button type="button" sc-camel-on-click="{{ exploreColl }}" style="display:inline-flex;align-items:center;gap:16px;margin-top:10px;padding:8px 0;border:0;border-bottom:1px solid rgba(237,227,209,.25);background:transparent;color:#ede3d1;font-family:'Jost',sans-serif;font-size:11px;letter-spacing:.34em;cursor:pointer;" style-hover="color:#e8b25a;border-color:#e8b25a;">EXPLORE THE COLLECTION <span style="color:#e8b25a;">→</span></button>
+          </div>
+        </sc-if>
+      </div>
+
+      <sc-if value="{{ bagHas }}" hint-placeholder-val="{{ false }}">
+        <div style="flex:0 0 auto;display:flex;flex-direction:column;gap:18px;padding:clamp(22px,3.4vh,32px) clamp(22px,2.6vw,44px) clamp(24px,4vh,40px);border-top:1px solid rgba(237,227,209,.12);background:linear-gradient(180deg, rgba(5,4,3,0), rgba(5,4,3,.6));">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:16px;">
+            <span style="font-size:10px;letter-spacing:.4em;color:#a8916a;">SUBTOTAL</span>
+            <span style="display:inline-block;overflow:hidden;font-family:'Cinzel',serif;font-size:clamp(22px,1.9vw,30px);letter-spacing:.06em;"><span data-subtotal="1" style="display:inline-block;">{{ subtotal }}</span></span>
+          </div>
+          <span style="font-size:12px;font-weight:300;letter-spacing:.06em;color:#cfc4b0;">Complimentary delivery included.</span>
+          <button type="button" sc-camel-on-mouse-enter="{{ ckEnter }}" sc-camel-on-mouse-leave="{{ ckLeave }}" sc-camel-on-focus="{{ ckEnter }}" sc-camel-on-blur="{{ ckLeave }}" style="position:relative;display:flex;align-items:center;justify-content:space-between;gap:16px;height:60px;margin-top:6px;padding:0 24px;border:1px solid rgba(232,178,90,.55);background:rgba(232,178,90,.06);overflow:hidden;cursor:pointer;font-family:'Jost',sans-serif;font-size:11px;letter-spacing:.36em;transition:color .5s ease;color:{{ ckText }};">
+            <span style="position:absolute;inset:0;background:linear-gradient(90deg,#c98a3a,#e8b25a);transform-origin:left center;transition:transform .7s cubic-bezier(.7,0,.2,1);transform:{{ ckFill }};"></span>
+            <span style="position:relative;">PROCEED TO CHECKOUT</span>
+            <span style="position:relative;display:flex;align-items:center;gap:0;"><span style="display:block;height:1px;background:currentColor;transition:width .7s cubic-bezier(.7,0,.2,1);width:{{ ckLine }};"></span><span style="display:block;width:6px;height:6px;border-top:1px solid currentColor;border-right:1px solid currentColor;transform:rotate(45deg);margin-left:-5px;"></span></span>
+          </button>
+        </div>
+      </sc-if>
+    </aside>
+  </div>
+</div>
+
+<main style="position:relative;z-index:1;font-family:'Jost',sans-serif;color:#ede3d1;">
+
+  <section id="hero" data-3d="1" data-screen-label="01 Hero" style="position:relative;height:200vh;">
+    <div style="position:sticky;top:0;height:100vh;overflow:hidden;">
+      <div data-hero-exit="1" style="position:absolute;left:clamp(20px,4vw,64px);top:31vh;max-width:300px;">
+        <div data-intro="1" style="display:flex;flex-direction:column;align-items:flex-start;gap:30px;">
+          <span style="display: none; width: 48px; height: 1px; background: #e8b25a"></span>
+          <p style="margin:0;font-size:15px;font-weight:300;line-height:1.75;letter-spacing:.04em;color:#cfc4b0;text-wrap:pretty;">Smoked glass, molten gold light and velvet shadow.</p>
+          <div style="position:relative;width:240px;height:115px;margin:-18px 0 0 -22px;">
+            <button type="button" sc-camel-on-click="{{ goCollection }}" aria-label="Discover the NOIR collection" data-noir-cta="1" data-threeui-overlay="discover" style="position:absolute;inset:0;z-index:2;width:100%;height:100%;opacity:0;cursor:pointer;display:inline-flex;align-items:center;justify-content:space-between;gap:20px;min-width:220px;min-height:56px;padding:0 22px;border:1px solid rgba(232,178,90,.55);background:linear-gradient(180deg,rgba(232,178,90,.10),rgba(232,178,90,.03));color:#ede3d1;font-family:'Jost',sans-serif;font-size:11px;letter-spacing:.3em;cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,244,222,.08);transition:background .35s ease,border-color .35s ease,color .35s ease;" style-hover="background:rgba(232,178,90,.16);border-color:#e8b25a;color:#fff3e4;">LOREM IPSUM <span aria-hidden="true" style="color:#e8b25a;font-size:16px;">→</span></button>
+            <iframe title="Discover NOIR visual" aria-hidden="true" tabindex="-1" data-threeui-cta="discover" data-threeui-label="LOREM IPSUM" sandbox="allow-scripts allow-same-origin" style="position:absolute;inset:0;z-index:1;width:100%;height:100%;border:0;display:block;background:transparent;color-scheme:normal;pointer-events:none;" allowtransparency="true"></iframe>
+          </div>
+        </div>
+      </div>
+
+      <div data-hero-exit="1" style="position:absolute;right:clamp(20px,4vw,64px);top:31vh;">
+        <div data-intro="1" style="display:flex;flex-direction:column;align-items:center;gap:16px;">
+          <span style="writing-mode:vertical-rl;font-size:10px;letter-spacing:.42em;color:#a8916a;">LOREM IPSUM · Nº 01</span>
+          <span style="position:relative;display:block;width:1px;height:80px;background:rgba(237,227,209,.16);overflow:hidden;"><span data-scroll-dot="1" style="position:absolute;left:0;top:0;width:1px;height:18px;background:#e8b25a;"></span></span>
+          <span style="font-size:10px;letter-spacing:.42em;color:#cfc4b0;writing-mode:vertical-rl;">SCROLL</span>
+        </div>
+      </div>
+
+      <h1 style="position:absolute;left:clamp(20px,4vw,64px);right:clamp(20px,4vw,64px);bottom:clamp(40px,8vh,96px);margin:0;font-family:'Cinzel',serif;font-weight:400;font-size:clamp(40px,7.2vw,150px);line-height:.94;letter-spacing:.01em;color:#ede3d1;">
+        <span style="display:block;overflow:hidden;padding-bottom:.05em;"><span data-hero-x="1" style="display:block;"><span data-hero-line="1" style="display:block;white-space:nowrap;">NOIR</span></span></span>
+        <span style="display:flex;flex-wrap:wrap;column-gap:.28em;padding-left:clamp(0px,14vw,280px);">
+          <span style="display:block;overflow:hidden;padding-bottom:.05em;"><span data-hero-x="1" style="display:block;"><span data-hero-line="1" style="display:block;white-space:nowrap;">DESIGN</span></span></span>
+          <span style="display:block;overflow:hidden;padding-bottom:.05em;"><span data-hero-x="1" style="display:block;"><span data-hero-line="1" style="display:block;white-space:nowrap;">SYSTEM</span></span></span>
+        </span>
+      </h1>
+    </div>
+  </section>
+
+  <section id="scent" data-3d="1" data-screen-label="02 Scent Architecture" style="position:relative;height:320vh;">
+    <div style="position:sticky;top:0;height:100vh;overflow:hidden;">
+      <div style="position:absolute;left:clamp(20px,4vw,64px);top:15vh;display:flex;flex-direction:column;gap:20px;max-width:440px;">
+        <span style="display:block;overflow:hidden;"><span data-scent-reveal="1" style="display:block;font-size:10px;letter-spacing:.4em;color:#a8916a;">01 / LOREM IPSUM</span></span>
+        <span style="display:block;overflow:hidden;"><span data-scent-reveal="1" style="display:block;font-family:'Cinzel',serif;font-size:clamp(26px,2.8vw,52px);line-height:1;letter-spacing:.04em;color:#ede3d1;">LOREM CONSECTETUR</span></span>
+        <span style="display:block;overflow:hidden;"><span data-scent-reveal="1" style="display:block;max-width:300px;font-size:15px;font-weight:300;line-height:1.75;letter-spacing:.04em;color:#cfc4b0;text-wrap:pretty;">Lorem ipsum dolor. Sit amet elit. Sed do eiusmod tempor incidunt.</span></span>
+      </div>
+
+      <div style="position:absolute;left:clamp(20px,4vw,64px);right:clamp(20px,4vw,64px);bottom:8vh;display:flex;flex-direction:column;">
+        <div sc-camel-on-mouse-enter="{{ noteEnter0 }}" sc-camel-on-mouse-leave="{{ noteLeave }}" sc-camel-on-click="{{ noteEnter0 }}" style="display:flex;align-items:flex-end;gap:clamp(14px,2vw,32px);cursor:default;">
+          <span style="display:flex;flex-direction:column;gap:10px;min-width:40px;padding-bottom:min(1.6vw,2.6vh);">
+            <span style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:.3em;color:#a8916a;">I</span>
+            <span style="display:block;height:1px;background:#e8b25a;transition:width .8s cubic-bezier(.2,.7,.2,1);width:{{ mk0 }};"></span>
+          </span>
+          <span style="font-family:'Cinzel',serif;font-size:min(10.5vw,17vh);line-height:.88;letter-spacing:.02em;-webkit-text-stroke-width:1px;transition:color .9s ease,-webkit-text-stroke-color .9s ease;color:{{ wc0 }};-webkit-text-stroke-color:{{ ws0 }};">LOREM</span>
+          <span style="display:flex;flex-direction:column;gap:6px;padding-bottom:min(1.6vw,2.6vh);font-size:10px;letter-spacing:.34em;text-transform:uppercase;color:#cfc4b0;transition:opacity .8s ease,transform .8s cubic-bezier(.2,.7,.2,1);opacity:{{ do0 }};transform:{{ dt0 }};"><span>Sed</span><span>Tempor</span><span>Incididunt</span></span>
+        </div>
+        <div sc-camel-on-mouse-enter="{{ noteEnter1 }}" sc-camel-on-mouse-leave="{{ noteLeave }}" sc-camel-on-click="{{ noteEnter1 }}" style="display:flex;align-items:flex-end;gap:clamp(14px,2vw,32px);cursor:default;">
+          <span style="display:flex;flex-direction:column;gap:10px;min-width:40px;padding-bottom:min(1.6vw,2.6vh);">
+            <span style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:.3em;color:#a8916a;">II</span>
+            <span style="display:block;height:1px;background:#e8b25a;transition:width .8s cubic-bezier(.2,.7,.2,1);width:{{ mk1 }};"></span>
+          </span>
+          <span style="font-family:'Cinzel',serif;font-size:min(10.5vw,17vh);line-height:.88;letter-spacing:.02em;-webkit-text-stroke-width:1px;transition:color .9s ease,-webkit-text-stroke-color .9s ease;color:{{ wc1 }};-webkit-text-stroke-color:{{ ws1 }};">IPSUM</span>
+          <span style="display:flex;flex-direction:column;gap:6px;padding-bottom:min(1.6vw,2.6vh);font-size:10px;letter-spacing:.34em;text-transform:uppercase;color:#cfc4b0;transition:opacity .8s ease,transform .8s cubic-bezier(.2,.7,.2,1);opacity:{{ do1 }};transform:{{ dt1 }};"><span>Amet</span><span>Eiusmod</span><span>Adipiscing</span></span>
+        </div>
+        <div sc-camel-on-mouse-enter="{{ noteEnter2 }}" sc-camel-on-mouse-leave="{{ noteLeave }}" sc-camel-on-click="{{ noteEnter2 }}" style="display:flex;align-items:flex-end;gap:clamp(14px,2vw,32px);cursor:default;">
+          <span style="display:flex;flex-direction:column;gap:10px;min-width:40px;padding-bottom:min(1.6vw,2.6vh);">
+            <span style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:.3em;color:#a8916a;">III</span>
+            <span style="display:block;height:1px;background:#e8b25a;transition:width .8s cubic-bezier(.2,.7,.2,1);width:{{ mk2 }};"></span>
+          </span>
+          <span style="font-family:'Cinzel',serif;font-size:min(10.5vw,17vh);line-height:.88;letter-spacing:.02em;-webkit-text-stroke-width:1px;transition:color .9s ease,-webkit-text-stroke-color .9s ease;color:{{ wc2 }};-webkit-text-stroke-color:{{ ws2 }};">DOLOR</span>
+          <span style="display:flex;flex-direction:column;gap:6px;padding-bottom:min(1.6vw,2.6vh);font-size:10px;letter-spacing:.34em;text-transform:uppercase;color:#cfc4b0;transition:opacity .8s ease,transform .8s cubic-bezier(.2,.7,.2,1);opacity:{{ do2 }};transform:{{ dt2 }};"><span>Nisi</span><span>Labore</span><span>Consequat</span></span>
+        </div>
+      </div>
+
+      <div style="position:absolute;right:clamp(20px,4vw,64px);top:15vh;display:flex;align-items:center;gap:14px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:.3em;color:#a8916a;">
+        <span style="color:#e8b25a;">{{ noteNum }}</span>
+        <span style="display:block;width:40px;height:1px;background:rgba(237,227,209,.25);"></span>
+        <span>03</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="collection" data-screen-label="03 Collection" sc-camel-on-pointer-move="{{ collMove }}" sc-camel-on-pointer-leave="{{ collLeave }}" style="position:relative;background:#060504;padding:clamp(100px,15vh,170px) clamp(20px,4vw,64px) clamp(90px,13vh,150px);overflow:hidden;">
+    <div data-coll-atmos="0" style="position:absolute;left:50%;top:60%;width:130vw;height:110vh;transform:translate(-50%,-50%);background:radial-gradient(closest-side, rgba(196,158,104,.11), rgba(0,0,0,0));opacity:1;pointer-events:none;"></div>
+    <div data-coll-atmos="1" style="position:absolute;left:50%;top:60%;width:130vw;height:110vh;transform:translate(-50%,-50%);background:radial-gradient(closest-side, rgba(196,98,38,.24), rgba(0,0,0,0));opacity:0;pointer-events:none;"></div>
+    <div data-coll-atmos="2" style="position:absolute;left:50%;top:60%;width:130vw;height:110vh;transform:translate(-50%,-50%);background:radial-gradient(closest-side, rgba(150,140,178,.15), rgba(0,0,0,0));opacity:0;pointer-events:none;"></div>
+
+    <div style="position:relative;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:24px 48px;">
+      <div style="display:flex;flex-direction:column;gap:24px;">
+        <span style="font-size:10px;letter-spacing:.4em;color:#a8916a;">02 / LOREM IPSUM DOLOR</span>
+        <h2 data-coll-title="1" style="margin:0;font-family:'Cinzel',serif;font-weight:400;font-size:clamp(40px,6.4vw,130px);line-height:.92;letter-spacing:.01em;color:#ede3d1;">SIT AMET DOLOR</h2>
+      </div>
+      <span style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:.3em;color:#a8916a;padding-bottom:10px;">{{ cIdx }} / 03</span>
+    </div>
+
+    <div data-folio-stage="1" style="position:relative;display:flex;justify-content:center;margin-top:clamp(48px,8vh,96px);perspective:2400px;perspective-origin:50% 35%;">
+      <div data-folio-intro="1" style="position:relative;transform-style:preserve-3d;width:min(100%, 1180px, calc((100vh - 230px) * 1.6), max(68vw, min(100%, 640px)));">
+        <div style="position:absolute;left:3%;right:3%;bottom:-8%;height:14%;background:radial-gradient(ellipse 50% 50% at 50% 50%, rgba(0,0,0,.9), rgba(0,0,0,0));filter:blur(16px);transform:translateZ(-30px);pointer-events:none;"></div>
+        <div data-folio="1" sc-camel-on-pointer-down="{{ folioDown }}" style="position:relative;width:100%;aspect-ratio:8 / 5;transform-style:preserve-3d;touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none;--page:#0b0a09;--edge:rgba(232,178,90,.42);--sheen:rgba(255,226,180,.07);--hx:50%;--hy:40%;">
+          <div style="position:absolute;inset:0;transform:translate3d(0,5px,-8px);background:#020101;border-bottom:1px solid rgba(232,178,90,.16);box-shadow:0 40px 70px -24px rgba(0,0,0,.95);"></div>
+
+          <div data-page="L" style="position:absolute;left:0;top:0;width:50%;height:100%;overflow:hidden;background:#0b0a09;">
+            <sc-for list="{{ folio }}" as="f" hint-placeholder-count="0">
+              <div data-lp="{{ $index }}" style="position:absolute;inset:0;container-type:inline-size;overflow:hidden;visibility:{{ f.vis }};background:var(--page);box-shadow:inset 0 0 0 1px rgba(237,227,209,.04),inset 0 0 60px rgba(0,0,0,.55);">
+                <div style="position:absolute;inset:0;background-image:url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27180%27 height=%27180%27%3E%3Cfilter id=%27n%27%3E%3CfeTurbulence type=%27fractalNoise%27 sc-camel-base-frequency=%27.85%27 sc-camel-num-octaves=%272%27 sc-camel-stitch-tiles=%27stitch%27/%3E%3C/filter%3E%3Crect width=%27100%25%27 height=%27100%25%27 filter=%27url(%23n)%27/%3E%3C/svg%3E');opacity:.07;pointer-events:none;"></div>
+                <div style="position:absolute;inset:0;background:linear-gradient(90deg, rgba(0,0,0,0) 80%, rgba(0,0,0,.5) 97%, rgba(0,0,0,.75));pointer-events:none;"></div>
+                <div style="position:absolute;left:0;top:0;bottom:0;width:1px;background:linear-gradient(180deg, rgba(0,0,0,0), var(--edge) 30%, var(--edge) 70%, rgba(0,0,0,0));"></div>
+                <div style="position:absolute;left:0;right:0;top:0;height:1px;background:linear-gradient(90deg, rgba(255,240,215,.1), rgba(255,240,215,0) 70%);"></div>
+                <span style="position:absolute;left:2.6cqw;top:2.6cqw;width:9px;height:9px;pointer-events:none;"><span style="position:absolute;left:4px;top:0;width:1px;height:9px;background:rgba(232,178,90,.45);"></span><span style="position:absolute;left:0;top:4px;width:9px;height:1px;background:rgba(232,178,90,.45);"></span><span style="position:absolute;left:2px;top:2px;width:3px;height:3px;border:1px solid rgba(232,178,90,.35);border-radius:50%;"></span></span>
+                <span style="position:absolute;left:2.4cqw;top:50%;transform:translateY(-50%) rotate(180deg);writing-mode:vertical-rl;font-family:'Cinzel',serif;font-size:max(7px,1.4cqw);letter-spacing:.5em;color:rgba(232,178,90,.55);">FOLIO {{ f.pgL }}</span>
+                <div style="position:absolute;inset:0;bottom:26cqw;padding:7cqw 8cqw 0 9cqw;display:flex;flex-direction:column;gap:4.4cqw;overflow:hidden;">
+                  <div data-meta="1" style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;white-space:nowrap;font-size:max(8px,1.7cqw);letter-spacing:.4em;color:#a8916a;">
+                    <span style="display:{{ idxDisp }};">INDEX {{ f.idx }} / 03</span><span>EXPRESSION Nº {{ f.idx }}</span>
+                  </div>
+                  <div data-meta="1" style="height:1px;background:linear-gradient(90deg, var(--edge), rgba(0,0,0,0) 85%);opacity:.6;"></div>
+                  <p data-meta="1" style="margin:0;max-width:76%;display:{{ detailDisp }};font-size:max(12px,2.7cqw);font-weight:300;line-height:1.7;letter-spacing:.03em;color:#cfc4b0;text-wrap:pretty;">{{ f.desc }}</p>
+                  <div data-meta="1" style="display:{{ detailDisp }};flex-direction:column;margin-top:1cqw;">
+                    <span style="font-size:max(8px,1.6cqw);letter-spacing:.42em;color:#a8916a;padding-bottom:1.6cqw;">NOTES</span>
+                    <div style="display:flex;align-items:baseline;gap:3cqw;padding:1.5cqw 0;border-top:1px solid rgba(237,227,209,.1);"><span style="width:5cqw;font-family:'Cinzel',serif;font-size:max(8px,1.5cqw);letter-spacing:.3em;color:#a8916a;">I</span><span style="font-family:'Cinzel',serif;font-size:max(13px,3.3cqw);letter-spacing:.2em;color:#ede3d1;">{{ f.n1 }}</span></div>
+                    <div style="display:flex;align-items:baseline;gap:3cqw;padding:1.5cqw 0;border-top:1px solid rgba(237,227,209,.1);"><span style="width:5cqw;font-family:'Cinzel',serif;font-size:max(8px,1.5cqw);letter-spacing:.3em;color:#a8916a;">II</span><span style="font-family:'Cinzel',serif;font-size:max(13px,3.3cqw);letter-spacing:.2em;color:#ede3d1;">{{ f.n2 }}</span></div>
+                    <div style="display:flex;align-items:baseline;gap:3cqw;padding:1.5cqw 0;border-top:1px solid rgba(237,227,209,.1);border-bottom:1px solid rgba(237,227,209,.1);"><span style="width:5cqw;font-family:'Cinzel',serif;font-size:max(8px,1.5cqw);letter-spacing:.3em;color:#a8916a;">III</span><span style="font-family:'Cinzel',serif;font-size:max(13px,3.3cqw);letter-spacing:.2em;color:#ede3d1;">{{ f.n3 }}</span></div>
+                  </div>
+                  <div data-meta="1" style="display:{{ detailDisp }};flex-wrap:wrap;align-items:center;gap:10px 4cqw;margin-top:1cqw;">
+                    <a href="#" sc-camel-on-click="{{ addBag }}" style="display:inline-flex;align-items:center;gap:14px;font-size:max(9px,1.8cqw);letter-spacing:.34em;color:#ede3d1;padding:5px 0;border-bottom:1px solid rgba(237,227,209,.25);transition:border-color .5s ease,letter-spacing .6s cubic-bezier(.2,.7,.2,1);" style-hover="color:#e8b25a;border-color:#e8b25a;letter-spacing:.4em;">ADD TO BAG <span style="color:#e8b25a;">+</span></a>
+                    <span style="font-size:max(8px,1.5cqw);letter-spacing:.34em;color:#a8916a;">EAU DE PARFUM — 100 ML</span>
+                  </div>
+                </div>
+                <span data-title="1" style="position:absolute;left:7cqw;bottom:-.14em;font-family:'Cinzel',serif;font-size:27cqw;line-height:1;letter-spacing:.01em;color:#ede3d1;white-space:nowrap;">{{ f.name }}</span>
+              </div>
+            </sc-for>
+            <div style="position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at var(--hx) var(--hy), var(--sheen), rgba(0,0,0,0) 55%);"></div>
+            <div data-shadow="L" style="position:absolute;inset:0;pointer-events:none;transform-origin:100% 50%;opacity:0;background:linear-gradient(270deg, rgba(0,0,0,.7), rgba(0,0,0,.45) 62%, rgba(0,0,0,0));"></div>
+          </div>
+
+          <div data-page="R" style="position:absolute;left:50%;top:0;width:50%;height:100%;overflow:hidden;background:#050403;">
+            <div data-rp="0" style="position:absolute;inset:0;overflow:hidden;container-type:inline-size;visibility:visible;background:#050403;">
+                <img data-env="1" loading="lazy" decoding="async" src="assets/noir-luxury-fragrance.aura.build/export/noir-hero.jpg" alt="NOIR" draggable="false" style="position:absolute;left:-3%;top:-3%;width:106%;height:106%;object-fit:cover;object-position:50% 55%;">
+                <img data-bottle="1" loading="lazy" decoding="async" src="assets/noir-luxury-fragrance.aura.build/export/noir-hero.jpg" alt="" draggable="false" style="position:absolute;left:-3%;top:-3%;width:106%;height:106%;object-fit:cover;object-position:50% 55%;-webkit-mask-image:radial-gradient(ellipse 30% 30% at 50% 57%, #000 60%, transparent 100%);mask-image:radial-gradient(ellipse 30% 30% at 50% 57%, #000 60%, transparent 100%);filter:brightness(1.07) contrast(1.04);">
+                <div style="position:absolute;inset:0;background:linear-gradient(180deg, rgba(5,4,3,.42), rgba(5,4,3,0) 22%, rgba(5,4,3,0) 68%, rgba(5,4,3,.62));"></div>
+                <div style="position:absolute;inset:0;background:linear-gradient(90deg, rgba(0,0,0,.72), rgba(0,0,0,.22) 5%, rgba(0,0,0,0) 15%);"></div>
+                <div style="position:absolute;right:0;top:0;bottom:0;width:1px;background:linear-gradient(180deg, rgba(0,0,0,0), var(--edge) 35%, var(--edge) 65%, rgba(0,0,0,0));"></div>
+                <div style="position:absolute;inset:0;background-image:url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27180%27 height=%27180%27%3E%3Cfilter id=%27n%27%3E%3CfeTurbulence type=%27fractalNoise%27 sc-camel-base-frequency=%27.85%27 sc-camel-num-octaves=%272%27 sc-camel-stitch-tiles=%27stitch%27/%3E%3C/filter%3E%3Crect width=%27100%25%27 height=%27100%25%27 filter=%27url(%23n)%27/%3E%3C/svg%3E');opacity:.05;pointer-events:none;"></div>
+                <span style="position:absolute;left:7cqw;top:6.4cqw;font-size:max(8px,1.6cqw);letter-spacing:.42em;color:#cfc4b0;">PLATE 01</span>
+                <span style="position:absolute;right:5cqw;top:6.4cqw;display:flex;gap:2px;"><span style="width:4px;height:4px;background:#ede3d1;opacity:.5;"></span><span style="width:4px;height:4px;background:#e8b25a;opacity:.6;"></span><span style="width:4px;height:4px;background:#f0873a;opacity:.5;"></span><span style="width:4px;height:4px;background:#b9a2d8;opacity:.5;"></span></span>
+                <span style="position:absolute;right:2.6cqw;bottom:2.6cqw;width:9px;height:9px;pointer-events:none;"><span style="position:absolute;left:4px;top:0;width:1px;height:9px;background:rgba(232,178,90,.45);"></span><span style="position:absolute;left:0;top:4px;width:9px;height:1px;background:rgba(232,178,90,.45);"></span><span style="position:absolute;left:2px;top:2px;width:3px;height:3px;border:1px solid rgba(232,178,90,.35);border-radius:50%;"></span></span>
+                <div style="position:absolute;left:7cqw;right:7cqw;bottom:6cqw;display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-size:max(8px,1.6cqw);letter-spacing:.42em;color:#cfc4b0;">
+                  <span>NOIR — Nº 01</span><span style="font-family:'Cinzel',serif;color:rgba(232,178,90,.7);">02</span>
+                </div>
+              </div>
+            
+              <div data-rp="1" style="position:absolute;inset:0;overflow:hidden;container-type:inline-size;visibility:hidden;background:#050403;">
+                <img data-env="1" loading="lazy" decoding="async" src="assets/noir-luxury-fragrance.aura.build/export/ember.jpg" alt="EMBER" draggable="false" style="position:absolute;left:-3%;top:-3%;width:106%;height:106%;object-fit:cover;object-position:50% 50%;">
+                <img data-bottle="1" loading="lazy" decoding="async" src="assets/noir-luxury-fragrance.aura.build/export/ember.jpg" alt="" draggable="false" style="position:absolute;left:-3%;top:-3%;width:106%;height:106%;object-fit:cover;object-position:50% 50%;-webkit-mask-image:radial-gradient(ellipse 32% 36% at 50% 45%, #000 60%, transparent 100%);mask-image:radial-gradient(ellipse 32% 36% at 50% 45%, #000 60%, transparent 100%);filter:brightness(1.07) contrast(1.04);">
+                <div style="position:absolute;inset:0;background:linear-gradient(180deg, rgba(5,4,3,.42), rgba(5,4,3,0) 22%, rgba(5,4,3,0) 68%, rgba(5,4,3,.62));"></div>
+                <div style="position:absolute;inset:0;background:linear-gradient(90deg, rgba(0,0,0,.72), rgba(0,0,0,.22) 5%, rgba(0,0,0,0) 15%);"></div>
+                <div style="position:absolute;right:0;top:0;bottom:0;width:1px;background:linear-gradient(180deg, rgba(0,0,0,0), var(--edge) 35%, var(--edge) 65%, rgba(0,0,0,0));"></div>
+                <div style="position:absolute;inset:0;background-image:url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27180%27 height=%27180%27%3E%3Cfilter id=%27n%27%3E%3CfeTurbulence type=%27fractalNoise%27 sc-camel-base-frequency=%27.85%27 sc-camel-num-octaves=%272%27 sc-camel-stitch-tiles=%27stitch%27/%3E%3C/filter%3E%3Crect width=%27100%25%27 height=%27100%25%27 filter=%27url(%23n)%27/%3E%3C/svg%3E');opacity:.05;pointer-events:none;"></div>
+                <span style="position:absolute;left:7cqw;top:6.4cqw;font-size:max(8px,1.6cqw);letter-spacing:.42em;color:#cfc4b0;">PLATE 02</span>
+                <span style="position:absolute;right:5cqw;top:6.4cqw;display:flex;gap:2px;"><span style="width:4px;height:4px;background:#ede3d1;opacity:.5;"></span><span style="width:4px;height:4px;background:#e8b25a;opacity:.6;"></span><span style="width:4px;height:4px;background:#f0873a;opacity:.5;"></span><span style="width:4px;height:4px;background:#b9a2d8;opacity:.5;"></span></span>
+                <span style="position:absolute;right:2.6cqw;bottom:2.6cqw;width:9px;height:9px;pointer-events:none;"><span style="position:absolute;left:4px;top:0;width:1px;height:9px;background:rgba(232,178,90,.45);"></span><span style="position:absolute;left:0;top:4px;width:9px;height:1px;background:rgba(232,178,90,.45);"></span><span style="position:absolute;left:2px;top:2px;width:3px;height:3px;border:1px solid rgba(232,178,90,.35);border-radius:50%;"></span></span>
+                <div style="position:absolute;left:7cqw;right:7cqw;bottom:6cqw;display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-size:max(8px,1.6cqw);letter-spacing:.42em;color:#cfc4b0;">
+                  <span>EMBER — Nº 02</span><span style="font-family:'Cinzel',serif;color:rgba(232,178,90,.7);">04</span>
+                </div>
+              </div>
+            
+              <div data-rp="2" style="position:absolute;inset:0;overflow:hidden;container-type:inline-size;visibility:hidden;background:#050403;">
+                <img data-env="1" loading="lazy" decoding="async" src="assets/noir-luxury-fragrance.aura.build/export/veil.jpg" alt="VEIL" draggable="false" style="position:absolute;left:-3%;top:-3%;width:106%;height:106%;object-fit:cover;object-position:50% 50%;">
+                <img data-bottle="1" loading="lazy" decoding="async" src="assets/noir-luxury-fragrance.aura.build/export/veil.jpg" alt="" draggable="false" style="position:absolute;left:-3%;top:-3%;width:106%;height:106%;object-fit:cover;object-position:50% 50%;-webkit-mask-image:radial-gradient(ellipse 32% 36% at 50% 46%, #000 60%, transparent 100%);mask-image:radial-gradient(ellipse 32% 36% at 50% 46%, #000 60%, transparent 100%);filter:brightness(1.07) contrast(1.04);">
+                <div style="position:absolute;inset:0;background:linear-gradient(180deg, rgba(5,4,3,.42), rgba(5,4,3,0) 22%, rgba(5,4,3,0) 68%, rgba(5,4,3,.62));"></div>
+                <div style="position:absolute;inset:0;background:linear-gradient(90deg, rgba(0,0,0,.72), rgba(0,0,0,.22) 5%, rgba(0,0,0,0) 15%);"></div>
+                <div style="position:absolute;right:0;top:0;bottom:0;width:1px;background:linear-gradient(180deg, rgba(0,0,0,0), var(--edge) 35%, var(--edge) 65%, rgba(0,0,0,0));"></div>
+                <div style="position:absolute;inset:0;background-image:url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27180%27 height=%27180%27%3E%3Cfilter id=%27n%27%3E%3CfeTurbulence type=%27fractalNoise%27 sc-camel-base-frequency=%27.85%27 sc-camel-num-octaves=%272%27 sc-camel-stitch-tiles=%27stitch%27/%3E%3C/filter%3E%3Crect width=%27100%25%27 height=%27100%25%27 filter=%27url(%23n)%27/%3E%3C/svg%3E');opacity:.05;pointer-events:none;"></div>
+                <span style="position:absolute;left:7cqw;top:6.4cqw;font-size:max(8px,1.6cqw);letter-spacing:.42em;color:#cfc4b0;">PLATE 03</span>
+                <span style="position:absolute;right:5cqw;top:6.4cqw;display:flex;gap:2px;"><span style="width:4px;height:4px;background:#ede3d1;opacity:.5;"></span><span style="width:4px;height:4px;background:#e8b25a;opacity:.6;"></span><span style="width:4px;height:4px;background:#f0873a;opacity:.5;"></span><span style="width:4px;height:4px;background:#b9a2d8;opacity:.5;"></span></span>
+                <span style="position:absolute;right:2.6cqw;bottom:2.6cqw;width:9px;height:9px;pointer-events:none;"><span style="position:absolute;left:4px;top:0;width:1px;height:9px;background:rgba(232,178,90,.45);"></span><span style="position:absolute;left:0;top:4px;width:9px;height:1px;background:rgba(232,178,90,.45);"></span><span style="position:absolute;left:2px;top:2px;width:3px;height:3px;border:1px solid rgba(232,178,90,.35);border-radius:50%;"></span></span>
+                <div style="position:absolute;left:7cqw;right:7cqw;bottom:6cqw;display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-size:max(8px,1.6cqw);letter-spacing:.42em;color:#cfc4b0;">
+                  <span>VEIL — Nº 03</span><span style="font-family:'Cinzel',serif;color:rgba(232,178,90,.7);">06</span>
+                </div>
+              </div>
+            <div style="position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at var(--hx) var(--hy), var(--sheen), rgba(0,0,0,0) 55%);"></div>
+            <div data-shadow="R" style="position:absolute;inset:0;pointer-events:none;transform-origin:0% 50%;opacity:0;background:linear-gradient(90deg, rgba(0,0,0,.7), rgba(0,0,0,.45) 62%, rgba(0,0,0,0));"></div>
+          </div>
+
+          <div style="position:absolute;left:calc(50% - 4px);top:-.5%;width:8px;height:101%;transform:translateZ(2px);background:linear-gradient(90deg,#060504,#2a241c 28%,#6e5c41 48%,#2a241c 64%,#060504);box-shadow:0 0 14px rgba(0,0,0,.85);pointer-events:none;">
+            <span style="position:absolute;left:0;right:0;top:0;height:2px;background:var(--edge);"></span>
+            <span style="position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--edge);"></span>
+            <span style="position:absolute;left:3.5px;top:8%;bottom:8%;width:1px;background:repeating-linear-gradient(180deg, rgba(232,178,90,.35) 0 6px, rgba(0,0,0,0) 6px 14px);"></span>
+          </div>
+          <div data-leaf-host="1" style="position:absolute;left:50%;top:0;width:50%;height:100%;transform-style:preserve-3d;transform:translateZ(1px);pointer-events:none;"></div>
+        </div>
+      </div>
+    </div>
+
+    <div data-coll-late="1" style="position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:20px;margin-top:clamp(44px,7vh,76px);">
+      <span></span>
+      <div style="display:flex;align-items:center;gap:clamp(12px,1.6vw,22px);font-family:'Cinzel',serif;font-size:12px;letter-spacing:.3em;">
+        <a href="#" sc-camel-on-mouse-enter="{{ chEnter0 }}" sc-camel-on-mouse-leave="{{ chLeave }}" sc-camel-on-click="{{ ch0 }}" style="padding:12px 4px;transition:color .6s ease;color:{{ chc0 }};" style-hover="color:#ede3d1;">01</a>
+        <span style="display:block;width:clamp(20px,2.4vw,36px);height:1px;background:rgba(237,227,209,.22);"></span>
+        <a href="#" sc-camel-on-mouse-enter="{{ chEnter1 }}" sc-camel-on-mouse-leave="{{ chLeave }}" sc-camel-on-click="{{ ch1 }}" style="padding:12px 4px;transition:color .6s ease;color:{{ chc1 }};" style-hover="color:#ede3d1;">02</a>
+        <span style="display:block;width:clamp(20px,2.4vw,36px);height:1px;background:rgba(237,227,209,.22);"></span>
+        <a href="#" sc-camel-on-mouse-enter="{{ chEnter2 }}" sc-camel-on-mouse-leave="{{ chLeave }}" sc-camel-on-click="{{ ch2 }}" style="padding:12px 4px;transition:color .6s ease;color:{{ chc2 }};" style-hover="color:#ede3d1;">03</a>
+      </div>
+      <span style="justify-self:end;display:flex;align-items:center;gap:12px;font-size:9px;letter-spacing:.42em;color:#a8916a;white-space:nowrap;"><span style="display:block;width:22px;height:1px;background:rgba(232,178,90,.5);"></span>DRAG / TURN</span>
+    </div>
+
+    <sc-if value="{{ mobile }}" hint-placeholder-val="{{ false }}">
+      <div style="position:relative;display:flex;flex-direction:column;gap:20px;margin-top:36px;">
+        <span style="font-size:11px;letter-spacing:.32em;color:#ede3d1;">{{ cNotes }}</span>
+        <p style="margin:0;font-size:15px;font-weight:300;line-height:1.75;letter-spacing:.04em;color:#cfc4b0;text-wrap:pretty;">{{ cDesc }}</p>
+        <a href="#" sc-camel-on-click="{{ addBag }}" style="display:inline-flex;align-items:center;gap:16px;align-self:flex-start;font-size:11px;letter-spacing:.34em;color:#ede3d1;padding:6px 0;border-bottom:1px solid rgba(237,227,209,.25);">ADD TO BAG <span style="color:#e8b25a;">+</span></a>
+      </div>
+    </sc-if>
+  </section>
+
+  <section id="ritual" data-3d="1" data-screen-label="04 The Ritual" style="position:relative;height:320vh;">
+    <div style="position:sticky;top:0;height:100vh;overflow:hidden;">
+      <span data-ritual-eyebrow="1" style="position:absolute;left:52vw;top:17vh;font-size:10px;letter-spacing:.4em;color:#a8916a;">03 / LOREM IPSUM</span>
+      <h2 style="position:absolute;right:clamp(20px,4vw,64px);top:24vh;margin:0;text-align:right;font-family:'Cinzel',serif;font-weight:400;font-size:clamp(44px,7.4vw,150px);line-height:.94;letter-spacing:.01em;color:#ede3d1;">
+        <span style="display:block;overflow:hidden;padding-bottom:.05em;"><span data-ritual-line="1" style="display:block;white-space:nowrap;">IPSUM</span></span>
+        <span style="display:block;overflow:hidden;padding-bottom:.05em;"><span data-ritual-line="1" style="display:block;white-space:nowrap;">SIT AMET ELIT.</span></span>
+      </h2>
+      <div style="position:absolute;left:52vw;right:clamp(20px,4vw,64px);bottom:10vh;display:flex;flex-wrap:wrap;gap:24px clamp(20px,3vw,48px);">
+        <div data-ritual-step="1" style="flex:1 1 120px;display:flex;flex-direction:column;gap:16px;">
+          <span data-ritual-rule="1" style="display:block;height:1px;background:#e8b25a;transform-origin:left;"></span>
+          <span style="font-family:'Cinzel',serif;font-size:10px;letter-spacing:.3em;color:#a8916a;">I</span>
+          <span style="font-family:'Cinzel',serif;font-size:clamp(18px,1.7vw,28px);letter-spacing:.12em;color:#ede3d1;white-space:nowrap;">LOREM UT</span>
+        </div>
+        <div data-ritual-step="1" style="flex:1 1 120px;display:flex;flex-direction:column;gap:16px;">
+          <span data-ritual-rule="1" style="display:block;height:1px;background:#e8b25a;transform-origin:left;"></span>
+          <span style="font-family:'Cinzel',serif;font-size:10px;letter-spacing:.3em;color:#a8916a;">II</span>
+          <span style="font-family:'Cinzel',serif;font-size:clamp(18px,1.7vw,28px);letter-spacing:.12em;color:#ede3d1;white-space:nowrap;">DOLOR SIT</span>
+        </div>
+        <div data-ritual-step="1" style="flex:1 1 120px;display:flex;flex-direction:column;gap:16px;">
+          <span data-ritual-rule="1" style="display:block;height:1px;background:#e8b25a;transform-origin:left;"></span>
+          <span style="font-family:'Cinzel',serif;font-size:10px;letter-spacing:.3em;color:#a8916a;">III</span>
+          <span style="font-family:'Cinzel',serif;font-size:clamp(18px,1.7vw,28px);letter-spacing:.12em;color:#ede3d1;white-space:nowrap;">SED TEMPOR</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="immersion" data-3d="1" data-screen-label="05 Immersion" style="position:relative;height:440vh;">
+    <div style="position:sticky;top:0;height:100vh;overflow:hidden;">
+      <svg width="0" height="0" aria-hidden="true" style="position:absolute;width:0;height:0;">
+        <filter id="immWarp" x="-5%" y="-20%" width="110%" height="140%">
+          <feTurbulence data-imm-turb="1" type="fractalNoise" sc-camel-base-frequency="0.006 0.05" sc-camel-num-octaves="2" seed="3" result="n"></feTurbulence>
+          <feDisplacementMap data-imm-disp="1" in="SourceGraphic" in2="n" scale="0" sc-camel-x-channel-selector="R" sc-camel-y-channel-selector="G"></feDisplacementMap>
+        </filter>
+      </svg>
+      <span data-imm-eyebrow="1" style="position:absolute;left:clamp(20px,4vw,64px);top:17vh;font-size:10px;letter-spacing:.4em;color:#a8916a;">04 / LOREM IPSUM</span>
+      <h2 data-imm-head="1" style="position:absolute;left:clamp(20px,4vw,64px);top:23vh;margin:0;font-family:'Cinzel',serif;font-weight:400;font-size:clamp(40px,6.2vw,124px);line-height:.94;letter-spacing:.01em;color:#ede3d1;">
+        <span style="display:block;overflow:hidden;padding-bottom:.05em;"><span data-imm-line="1" style="display:block;white-space:nowrap;">DOLORES</span></span>
+        <span style="display:block;overflow:hidden;padding-bottom:.05em;"><span data-imm-line="1" style="display:block;white-space:nowrap;">SED TEMPORE.</span></span>
+      </h2>
+      <p data-imm-sub="1" style="position:absolute;left:clamp(20px,4vw,64px);bottom:12vh;margin:0;max-width:300px;font-size:15px;font-weight:300;line-height:1.75;letter-spacing:.04em;color:#cfc4b0;text-wrap:pretty;">Lorem ipsum dolor sit amet elit.</p>
+    </div>
+  </section>
+
+  <section id="craft" data-3d="1" data-screen-label="06 Crafted in Shadow" style="position:relative;background:{{ craftBg }};padding:clamp(100px,16vh,180px) 0 clamp(110px,16vh,190px);overflow-x:clip;">
+    <span style="display:block;padding:0 clamp(20px,4vw,64px);font-size:10px;letter-spacing:.4em;color:#a8916a;">05 / LOREM IPSUM</span>
+    <div data-craft-marquee="1" style="margin-top:clamp(24px,4vh,48px);white-space:nowrap;font-family:'Cinzel',serif;font-weight:400;font-size:clamp(72px,15vw,300px);line-height:.9;letter-spacing:.01em;color:#ede3d1;width:max-content;">LOREM IPSUM <span style="color:transparent;-webkit-text-stroke:1px rgba(232,178,90,.8);">DOLOR</span></div>
+
+    <div data-craft-row="1" style="position:relative;display:flex;flex-wrap:wrap;gap:0 clamp(48px,6vw,120px);padding:clamp(64px,10vh,120px) clamp(20px,4vw,64px) 0;">
+      <div data-craft-vis="1" style="position:sticky;top:0;z-index:2;flex:1 1 {{ craftVisB }};align-self:flex-start;height:{{ craftVisH }};display:flex;align-items:center;pointer-events:none;">
+        <div data-craft-film="1" style="position:relative;width:100%;height:{{ craftFilmH }};">
+          <div data-craft-plate="1" style="position:absolute;inset:0;overflow:hidden;background:#0c0a08;">
+            <img src="assets/noir-luxury-fragrance.aura.build/export/noir-hero.jpg" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 55%;">
+            <span style="position:absolute;left:20px;bottom:20px;font-size:10px;letter-spacing:.4em;color:#cfc4b0;">NOIR · FILM Nº 01</span>
+          </div>
+          <span style="position:absolute;left:0;top:0;width:14px;height:14px;border-left:1px solid rgba(232,178,90,.4);border-top:1px solid rgba(232,178,90,.4);pointer-events:none;"></span>
+          <span style="position:absolute;right:0;top:0;width:14px;height:14px;border-right:1px solid rgba(232,178,90,.4);border-top:1px solid rgba(232,178,90,.4);pointer-events:none;"></span>
+          <span style="position:absolute;left:0;bottom:0;width:14px;height:14px;border-left:1px solid rgba(232,178,90,.4);border-bottom:1px solid rgba(232,178,90,.4);pointer-events:none;"></span>
+          <span style="position:absolute;right:0;bottom:0;width:14px;height:14px;border-right:1px solid rgba(232,178,90,.4);border-bottom:1px solid rgba(232,178,90,.4);pointer-events:none;"></span>
+          <span data-craft-idx="1" style="position:absolute;left:20px;top:20px;font-size:9px;letter-spacing:.42em;color:#a8916a;opacity:0;transition:opacity .8s ease;"></span>
+        </div>
+      </div>
+
+      <div data-craft-copy="1" style="flex:1 1 380px;display:flex;flex-direction:column;padding-top:clamp(0px,8vh,100px);">
+        <p style="margin:0 0 clamp(40px,8vh,90px);max-width:560px;font-family:'Cinzel',serif;font-size:clamp(22px,2.2vw,40px);line-height:1.3;letter-spacing:.02em;color:#ede3d1;text-wrap:pretty;">Lorem ipsum dolor sit amet. Consectetur adipiscing elit, sed do eiusmod tempor.</p>
+
+          <div data-craft-item="0" style="position:relative;min-height:clamp(420px,82vh,900px);display:flex;flex-direction:column;justify-content:center;transition:opacity .9s ease;">
+            <div style="display:flex;flex-direction:column;gap:16px;max-width:440px;border-top:1px solid rgba(237,227,209,.14);">
+              <span style="display:block;overflow:hidden;padding-top:20px;"><span data-craft-l="1" style="display:flex;gap:14px;font-family:'Cinzel',serif;font-size:13px;letter-spacing:.3em;"><span style="color:#e8b25a;">01</span><span data-craft-name="1" style="color:#ede3d1;transition:color .8s ease;">LOREM</span></span></span>
+              <span data-craft-desc="1" style="display:block;overflow:hidden;"><span data-craft-l="1" style="display:block;font-size:15px;font-weight:300;line-height:1.75;letter-spacing:.03em;color:#cfc4b0;text-wrap:pretty;">Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor.</span></span>
+            </div>
+          </div>
+          <div data-craft-item="1" style="position:relative;min-height:clamp(420px,82vh,900px);display:flex;flex-direction:column;justify-content:center;transition:opacity .9s ease;">
+            <div style="display:flex;flex-direction:column;gap:16px;max-width:440px;border-top:1px solid rgba(237,227,209,.14);">
+              <span style="display:block;overflow:hidden;padding-top:20px;"><span data-craft-l="1" style="display:flex;gap:14px;font-family:'Cinzel',serif;font-size:13px;letter-spacing:.3em;"><span style="color:#e8b25a;">02</span><span data-craft-name="1" style="color:#ede3d1;transition:color .8s ease;">IPSUM DOL</span></span></span>
+              <span data-craft-desc="1" style="display:block;overflow:hidden;"><span data-craft-l="1" style="display:block;font-size:15px;font-weight:300;line-height:1.75;letter-spacing:.03em;color:#cfc4b0;text-wrap:pretty;">Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip.</span></span>
+            </div>
+            <div data-craft-macro="1" style="position:relative;align-self:flex-end;width:clamp(120px,11vw,180px);aspect-ratio:2 / 3;margin-top:clamp(24px,5vh,56px);margin-right:clamp(0px,3vw,48px);overflow:hidden;clip-path:inset(100% 0% 0% 0%);-webkit-mask-image:linear-gradient(180deg,transparent,#000 18%,#000 82%,transparent);mask-image:linear-gradient(180deg,transparent,#000 18%,#000 82%,transparent);">
+              <img loading="lazy" decoding="async" src="assets/noir-luxury-fragrance.aura.build/export/ember.jpg" alt="Macro detail of the glass shoulder and cap" style="position:absolute;left:0;top:-10%;width:100%;height:120%;object-fit:cover;object-position:50% 26%;transform-origin:50% 26%;scale:2.6;">
+            </div>
+            <span data-craft-macro-l="1" style="align-self:flex-end;margin-right:clamp(0px,3vw,48px);margin-top:10px;font-size:9px;letter-spacing:.42em;color:#a8916a;opacity:0;transition:opacity .8s ease;">DETAIL — LOREM / IPSUM</span>
+          </div>
+          <div data-craft-item="2" style="position:relative;min-height:clamp(420px,82vh,900px);display:flex;flex-direction:column;justify-content:center;transition:opacity .9s ease;">
+            <div style="display:flex;flex-direction:column;gap:16px;max-width:440px;border-top:1px solid rgba(237,227,209,.14);">
+              <span style="display:block;overflow:hidden;padding-top:20px;"><span data-craft-l="1" style="display:flex;gap:14px;font-family:'Cinzel',serif;font-size:13px;letter-spacing:.3em;"><span style="color:#e8b25a;">03</span><span data-craft-name="1" style="color:#ede3d1;transition:color .8s ease;">SIT AMET ELIT</span></span></span>
+              <span data-craft-desc="1" style="display:block;overflow:hidden;"><span data-craft-l="1" style="display:block;font-size:15px;font-weight:300;line-height:1.75;letter-spacing:.03em;color:#cfc4b0;text-wrap:pretty;">Duis aute irure dolor in reprehenderit, in voluptate velit esse cillum dolore eu fugiat.</span></span>
+            </div>
+          </div>
+          <div data-craft-item="3" style="position:relative;min-height:clamp(420px,82vh,900px);display:flex;flex-direction:column;justify-content:center;transition:opacity .9s ease;">
+            <div style="display:flex;flex-direction:column;gap:16px;max-width:440px;border-top:1px solid rgba(237,227,209,.14);">
+              <span style="display:block;overflow:hidden;padding-top:20px;"><span data-craft-l="1" style="display:flex;gap:14px;font-family:'Cinzel',serif;font-size:13px;letter-spacing:.3em;"><span style="color:#e8b25a;">04</span><span data-craft-name="1" style="color:#ede3d1;transition:color .8s ease;">SED &amp; TEMPOR</span></span></span>
+              <span data-craft-desc="1" style="display:block;overflow:hidden;"><span data-craft-l="1" style="display:block;font-size:15px;font-weight:300;line-height:1.75;letter-spacing:.03em;color:#cfc4b0;text-wrap:pretty;">Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt.</span></span>
+            </div>
+          </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="final" data-3d="1" data-screen-label="07 Leave a Trace" style="position:relative;height:150vh;">
+    <div style="position:sticky;top:0;height:100vh;overflow:hidden;">
+      <span data-final-l="1" style="position:absolute;left:clamp(20px,4vw,64px);top:15vh;font-family:'Cinzel',serif;font-size:clamp(56px,10vw,210px);line-height:.9;letter-spacing:.02em;color:#ede3d1;white-space:nowrap;">LOREM</span>
+      <span data-final-r="1" style="position:absolute;right:clamp(20px,4vw,64px);top:48vh;font-family:'Cinzel',serif;font-size:clamp(56px,10vw,210px);line-height:.9;letter-spacing:.02em;color:#ede3d1;white-space:nowrap;">IPSUM.</span>
+      <div style="position:absolute;left:clamp(20px,4vw,64px);right:clamp(20px,4vw,64px);bottom:clamp(36px,7vh,80px);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:28px 48px;">
+        <span data-final-meta="1" style="font-size:11px;letter-spacing:.32em;color:#cfc4b0;">NOIR No. 01 — Eau de Parfum — 100 ML</span>
+        <div data-final-meta="1" style="display:flex;align-items:center;gap:clamp(24px,3vw,48px);">
+          <span style="font-family:'Cinzel',serif;font-size:clamp(22px,2vw,32px);letter-spacing:.08em;color:#ede3d1;">$185</span>
+          <div style="position:relative;width:240px;height:115px;margin:-22px -14px -30px -8px;">
+            <button type="button" sc-camel-on-click="{{ addBag }}" aria-label="Add NOIR Nº 01 to bag" data-noir-cta="1" data-threeui-overlay="acquire" style="position:absolute;inset:0;z-index:2;width:100%;height:100%;opacity:0;cursor:pointer;display:inline-flex;align-items:center;justify-content:space-between;gap:20px;min-width:220px;min-height:56px;padding:0 22px;border:1px solid rgba(232,178,90,.55);background:linear-gradient(180deg,rgba(232,178,90,.10),rgba(232,178,90,.03));color:#ede3d1;font-family:'Jost',sans-serif;font-size:11px;letter-spacing:.3em;cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,244,222,.08);transition:background .35s ease,border-color .35s ease,color .35s ease;" style-hover="background:rgba(232,178,90,.16);border-color:#e8b25a;color:#fff3e4;">IPSUM DOLOR <span aria-hidden="true" style="color:#e8b25a;font-size:16px;">+</span></button>
+            <iframe title="Acquire NOIR visual" aria-hidden="true" tabindex="-1" data-threeui-cta="acquire" data-threeui-label="IPSUM DOLOR" sandbox="allow-scripts allow-same-origin" style="position:absolute;inset:0;z-index:1;width:100%;height:100%;border:0;display:block;background:transparent;color-scheme:normal;pointer-events:none;" allowtransparency="true"></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer data-footer="1" data-screen-label="08 Footer" style="position:relative;background:linear-gradient(180deg, rgba(5,4,3,.4), #050403 clamp(120px,18vh,200px));padding:clamp(72px,12vh,140px) clamp(20px,4vw,64px) 0;overflow-x:clip;">
+    <span data-foot-rule="1" style="position:absolute;left:0;right:0;top:0;height:1px;background:linear-gradient(90deg, rgba(237,227,209,0), rgba(237,227,209,.14) 20%, rgba(232,178,90,.28) 50%, rgba(237,227,209,.14) 80%, rgba(237,227,209,0));transform-origin:50% 50%;"></span>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:48px clamp(24px,4vw,72px);">
+      <div style="display:flex;flex-direction:column;gap:18px;">
+        <span style="font-size:10px;letter-spacing:.4em;color:#a8916a;">NAVIGATE</span>
+        <a href="#hero" sc-camel-on-click="{{ goHero }}" style="font-size:12px;letter-spacing:.24em;color:#cfc4b0;" style-hover="color:#e8b25a;">FRAGRANCE</a>
+        <a href="#scent" sc-camel-on-click="{{ goScent }}" style="font-size:12px;letter-spacing:.24em;color:#cfc4b0;" style-hover="color:#e8b25a;">COMPOSITION</a>
+        <a href="#collection" sc-camel-on-click="{{ goCollection }}" style="font-size:12px;letter-spacing:.24em;color:#cfc4b0;" style-hover="color:#e8b25a;">COLLECTION</a>
+        <a href="#ritual" sc-camel-on-click="{{ goRitual }}" style="font-size:12px;letter-spacing:.24em;color:#cfc4b0;" style-hover="color:#e8b25a;">STORY</a>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:18px;">
+        <span style="font-size:10px;letter-spacing:.4em;color:#a8916a;">FOLLOW</span>
+        <a href="#" style="font-size:12px;letter-spacing:.24em;color:#cfc4b0;" style-hover="color:#e8b25a;">INSTAGRAM</a>
+        <a href="#" style="font-size:12px;letter-spacing:.24em;color:#cfc4b0;" style-hover="color:#e8b25a;">TIKTOK</a>
+        <a href="#" style="font-size:12px;letter-spacing:.24em;color:#cfc4b0;" style-hover="color:#e8b25a;">PINTEREST</a>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:18px;">
+        <span style="font-size:10px;letter-spacing:.4em;color:#a8916a;">LEGAL</span>
+        <a href="#" style="font-size:12px;letter-spacing:.24em;color:#cfc4b0;" style-hover="color:#e8b25a;">PRIVACY</a>
+        <a href="#" style="font-size:12px;letter-spacing:.24em;color:#cfc4b0;" style-hover="color:#e8b25a;">TERMS</a>
+        <a href="#" style="font-size:12px;letter-spacing:.24em;color:#cfc4b0;" style-hover="color:#e8b25a;">COOKIES</a>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:18px;">
+        <span style="font-size:10px;letter-spacing:.4em;color:#a8916a;">NOIR Nº 01</span>
+        <span style="font-size:13px;font-weight:300;line-height:1.7;letter-spacing:.03em;color:#cfc4b0;">Lorem ipsum dolor sit amet, consectetur elit.</span>
+      </div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;margin-top:clamp(64px,10vh,120px);padding-top:24px;border-top:1px solid rgba(237,227,209,.1);font-size:10px;letter-spacing:.34em;color:#a8916a;">
+      <span>© 2026 NOIR PARFUMS</span>
+      <span>ALL RIGHTS RESERVED</span>
+    </div>
+    <div data-wordmark="1" style="position:relative;margin-top:clamp(24px,4vh,48px);padding-bottom:clamp(28px,4vw,72px);font-family:'Cinzel',serif;font-weight:400;font-size:29vw;line-height:.74;letter-spacing:.06em;color:#ede3d1;white-space:nowrap;margin-left:-.02em;cursor:default;">NOIR</div>
+  </footer>
+</main>
+</x-dc>
+<script type="text/x-dc" data-dc-script="" data-props="{&quot;fogAmount&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:1,&quot;min&quot;:0.4,&quot;max&quot;:1.8,&quot;step&quot;:0.05,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Atmosphere&quot;},&quot;exposure&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:1,&quot;min&quot;:0.7,&quot;max&quot;:1.4,&quot;step&quot;:0.05,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Atmosphere&quot;}}">
+const THREEUI_CTA_B64 = 'PCFkb2N0eXBlIGh0bWw+CjxodG1sIGxhbmc9ImVuIj4KPGhlYWQ+CjxtZXRhIGNoYXJzZXQ9InV0Zi04Ij4KPG1ldGEgbmFtZT0idmlld3BvcnQiIGNvbnRlbnQ9IndpZHRoPWRldmljZS13aWR0aCwgaW5pdGlhbC1zY2FsZT0xIj4KPHRpdGxlPlNpZ24gVXA8L3RpdGxlPgo8bGluayByZWw9Imljb24iIGhyZWY9ImRhdGE6LCI+CjxtZXRhIG5hbWU9ImRlc2NyaXB0aW9uIiBjb250ZW50PSJBIGxpZ2h0IHNrZXVvbW9ycGhpYyAnR2V0IFN0YXJ0ZWQnIHBpbGwgb24gZGFyayBncmV5OiBzaGFkZXItbm9pc2UgYm9keSwgYSBsaXF1aWQtY2hyb21lIHJpbmcsIGFuZCBhIGNyeXN0YWwga25vYiB3aXRoIGEgd3JpdGluZyBwZW4gZHJhd24gd2l0aCBXZWJHTCBzaGFkZXJzIGFuZCBwYXJ0aWNsZXMuIj4KPHN0eWxlPgpAZm9udC1mYWNle2ZvbnQtZmFtaWx5OiJHZWlzdCBNb25vIjtmb250LXdlaWdodDozMDA7Zm9udC1zdHlsZTpub3JtYWw7Zm9udC1kaXNwbGF5OnN3YXA7c3JjOnVybChkYXRhOmZvbnQvd29mZjI7YmFzZTY0LGQwOUdNZ0FCQUFBQUFBYlFBQThBQUFBQURLUUFBQVo1QUFFQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFHaFliSGh3b0JtQS9VMVJCVkVRQVBCRUlDbzRVaW5FTE9nQUJOZ0lrQXp3RUlBV0VPQWNnRzhJSkVkV2tIc2cwVWhiTzM4L3ZtL3Yzem1iellDZGJKRmFQOGJNaVd3QndkSHdydnl0em9HanJLaFRGQi9Lc2Z5a1dZSGZHdFdZbVNhVWtBNkZjb2pNTDhyUSs3bGZ6aVpONG96cjgvVXozQVFlZU9yQXAvaGVMVjZ2c2l3UTYwQ2cveWpJOERPSURzcVk3bHRjMW1HSDZzUjBFd0lJYUVDQ0pqWWtLZ01JNEdLWnRPL2JGRUlMc2RmbitGR3lUR1FJVDBEcWtvOXpkaFFIeWdpa25TNUdpZVRBQmNWS2tnTzlOZEtpQUpiUWhKUWhoZkFGdVFmaUQ2TzRmdU05TFJMYnV3d05NUXNiNC9mOHJJRGZSeVVtZ2YrMjlDNGdoNGxsb0VnSmJiQTFCQUJnV0thWWwrNW90M2J6ZDBOcGQ3cURwSUF5RGhDSEVCTTNZTmd3cW9KRTA3OEF5TUdNNW5BSVRwY1FzS1JBa2lBMmdvNHhQd21iZjkvLzRENVpDclFYayt4aVlzWEVOc2tyZ005ZnppRjhUaEdUQXhSYlFoazJlTUJJOHNJZ004V2NBS1lOeVNEZzhnY01Xenh4a0RaWlNCZ2RaZ3dicHNCdzBlR1I0Y1doSWFKQVZWdkdnRGxSMDBPSWk1MVVobDB6cU9KdDh5c0YrMjFaMHluR3czMVlKUHVYUkFWY3A0bE1lSFhDVktwOTBYVHJnZVh6S2ljZGNWNTIwYmV4M0hEN2xKZU8yelNhZmNwejU1bmx0YkdwWUlrQUZteXZOcjdLb2RJYVhWTVJDSmFiZkpQWWNzVWJQTWxncVk3YTFWakN4cVFnbGxXVE1keVdTNDU5RkJvdjlkcEthM0dLeTFJMnRkVGJSMlFzMHFnV1d5dVM4S2lZNk9UYTVkZGcycWRwR1N2cHd1OEhFS1UrYzQ4Tm1IaVNxaEtIc1ZzNXdPckZvQ1FuQ1c1ZU5jSng0WENXdTMzbTFBdUtiM1pLT2Vrd0hIcmtKbDFob2N1dzZrVGJzdiszRUhlTE4ybFEwRUdxNzZKaHpPM2Jwd3NIY09VNVFvVkQzNVRpYjRYU1dVMm1WU1drRHZXakIxRzZSUm92RzRpdjk1L3Z6aStkRjVtSHl6NmVabjA5M1B6ejY4T2drZThUbVlTTTJJLy9zY1hkdlBUdC96czU5czVZR05tUm1MOXo3b2I1cFk4L1l1Y3J6WElSeU9qaFg5RnhWTmhTdXREdkRKTHNkeXRsTXF0NTVJNUYwM2tnMU1DMmIxeThjOG9qbnNuWFZGVGJPb3hodmExVms0YzlvbzVxYVpqZDZSUE1TMjNlaW1iL1VNc0g0THlZUy9nc1RzWmFHcXBya3BpTUhEMjA2bXF4Qk0zK1g3RUZEVlFNeFFxS1hmMUIxNElmU3Bxb21CNlN6ZzBtdTZzYmFSTVdOWkdPMHF0MUVkcytpM2VKNVFhN09iV1c5aXZIV1ZrV1c4emlNWWF0aWdLQ2VWUDdXN0JROFdmaXlyamFtQnNYVHRWUDIvVmxMODNUYlgvdW10b0VsbjVKUHlRZmtVL0lwaWJtejZXNjdkWVR3VTJKQlk2dzVIR1BiV3QrbjMxKy9jUUtidjJpTWpyT2Y1bmlhWjRpeHowdXVvSmVuYjN4K2dNU015RG5IbElNMDMzY3hKcmtZNitQcGcxUE9PZURqMitXbjdwK2wrWGI1cVFmbklKdk5KR3ZzTjlJWis0MWtMY01rYTVFams0YnJhbUtrblhWSnMrM3QwbkhXYlVjV053RDR3R1ZaRjlyNWQveURXbHNMUmRtYUJ6WCsvYXZhZHRYWCtUemVPbi85TG1RemUxalhIdlp5ejVySFVMaEtsYUVsb3o3bEh4M2dQeHJhUE55aGx3Vzk4dXMyU2hDMGljazViOUN6WDVUYzI2VytVZEozSk1KNVhXN09HemtDdzJ4ZndrRVBDV20zU0srTk1qS2ozcjhpVzFvc3FsVlVML2JPYjFSTFBVYUxxYlpINi9YMTJpMWRRYmZJWHViemxodDhuTXRTOUVPd2dKNVh2NlRQS28xWXpJN3FJU1dtN2ZxU25FSit1UXV5MlNNYjltMTZpMzZyamV1S1JybXV0cmZvdHpadDJBZmlzNXozOVRQelhqL2ovU3lIZFRVNVQvRGlsUHF3dno0OEpYalJVNVBycVNNWDFaRXd2TjZkYXcxZmsxNlZobkx0cjNkR2JxdHZxVEc5NExOcjRRZk5ENXJEbjF3cmdJRTZVemxPZmtDZHFieEtBZ0R5K2Z6bklBQVFEOU9UQ3c4d3JiUHR2MDBSQ3I4SGdHL3E3dFlDd0xjNjg3MzhhLzluQkFkRkN3Rk1ndURleDIvSmV3anE4cS85OTB4d1VQZzkzSk1GeEsvUUN1cXdCczBvMTA1cVJpL0tRWUdGVEJuc2hRRStsS01kQmdQUW9Bd1Uxc2dCQTJTQTM1VFdGY1Nma0tMOVpWcmc0bmNsT0FNbk15cDY4eUkzOGE5RkNFRjhER29CWnVFdHRSQjZuRjB2R2xhTHNRemIxSk93Q2gycVdUQkNUZ2syUW9MVml6RU5pd0xGbUtGZ0lDWHlUUUNEVVF5akhTUHdJU1UzRHFFZm5RaktzNzNvUXdxMTZCYWdPWmpDR0pLd1FpV1RVVnpveGdoNjVNZ0lVc3RnNCt3a3VxSEVLQkxvaFdleERLRVVRbE8yamtKQldxb3BKWkJFZi9kckpkQkFDUlBVMEdUNk50U0FBWVhnQ2doSmpBeEhwekdFZGlTbTJTU0tvWVJSbTQrdFI2SnhzZ1JhcUtHRkhoSndTT3BlUUNBUVJVSW1BNWgxeXFFcXBLOEVIcElrOGVabDEwTjZNUnhzVGFNRFNuUmVkRWlGeklIaE5iR2hZUk54bStJYWhYSVJLLytaQUMyYlB3L3R6MldCQ3c9PSkgZm9ybWF0KCJ3b2ZmMiIpfQo6cm9vdHsKICAtLXU6IG1pbihjYWxjKDEwMHZ3IC8gODgwKSwgY2FsYygxMDB2aCAvIDQyMCkpOwogIC0tYmc6dHJhbnNwYXJlbnQ7CiAgLS1pbms6I2NmYzRiMDsKICAtLWluay1ob3ZlcjojZmZmM2U0OwogIC0tY2hldjojZThiMjVhOwogIC0tY2hldi1ob3ZlcjojZmZmM2U0OwogIC0tYWNjZW50OjIzMiwxNzgsOTA7CiAgLS1lYXNlLWlvOmN1YmljLWJlemllciguNDUsMCwuMiwxKTsKICAtLWVhc2Utb3V0OmN1YmljLWJlemllciguMTYsLjg0LC4zLDEpOwp9Cjpyb290W2RhdGEtcmVmXXstLXU6MXB4fQoqe2JveC1zaXppbmc6Ym9yZGVyLWJveH0KaHRtbCxib2R5e2hlaWdodDoxMDAlfQpodG1se2JhY2tncm91bmQ6dHJhbnNwYXJlbnQ7Y29sb3Itc2NoZW1lOm5vcm1hbH0KYm9keXttYXJnaW46MDtiYWNrZ3JvdW5kOnZhcigtLWJnKTtjb2xvcjojOGE4YThmO2ZvbnQtZmFtaWx5OiJHZWlzdCBNb25vIix1aS1tb25vc3BhY2UsU0ZNb25vLVJlZ3VsYXIsTWVubG8sbW9ub3NwYWNlOy13ZWJraXQtZm9udC1zbW9vdGhpbmc6YW50aWFsaWFzZWQ7b3ZlcmZsb3c6aGlkZGVufQouc3RhZ2V7cG9zaXRpb246Zml4ZWQ7aW5zZXQ6MDtkaXNwbGF5OmdyaWQ7cGxhY2UtaXRlbXM6Y2VudGVyO3BhZGRpbmctYm90dG9tOmNhbGMoNjAgKiB2YXIoLS11KSl9CgovKiAtLS0tLS0tLS0tIHRoZSBidXR0b24gLS0tLS0tLS0tLSAqLwouY3RhewogIC0tdzpjYWxjKDcwNiAqIHZhcigtLXUpKTsKICAtLWg6Y2FsYygyMzIgKiB2YXIoLS11KSk7CiAgcG9zaXRpb246cmVsYXRpdmU7d2lkdGg6dmFyKC0tdyk7aGVpZ2h0OnZhcigtLWgpOwogIHBhZGRpbmc6MDttYXJnaW46MDtib3JkZXI6MDtiYWNrZ3JvdW5kOnRyYW5zcGFyZW50O2JvcmRlci1yYWRpdXM6Y2FsYygxMTYgKiB2YXIoLS11KSk7CiAgY3Vyc29yOnBvaW50ZXI7YXBwZWFyYW5jZTpub25lOy13ZWJraXQtdGFwLWhpZ2hsaWdodC1jb2xvcjp0cmFuc3BhcmVudDtvdXRsaW5lOm5vbmU7CiAgLS1tOmNhbGMoNDggKiB2YXIoLS11KSk7ICAgLyogY2FudmFzIG1hcmdpbiB0aGF0IGhvbGRzIHRoZSBsaXF1aWQtbWV0YWwgcmluZyAqLwogIGlzb2xhdGlvbjppc29sYXRlOwogIHRyYW5zaXRpb246dHJhbnNmb3JtIC4xOHMgdmFyKC0tZWFzZS1vdXQpOwp9Ci5jdGE6OmFmdGVye2NvbnRlbnQ6IiI7cG9zaXRpb246YWJzb2x1dGU7aW5zZXQ6Y2FsYygtMjcgKiB2YXIoLS11KSk7Ym9yZGVyLXJhZGl1czpjYWxjKDE0MyAqIHZhcigtLXUpKX0gIC8qIHRoZSByaW5nIGlzIHBhcnQgb2YgdGhlIGhpdCBhcmVhICovCi5jdGE6OmJlZm9yZXtjb250ZW50OiIiO3Bvc2l0aW9uOmFic29sdXRlO2luc2V0OmNhbGMoLTI2ICogdmFyKC0tdSkpO2JvcmRlci1yYWRpdXM6Y2FsYygxNDIgKiB2YXIoLS11KSk7ei1pbmRleDotMjtwb2ludGVyLWV2ZW50czpub25lOwogIGNsaXAtcGF0aDppbnNldCgwIGNhbGMoLTQwMCAqIHZhcigtLXUpKSBjYWxjKC03MDAgKiB2YXIoLS11KSkgY2FsYygtNDAwICogdmFyKC0tdSkpKTsKICBib3gtc2hhZG93OgogICAgMCBjYWxjKDU5ICogdmFyKC0tdSkpIGNhbGMoOTYgKiB2YXIoLS11KSkgY2FsYygtMTcgKiB2YXIoLS11KSkgcmdiYSgwLDAsMCwuNzIpLAogICAgMCBjYWxjKDE4MiAqIHZhcigtLXUpKSBjYWxjKDg4ICogdmFyKC0tdSkpIDAgcmdiYSgwLDAsMCwuMzIpLAogICAgMCBjYWxjKDE2ICogdmFyKC0tdSkpIGNhbGMoNDQgKiB2YXIoLS11KSkgY2FsYygtMTggKiB2YXIoLS11KSkgcmdiYSgwLDAsMCwwKSwKICAgIDAgY2FsYygxMDEgKiB2YXIoLS11KSkgY2FsYyg5MyAqIHZhcigtLXUpKSBjYWxjKC0zOCAqIHZhcigtLXUpKSByZ2JhKDAsMCwwLDApLAogICAgMCBjYWxjKDUxICogdmFyKC0tdSkpIGNhbGMoNjEgKiB2YXIoLS11KSkgY2FsYygtMjYgKiB2YXIoLS11KSkgcmdiYSgwLDAsMCwwKSwKICAgIDAgY2FsYygxMyAqIHZhcigtLXUpKSBjYWxjKDM0ICogdmFyKC0tdSkpIGNhbGMoLTEyICogdmFyKC0tdSkpIHJnYmEoMCwwLDAsMCk7CiAgdHJhbnNpdGlvbjpib3gtc2hhZG93IC4zNXMgY3ViaWMtYmV6aWVyKC42LDAsLjM1LDEpIC4xc30KLmN0YTpmb2N1cy12aXNpYmxle291dGxpbmU6MnB4IHNvbGlkICNlOGIyNWE7b3V0bGluZS1vZmZzZXQ6OHB4fQouY3RhOmFjdGl2ZXt0cmFuc2Zvcm06dHJhbnNsYXRlWShjYWxjKDIgKiB2YXIoLS11KSkpIHNjYWxlKC45OTIpfQovKiB2aW9sZXQgbGlnaHQgdGhlIGNyeXN0YWwgdGhyb3dzIG9udG8gdGhlIGRlc2sgb24gaG92ZXIgKi8KLmhhbG97cG9zaXRpb246YWJzb2x1dGU7ei1pbmRleDotMTtwb2ludGVyLWV2ZW50czpub25lO2xlZnQ6Y2FsYyg0MzAgKiB2YXIoLS11KSk7dG9wOmNhbGMoLTQ0ICogdmFyKC0tdSkpO3dpZHRoOmNhbGMoMzIwICogdmFyKC0tdSkpO2hlaWdodDpjYWxjKDMyMCAqIHZhcigtLXUpKTtib3JkZXItcmFkaXVzOjUwJTsKICBiYWNrZ3JvdW5kOnJhZGlhbC1ncmFkaWVudChjaXJjbGUscmdiYSh2YXIoLS1hY2NlbnQpLC40MikgMCUscmdiYSh2YXIoLS1hY2NlbnQpLC4xNikgMzUlLHJnYmEodmFyKC0tYWNjZW50KSwwKSA2NiUpO29wYWNpdHk6MDsKICB0cmFuc2l0aW9uOm9wYWNpdHkgLjQycyBjdWJpYy1iZXppZXIoLjYsMCwuMzUsMSl9Ci5mYWNle3Bvc2l0aW9uOmFic29sdXRlO2luc2V0OmNhbGMoLTEgKiB2YXIoLS1tKSk7cG9pbnRlci1ldmVudHM6bm9uZX0KLmZhY2UgY2FudmFze3Bvc2l0aW9uOmFic29sdXRlO2luc2V0OjA7d2lkdGg6MTAwJTtoZWlnaHQ6MTAwJTtkaXNwbGF5OmJsb2NrfQoKLyogbGFiZWwgKi8KLmxhYmVsewogIHBvc2l0aW9uOmFic29sdXRlO2xlZnQ6Y2FsYygxMzQgKiB2YXIoLS11KSk7dG9wOjUwJTt0cmFuc2Zvcm06dHJhbnNsYXRlWSgtNTAlKTsKICBmb250OjMwMCBjYWxjKDUwICogdmFyKC0tdSkpLzEgIkdlaXN0IE1vbm8iLHVpLW1vbm9zcGFjZSxTRk1vbm8tUmVndWxhcixNZW5sbyxtb25vc3BhY2U7CiAgbGV0dGVyLXNwYWNpbmc6Y2FsYyg0LjEgKiB2YXIoLS11KSk7d2hpdGUtc3BhY2U6cHJlO2NvbG9yOnZhcigtLWluayk7LXdlYmtpdC10ZXh0LXN0cm9rZTpjYWxjKDAuNDUgKiB2YXIoLS11KSkgY3VycmVudENvbG9yOwogIHBvaW50ZXItZXZlbnRzOm5vbmU7dXNlci1zZWxlY3Q6bm9uZTsKICB0cmFuc2l0aW9uOmNvbG9yIC4zcyB2YXIoLS1lYXNlLWlvKSAuMjNzOwp9CgovKiBrbm9iIG92ZXJsYXlzICh0aGUgY3J5c3RhbCBpdHNlbGYgaXMgZHJhd24gb24gdGhlIGNhbnZhcykgKi8KLmtub2J7cG9zaXRpb246YWJzb2x1dGU7bGVmdDpjYWxjKDUwMiAqIHZhcigtLXUpKTt0b3A6Y2FsYygyOCAqIHZhcigtLXUpKTt3aWR0aDpjYWxjKDE3NiAqIHZhcigtLXUpKTtoZWlnaHQ6Y2FsYygxNzYgKiB2YXIoLS11KSk7Ym9yZGVyLXJhZGl1czo1MCU7b3ZlcmZsb3c6aGlkZGVuO3BvaW50ZXItZXZlbnRzOm5vbmU7CiAgLXdlYmtpdC1tYXNrLWltYWdlOnJhZGlhbC1ncmFkaWVudChjaXJjbGUsIzAwMCA5OSUsdHJhbnNwYXJlbnQgMTAwJSk7bWFzay1pbWFnZTpyYWRpYWwtZ3JhZGllbnQoY2lyY2xlLCMwMDAgOTklLHRyYW5zcGFyZW50IDEwMCUpfQoua25vYj4qe3Bvc2l0aW9uOmFic29sdXRlO2luc2V0OjA7Ym9yZGVyLXJhZGl1czo1MCV9Ci8qIC5nbG93IGNhcnJpZXMgbm8gcGFpbnQ6IGl0cyBhbmltYXRlZCBvcGFjaXR5IGlzIHRoZSBob3ZlciBjbG9jayB0aGUgc2hhZGVyIHJlYWRzICovCi5nbG93e3dpZHRoOjA7aGVpZ2h0OjA7aW5zZXQ6YXV0bztvcGFjaXR5OjA7dHJhbnNpdGlvbjpvcGFjaXR5IC40MnMgY3ViaWMtYmV6aWVyKC42LDAsLjM1LDEpfQoucGVue292ZXJmbG93OnZpc2libGV9Ci5wZW4gcGF0aHtmaWxsOm5vbmU7c3Ryb2tlOnZhcigtLWNoZXYpO3N0cm9rZS13aWR0aDo0LjQ7c3Ryb2tlLWxpbmVjYXA6cm91bmQ7c3Ryb2tlLWxpbmVqb2luOnJvdW5kO3RyYW5zaXRpb246c3Ryb2tlIC4xNXMgdmFyKC0tZWFzZS1pbykgLjE1c30KLnBlbi1tb3Zle3RyYW5zZm9ybTp0cmFuc2xhdGUoMCwwKSByb3RhdGUoMGRlZyk7dHJhbnNmb3JtLW9yaWdpbjo4OHB4IDg4cHg7dHJhbnNpdGlvbjp0cmFuc2Zvcm0gLjVzIHZhcigtLWVhc2UtaW8pIC4wNXN9Ci5wZW4td2lnZ2xle3RyYW5zZm9ybS1vcmlnaW46ODhweCA4OHB4fQouc2NyaWJibGV7c3Ryb2tlOnZhcigtLWNoZXYtaG92ZXIpO3N0cm9rZS1kYXNoYXJyYXk6MzY7c3Ryb2tlLWRhc2hvZmZzZXQ6MzY7dHJhbnNpdGlvbjpzdHJva2UtZGFzaG9mZnNldCAuNDVzIHZhcigtLWVhc2UtaW8pfQpAa2V5ZnJhbWVzIHBlbi13cml0ZXswJXt0cmFuc2Zvcm06dHJhbnNsYXRlKDAsMCl9NTAle3RyYW5zZm9ybTp0cmFuc2xhdGUoY2FsYygzICogdmFyKC0tdSkpLGNhbGMoLTMgKiB2YXIoLS11KSkpfTEwMCV7dHJhbnNmb3JtOnRyYW5zbGF0ZSgwLDApfX0KCi8qIC0tLS0tLS0tLS0gaG92ZXIgLyBmb2N1cyAtLS0tLS0tLS0tICovCi5jdGE6aG92ZXI6OmJlZm9yZSwuY3RhOmZvY3VzLXZpc2libGU6OmJlZm9yZSwuY3RhLmlzLWhvdmVyOjpiZWZvcmV7CiAgYm94LXNoYWRvdzoKICAgIDAgY2FsYyg1OSAqIHZhcigtLXUpKSBjYWxjKDk2ICogdmFyKC0tdSkpIGNhbGMoLTE3ICogdmFyKC0tdSkpIHJnYmEoMCwwLDAsMCksCiAgICAwIGNhbGMoMTgyICogdmFyKC0tdSkpIGNhbGMoODggKiB2YXIoLS11KSkgMCByZ2JhKDAsMCwwLDApLAogICAgMCBjYWxjKDE2ICogdmFyKC0tdSkpIGNhbGMoNDQgKiB2YXIoLS11KSkgY2FsYygtMTggKiB2YXIoLS11KSkgcmdiYSgwLDAsMCwwKSwKICAgIDAgY2FsYygxMDEgKiB2YXIoLS11KSkgY2FsYyg5MyAqIHZhcigtLXUpKSBjYWxjKC0zOCAqIHZhcigtLXUpKSByZ2JhKDAsMCwwLC4xMiksCiAgICAwIGNhbGMoNTEgKiB2YXIoLS11KSkgY2FsYyg2MSAqIHZhcigtLXUpKSBjYWxjKC0yNiAqIHZhcigtLXUpKSByZ2JhKDAsMCwwLC40NSksCiAgICAwIGNhbGMoMTMgKiB2YXIoLS11KSkgY2FsYygzNCAqIHZhcigtLXUpKSBjYWxjKC0xMiAqIHZhcigtLXUpKSByZ2JhKDAsMCwwLC45OCk7CiAgdHJhbnNpdGlvbjpib3gtc2hhZG93IC40cyB2YXIoLS1lYXNlLWlvKSAuMTdzfQouY3RhOmhvdmVyIC5oYWxvLC5jdGE6Zm9jdXMtdmlzaWJsZSAuaGFsbywuY3RhLmlzLWhvdmVyIC5oYWxve29wYWNpdHk6MTt0cmFuc2l0aW9uOm9wYWNpdHkgLjRzIGN1YmljLWJlemllciguNSwwLC4zLDEpIC4yOHN9Ci5jdGE6aG92ZXIgLmxhYmVsLC5jdGE6Zm9jdXMtdmlzaWJsZSAubGFiZWwsLmN0YS5pcy1ob3ZlciAubGFiZWx7Y29sb3I6dmFyKC0taW5rLWhvdmVyKTt0cmFuc2l0aW9uOmNvbG9yIC4zOHMgY3ViaWMtYmV6aWVyKC41NSwwLC4yNSwxKSAuMTlzfQouY3RhOmhvdmVyIC5nbG93LC5jdGE6Zm9jdXMtdmlzaWJsZSAuZ2xvdywuY3RhLmlzLWhvdmVyIC5nbG93e29wYWNpdHk6MTt0cmFuc2l0aW9uOm9wYWNpdHkgLjMycyBjdWJpYy1iZXppZXIoLjUsMCwuMywxKSAuMjZzfQouY3RhOmhvdmVyIC5wZW4gcGF0aCwuY3RhOmZvY3VzLXZpc2libGUgLnBlbiBwYXRoLC5jdGEuaXMtaG92ZXIgLnBlbiBwYXRoe3N0cm9rZTp2YXIoLS1jaGV2LWhvdmVyKTt0cmFuc2l0aW9uOnN0cm9rZSAuMzRzIHZhcigtLWVhc2UtaW8pIC4xc30KLyogdGhlIHBlbiBsaWZ0cyBhdCBvbmNlLCB0aGVuIHdyaXRlcyBhIGxpbmUgYXMgaXQgbW92ZXMgcmlnaHQsIHRoZW4ga2VlcHMgYSBnZW50bGUgc2NyaWJibGluZyBtb3Rpb24gKi8KLmN0YTpob3ZlciAucGVuLW1vdmUsLmN0YTpmb2N1cy12aXNpYmxlIC5wZW4tbW92ZSwuY3RhLmlzLWhvdmVyIC5wZW4tbW92ZXt0cmFuc2Zvcm06dHJhbnNsYXRlKGNhbGMoNCAqIHZhcigtLXUpKSxjYWxjKC00ICogdmFyKC0tdSkpKSByb3RhdGUoMGRlZyk7dHJhbnNpdGlvbjp0cmFuc2Zvcm0gLjlzIGN1YmljLWJlemllciguNSwwLC4zLDEpIC4yMnN9Ci5jdGE6aG92ZXIgLnNjcmliYmxlLC5jdGE6Zm9jdXMtdmlzaWJsZSAuc2NyaWJibGUsLmN0YS5pcy1ob3ZlciAuc2NyaWJibGV7c3Ryb2tlLWRhc2hvZmZzZXQ6MDt0cmFuc2l0aW9uOnN0cm9rZS1kYXNob2Zmc2V0IC45cyBjdWJpYy1iZXppZXIoLjUsMCwuMywxKSAuMjJzfQouY3RhOmhvdmVyIC5wZW4td2lnZ2xlLC5jdGE6Zm9jdXMtdmlzaWJsZSAucGVuLXdpZ2dsZSwuY3RhLmlzLWhvdmVyIC5wZW4td2lnZ2xle2FuaW1hdGlvbjpwZW4td3JpdGUgMS4xcyBlYXNlLWluLW91dCAxLjFzIGluZmluaXRlfQoKLyogbm8tV2ViR0wgZmFsbGJhY2s6IGEgZmxhdCBDU1MgcmVuZGVyaW5nIG9mIHRoZSBzYW1lIGJ1dHRvbiAqLwouY3RhLm5vLWdsIC5mYWNle2JhY2tncm91bmQ6bGluZWFyLWdyYWRpZW50KCNmNWY1ZjUgMCUsI2U2ZTZlNiAxNCUsI2JjYmNiZiA2MCUsIzg2ODY4YSAxMDAlKTtib3JkZXI6Y2FsYygyLjUgKiB2YXIoLS11KSkgc29saWQgIzU0NTQ1OH0KLmN0YS5uby1nbCAua25vYi1mYWxsYmFja3twb3NpdGlvbjphYnNvbHV0ZTtsZWZ0OmNhbGMoNTAyICogdmFyKC0tdSkpO3RvcDpjYWxjKDI4ICogdmFyKC0tdSkpO3dpZHRoOmNhbGMoMTc2ICogdmFyKC0tdSkpO2hlaWdodDpjYWxjKDE3NiAqIHZhcigtLXUpKTtib3JkZXItcmFkaXVzOjUwJTsKICBiYWNrZ3JvdW5kOnJhZGlhbC1ncmFkaWVudChjaXJjbGUgYXQgNDIlIDMwJSwjZmZmZmZmIDAlLCNkOWQ5ZTMgMjglLCM4ZDhkOWIgNzAlLCM1YTVhNjYgMTAwJSk7Ym94LXNoYWRvdzppbnNldCAwIGNhbGMoNCAqIHZhcigtLXUpKSBjYWxjKDEwICogdmFyKC0tdSkpIHJnYmEoMCwwLDAsLjM1KTt0cmFuc2l0aW9uOmJhY2tncm91bmQgLjRzfQouY3RhLm5vLWdsOmhvdmVyIC5rbm9iLWZhbGxiYWNre2JhY2tncm91bmQ6cmFkaWFsLWdyYWRpZW50KGNpcmNsZSBhdCA1MCUgNDAlLCMzYTE0MDAgMCUsI2EwM2MwMCA0NSUsI2ZmOGEyOCAxMDAlKX0KLmtub2ItZmFsbGJhY2t7ZGlzcGxheTpub25lfQouY3RhLm5vLWdsIC5rbm9iLWZhbGxiYWNre2Rpc3BsYXk6YmxvY2t9CgpAbWVkaWEgKHByZWZlcnMtcmVkdWNlZC1tb3Rpb246cmVkdWNlKXsKICAuY3RhLC5jdGEgKiwuY3RhOjpiZWZvcmV7dHJhbnNpdGlvbi1kdXJhdGlvbjouMDFzIWltcG9ydGFudDt0cmFuc2l0aW9uLWRlbGF5OjBzIWltcG9ydGFudH0KfQoKPC9zdHlsZT4KPC9oZWFkPgo8Ym9keT4KPG1haW4gY2xhc3M9InN0YWdlIj4KICA8YnV0dG9uIGNsYXNzPSJjdGEiIHR5cGU9ImJ1dHRvbiIgYXJpYS1sYWJlbD0iU2lnbiB1cCI+CiAgICA8c3BhbiBjbGFzcz0iaGFsbyIgYXJpYS1oaWRkZW49InRydWUiPjwvc3Bhbj4KICAgIDxzcGFuIGNsYXNzPSJmYWNlIiBhcmlhLWhpZGRlbj0idHJ1ZSI+PGNhbnZhcz48L2NhbnZhcz48L3NwYW4+CiAgICA8c3BhbiBjbGFzcz0ia25vYi1mYWxsYmFjayIgYXJpYS1oaWRkZW49InRydWUiPjwvc3Bhbj4KICAgIDxzcGFuIGNsYXNzPSJsYWJlbCIgYXJpYS1oaWRkZW49InRydWUiPlNJR04gVVA8L3NwYW4+CiAgICA8c3BhbiBjbGFzcz0ia25vYiIgYXJpYS1oaWRkZW49InRydWUiPgogICAgICA8c3BhbiBjbGFzcz0iZ2xvdyI+PC9zcGFuPgogICAgICA8c3ZnIGNsYXNzPSJwZW4iIHZpZXdCb3g9IjAgMCAxNzYgMTc2Ij4KICAgICAgICAKICAgICAgICA8ZyBjbGFzcz0icGVuLW1vdmUiPjxnIGNsYXNzPSJwZW4td2lnZ2xlIj4KICAgICAgICAgIDxwYXRoIGNsYXNzPSJwZW4tYm9keSIgZD0iTTcyIDEwNEwxMDQgNzIiLz4KICAgICAgICAgIDxwYXRoIGNsYXNzPSJwZW4tYm9keSIgZD0iTTgxIDcySDEwNFY5NSIvPgogICAgICAgIDwvZz48L2c+CiAgICAgIDwvc3ZnPgogICAgPC9zcGFuPgogIDwvYnV0dG9uPgo8L21haW4+Cgo8c2NyaXB0PgooKCkgPT4gewogIGlmICgvWz8mXXJlZlxiLy50ZXN0KGxvY2F0aW9uLnNlYXJjaCkpIGRvY3VtZW50LmRvY3VtZW50RWxlbWVudC5kYXRhc2V0LnJlZiA9ICcxJzsKICBjb25zdCBjdGEgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yKCcuY3RhJyk7CiAgY29uc3QgY3YgPSBjdGEucXVlcnlTZWxlY3RvcignY2FudmFzJyk7CiAgY29uc3QgY2xvY2sgPSBjdGEucXVlcnlTZWxlY3RvcignLmdsb3cnKTsgICAvLyBpdHMgdHJhbnNpdGlvbmVkIG9wYWNpdHkgaXMgdGhlIGhvdmVyIGFtb3VudAogIGNvbnN0IHJlZHVjZWQgPSBtYXRjaE1lZGlhKCcocHJlZmVycy1yZWR1Y2VkLW1vdGlvbjogcmVkdWNlKScpLm1hdGNoZXM7CiAgLy8gTk9JUiBlbWJlZDogbGFiZWwgKyBjbGljayBicmlkZ2UgdG8gdGhlIGhvc3QgcGFnZQogIGNvbnN0IHFzID0gbmV3IFVSTFNlYXJjaFBhcmFtcyhsb2NhdGlvbi5zZWFyY2gpLCBsYmwgPSBxcy5nZXQoJ2xhYmVsJyk7CiAgaWYgKGxibCkgeyBjb25zdCBlbCA9IGN0YS5xdWVyeVNlbGVjdG9yKCcubGFiZWwnKTsgZWwudGV4dENvbnRlbnQgPSBsYmw7IGN0YS5zZXRBdHRyaWJ1dGUoJ2FyaWEtbGFiZWwnLCBsYmwpOwogICAgaWYgKGxibC5sZW5ndGggPiA5KSBlbC5zdHlsZS5mb250U2l6ZSA9ICdjYWxjKCcgKyAoNTAgKiA5IC8gbGJsLmxlbmd0aCkudG9GaXhlZCgyKSArICcgKiB2YXIoLS11KSknOyB9CiAgY3RhLmFkZEV2ZW50TGlzdGVuZXIoJ2NsaWNrJywgKCkgPT4gcGFyZW50Ll9fbm9pckN0YSAmJiBwYXJlbnQuX19ub2lyQ3RhKHFzLmdldCgnaWQnKSB8fCAnJykpOwoKICAvLyAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0gc2hhZGVycwogIGNvbnN0IFFVQURfVlMgPSBgI3ZlcnNpb24gMzAwIGVzCiAgaW4gdmVjMiBhUG9zOyB2b2lkIG1haW4oKXsgZ2xfUG9zaXRpb24gPSB2ZWM0KGFQb3MsIDAuLCAxLik7IH1gOwoKICAvLyBQaWxsIGZhY2UgKyBjcnlzdGFsIHdlbGwuIENvb3JkaW5hdGVzIGFyZSB0aGUgZGVzaWduIGdyaWQ6IDcwNiB4IDIzMiB1bml0cywgeSBkb3duLAogIC8vIHBpbGwgcmFkaXVzIDExNiwga25vYiBjZW50cmUgKDU5MCwxMTYpLCB3ZWxsIHJhZGl1cyA4OCwgY3J5c3RhbCByYWRpdXMgODAuCiAgY29uc3QgRkFDRV9GUyA9IGAjdmVyc2lvbiAzMDAgZXMKICBwcmVjaXNpb24gaGlnaHAgZmxvYXQ7CiAgdW5pZm9ybSB2ZWMyIHVSZXM7IHVuaWZvcm0gZmxvYXQgdVU7IHVuaWZvcm0gZmxvYXQgdVRpbWU7IHVuaWZvcm0gZmxvYXQgdUhvdmVyOwogIHVuaWZvcm0gc2FtcGxlcjJEIHVTY3JhdGNoOwogIG91dCB2ZWM0IGZyYWdDb2xvcjsKICBmbG9hdCBoYXNoMjEodmVjMiBwKXsgdmVjMyBxPWZyYWN0KHZlYzMocC54eXgpKi4xMDMxKTsgcSs9ZG90KHEscS55engrMzMuMzMpOyByZXR1cm4gZnJhY3QoKHEueCtxLnkpKnEueik7IH0KICB2ZWMyIGhhc2gyMih2ZWMyIHApeyB2ZWMzIHE9ZnJhY3QodmVjMyhwLnh5eCkqdmVjMyguMTAzMSwuMTAzMCwuMDk3MykpOyBxKz1kb3QocSxxLnl6eCszMy4zMyk7IHJldHVybiBmcmFjdCgocS54eCtxLnl6KSpxLnp5KTsgfQogIGZsb2F0IHZub2lzZSh2ZWMyIHApeyB2ZWMyIGk9Zmxvb3IocCksIGY9ZnJhY3QocCk7IGY9ZipmKigzLi0yLipmKTsKICAgIHJldHVybiBtaXgobWl4KGhhc2gyMShpKSxoYXNoMjEoaSt2ZWMyKDEsMCkpLGYueCksIG1peChoYXNoMjEoaSt2ZWMyKDAsMSkpLGhhc2gyMShpK3ZlYzIoMSwxKSksZi54KSwgZi55KTsgfQogIGZsb2F0IGZibSh2ZWMyIHApeyBmbG9hdCBhPS41LCBzPTAuOyBmb3IoaW50IGk9MDtpPDQ7aSsrKXsgcys9YSp2bm9pc2UocCk7IHA9cCoyLjAyK3ZlYzIoMzEuNywxNy4zKTsgYSo9LjU7IH0gcmV0dXJuIHM7IH0KICAvLyBjZWxsdWxhciBzaGFyZHM6IChuZWFyZXN0LCBzZWNvbmQgbmVhcmVzdCwgY2VsbCBpZCkKICB2ZWMzIHZvcm8odmVjMiBwKXsgdmVjMiBpPWZsb29yKHApLCBmPWZyYWN0KHApOyBmbG9hdCBkMT05LiwgZDI9OS47IHZlYzIgaWQ9dmVjMigwKTsKICAgIGZvcihpbnQgeT0tMTt5PD0xO3krKykgZm9yKGludCB4PS0xO3g8PTE7eCsrKXsgdmVjMiBnPXZlYzIoZmxvYXQoeCksZmxvYXQoeSkpOyB2ZWMyIHI9ZytoYXNoMjIoaStnKS1mOyBmbG9hdCBkPWRvdChyLHIpOwogICAgICBpZihkPGQxKXsgZDI9ZDE7IGQxPWQ7IGlkPWkrZzsgfSBlbHNlIGlmKGQ8ZDIpeyBkMj1kOyB9IH0KICAgIHJldHVybiB2ZWMzKHNxcnQoZDEpLCBzcXJ0KGQyKSwgaGFzaDIxKGlkKSk7IH0KICBmbG9hdCB0b25lKGZsb2F0IHkpeyBmbG9hdCB0PXkvMjMyLjsgZmxvYXQgdj1taXgoLjk2NSwuOTAsc21vb3Roc3RlcCguMTIsLjMyLHQpKTsgdj1taXgodiwuNzAsc21vb3Roc3RlcCguMzIsLjY0LHQpKTsgcmV0dXJuIG1peCh2LC41MCxzbW9vdGhzdGVwKC42NCwxLix0KSk7IH0KCiAgLy8gLS0tLSBsaXF1aWQgbWV0YWw6IGEgc21vb3RoIHdhcnBlZCBmaWVsZCBzYW1wbGVkIHRocm91Z2ggaXRzIG93biBncmFkaWVudAogIGZsb2F0IGZibTModmVjMiBwKXsgZmxvYXQgYT0uNSwgcz0wLjsgZm9yKGludCBpPTA7aTwzO2krKyl7IHMrPWEqdm5vaXNlKHApOyBwPXAqMi4wMit2ZWMyKDMxLjcsMTcuMyk7IGEqPS41OyB9IHJldHVybiBzOyB9CiAgZmxvYXQgSCh2ZWMyIHAsIGZsb2F0IHQpewogICAgdmVjMiB3ID0gdmVjMihmYm0zKHAqLjggKyB2ZWMyKDAuLCB0Ki4xMykpLCBmYm0zKHAqLjggKyB2ZWMyKDUuMiwgLXQqLjA5KSkpOwogICAgcmV0dXJuIGZibTMocCArICh3LS41KSoxLjIgKyB2ZWMyKHQqLjA0LCAwLikpOwogIH0KICB2ZWMzIGVudih2ZWMzIFIpeyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAvLyBwcm9jZWR1cmFsIHN0dWRpbzogc29mdGJveCBhYm92ZSwgaG9yaXpvbiBsaW5lLCBmbG9vciBib3VuY2UKICAgIGZsb2F0IHkgPSBSLnk7CiAgICB2ZWMzIGMgPSB2ZWMzKC4wNywuMDcsLjA4KTsKICAgIGMgKz0gdmVjMyguOTgsLjk4LDEuKSAqIHNtb290aHN0ZXAoLjAzLC4yOCx5KSAqICgxLi1zbW9vdGhzdGVwKC41NSwuOTAseSkpOwogICAgYyArPSB2ZWMzKC4zMCkgKiBzbW9vdGhzdGVwKC45MCwxLix5KTsKICAgIGMgKz0gdmVjMyguMzYsLjM2LC40MCkgKiAoMS4tc21vb3Roc3RlcCgwLiwuMDksYWJzKHkpKSk7CiAgICBjICs9IHZlYzMoLjIyLC4yMiwuMjUpICogc21vb3Roc3RlcCgtLjgwLC0uNDAseSkgKiAoMS4tc21vb3Roc3RlcCgtLjMyLC0uMTAseSkpOwogICAgYyAqPSAuOTIgKyAuMDgqUi54OwogICAgcmV0dXJuIGM7CiAgfQogIC8vIGFyYyBsZW5ndGggYWxvbmcgdGhlIHBpbGwgZWRnZSwgY2xvY2t3aXNlIGZyb20gdGhlIHRvcC1sZWZ0IHRhbmdlbnQgcG9pbnQgKHBlcmltZXRlciAxNjc2LjgpCiAgZmxvYXQgcmluZ1ModmVjMiBwKXsKICAgIGlmIChwLnggPCAxMTYuKSB7IHZlYzIgdiA9IHAgLSB2ZWMyKDExNi4sMTE2Lik7IHJldHVybiAxMzEyLjQgKyBhdGFuKC12LngsIHYueSkqMTE2LjsgfQogICAgaWYgKHAueCA+IDU5MC4pIHsgdmVjMiB2ID0gcCAtIHZlYzIoNTkwLiwxMTYuKTsgcmV0dXJuIDQ3NC4gKyBhdGFuKHYueCwgLXYueSkqMTE2LjsgfQogICAgcmV0dXJuIHAueSA8IDExNi4gPyAocC54IC0gMTE2LikgOiA4MzguNCArICg1OTAuIC0gcC54KTsKICB9CiAgZmxvYXQgd3JhcGQoZmxvYXQgYSwgZmxvYXQgYil7IHJldHVybiBtb2QoYSAtIGIgKyA4MzguNCwgMTY3Ni44KSAtIDgzOC40OyB9CiAgdmVjMyBtZXRhbCh2ZWMyIHAsIGZsb2F0IGQsIHZlYzIgbiwgdmVjMiBrcCwgZmxvYXQgcHgsIG91dCBmbG9hdCBhbHBoYSl7CiAgICAvLyBhIGNocm9tZSB0dWJlIG9mIGNvbnN0YW50IHNlY3Rpb247IG9ubHkgaXRzIHN1cmZhY2UgZmxvd3MKICAgIGZsb2F0IFQgPSAyNi47CiAgICBhbHBoYSA9IDEuIC0gc21vb3Roc3RlcChULXB4LCBUK3B4LCBkKTsKICAgIGlmIChhbHBoYSA8PSAwLikgcmV0dXJuIHZlYzMoMC4pOwogICAgZmxvYXQgdV8gPSBjbGFtcCgyLipkL1QgLSAxLiwgLTEuLCAxLik7CiAgICBmbG9hdCBoeiA9IHNxcnQobWF4KDAuLCAxLi11Xyp1XykpOyAgICAgICAgICAgICAgIC8vIGhhbGYtcm91bmQgc2VjdGlvbgogICAgZmxvYXQgZGggPSAtdV8vbWF4KGh6LC4xMik7CiAgICBmbG9hdCBzQSA9IHJpbmdTKHApOwogICAgZmxvYXQgdCA9IHVUaW1lICogKDEuICsgLjE1KnVIb3Zlcik7ICAgICAgICAgICAgICAvLyBhbHdheXMgc2xvdzsgaG92ZXIgYmFyZWx5IGh1cnJpZXMgaXQKICAgIC8vIHBlcmlvZGljIGZsb3cgYWxvbmcgdGhlIHJpbmc6IHRocmVlIGhhcm1vbmljcyBhdCBkaWZmZXJlbnQgc3BlZWRzCiAgICBmbG9hdCBrID0gNi4yODMyLzE2NzYuODsKICAgIGZsb2F0IGExID0gayozLipzQSAtIHQqLjU1LCBhMiA9IGsqNS4qc0EgKyB0Ki40MiArIDEuNywgYTMgPSBrKjguKnNBIC0gdCouODUgKyA0LjE7CiAgICBmbG9hdCBmbG93ID0gKHNpbihhMSkgKyAuNypzaW4oYTIpICsgLjUqc2luKGEzKSkgLyAyLjI7CiAgICBmbG9hdCBkZmxvdyA9ICgzLipjb3MoYTEpICsgMy41KmNvcyhhMikgKyA0Lipjb3MoYTMpKSAqIGsgLyAyLjI7CiAgICAvLyB0d28gbWVyY3VyeSBnbGludHMgY2lyY3VsYXRpbmcgaW4gb3Bwb3NpdGUgZGlyZWN0aW9ucwogICAgZmxvYXQgZzEgPSB3cmFwZChzQSwgbW9kKHQqMTA1LiwgMTY3Ni44KSk7ICAgICAgICAgIC8vIG9uZSBsYXAgaW4gfjE2IHMKICAgIGZsb2F0IGcyID0gd3JhcGQoc0EsIG1vZCgyMjAwLiAtIHQqNzUuLCAxNjc2LjgpKTsgICAvLyB0aGUgb3RoZXIgd2F5LCB+MjIgcwogICAgZmxvYXQgZHJvcCA9IGV4cCgtZzEqZzEvMTYwMC4pICsgZXhwKC1nMipnMi8xNjAwLik7CiAgICB2ZWMyIHRhdSA9IHZlYzIoLW4ueSwgbi54KTsKICAgIHZlYzIgZ3JhZCA9IGRoKm4qKC45ICsgLjMqZmxvdyArIC42KmRyb3ApICsgdGF1KmRmbG93KjM0LjsKICAgIHZlYzMgTiA9IG5vcm1hbGl6ZSh2ZWMzKC1ncmFkLngsIGdyYWQueSwgMS4pKTsgICAgLy8gbGlnaHRpbmcgc3BhY2UgaXMgeS11cAogICAgdmVjMyBWID0gdmVjMygwLiwwLiwxLik7CiAgICB2ZWMzIFIgPSByZWZsZWN0KC1WLCBOKTsKICAgIHZlYzMgYyA9IGVudihSKSAqIHZlYzMoMS4sLjgwLC41Mik7CiAgICBjICo9IC45MCArIC4xOCpmbG93OwogICAgYyArPSBkcm9wICogLjUgKiBoeipoeiAqIG1peCh2ZWMzKDEuKSwgdmVjMygxLiwuNzgsLjUpLCB1SG92ZXIpOwogICAgYyArPSAuMTYqcG93KDEuLU4ueiwgMy4pOyAgICAgICAgICAgICAgICAgICAgICAgICAgLy8gZ3JhemluZyBmcmVzbmVsCiAgICBjICo9IC41NSArIC40NSpzbW9vdGhzdGVwKDAuLCAzLiwgZCk7ICAgICAgICAgICAgICAgLy8gZGFyayBzZWFtIGFnYWluc3QgdGhlIHBpbGwKICAgIGMgKz0gdUhvdmVyICogdmVjMygxLiwuNDUsLjEyKSAqIC4yMiAqIHNtb290aHN0ZXAoMjAwLiw3MC4sbGVuZ3RoKGtwKSkgKiAoLjQrLjYqaHopOwogICAgcmV0dXJuIGM7CiAgfQoKICB2ZWMzIGNyeXN0YWwodmVjMiBrcCwgZmxvYXQga3IsIGZsb2F0IHB4LCB2ZWMzIHVuZGVyKXsKICAgIHZlYzIgcSA9IGtwLzg4LjsKICAgIGZsb2F0IHQgPSBxLnkqLjUrLjU7ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8vIDAgdG9wIC0+IDEgYm90dG9tIG9mIHRoZSB3ZWxsCiAgICBmbG9hdCBydyA9IGtyLzg4LjsKICAgIHZlYzMgd2VsbCA9IHZlYzMobWl4KC4zNCwuNjAsdCkpICogdmVjMyguMzIsLjI1LC4xNyk7CiAgICB3ZWxsICo9IDEuIC0gLjQwKnNtb290aHN0ZXAoLjcwLDEuLHJ3KSooMS4tdCk7ICAgICAgICAvLyBpbm5lciBzaGFkb3cgdW5kZXIgdGhlIHRvcCBsaXAKICAgIHdlbGwgKz0gLjI4KnNtb290aHN0ZXAoLjkwLC45ODUscncpKnQ7ICAgICAgICAgICAgICAgIC8vIGxpdCBib3R0b20gbGlwCiAgICBmbG9hdCBSID0gODAuOyBmbG9hdCBycyA9IGtyL1I7CiAgICB3ZWxsICo9IDEuIC0gLjM1KnNtb290aHN0ZXAoUis3LiwgUiwga3IpOyAgICAgICAgICAgICAvLyBjb250YWN0IHNoYWRvdyBhcm91bmQgdGhlIHNwaGVyZQogICAgZmxvYXQgc3BoID0gMS4gLSBzbW9vdGhzdGVwKFItcHgsIFIrcHgsIGtyKTsKICAgIGlmIChzcGggPD0gMC4pIHJldHVybiB3ZWxsOwogICAgZmxvYXQgeiA9IHNxcnQobWF4KDAuLCAxLi1ycypycykpOwogICAgdmVjMyBOID0gdmVjMyhxLngqODguL1IsIC1xLnkqODguL1IsIHopOyAgICAgICAgICAgICAgLy8geSB1cAogICAgdmVjMyBWID0gdmVjMygwLiwwLiwxLik7CiAgICBmbG9hdCBmcmVzID0gcG93KDEuLXosIDIuNik7CiAgICAvLyByZWZyYWN0ZWQgbG9va3VwIGludG8gdGhlIHNoYXJkIGZpZWxkCiAgICB2ZWMzIFJmID0gcmVmcmFjdCgtViwgTiwgMS4vMS41KTsKICAgIHZlYzIgdXYgPSBOLnh5Ki41ICsgUmYueHkqMS4xICsgdmVjMih1VGltZSouMDIsIC11VGltZSouMDEzKTsKICAgIHZlYzMgdnIgPSB2b3JvKHV2KjMuMCk7CiAgICBmbG9hdCBmYWNldCA9IDEuIC0gc21vb3Roc3RlcCgwLiwgLjE0LCB2ci55IC0gdnIueCk7ICAvLyBzaGFyZCBib3VuZGFyaWVzCiAgICBmbG9hdCBzaGFyZCA9IC43ICsgLjMqdnIuejsKICAgIGZsb2F0IG1vdHQgPSBmYm0odXYqNC4pOwogICAgLy8gdHJhbnNwYXJlbnQgZ2xhc3M6IHRoZSBkYXJrIHdlbGwgc2hvd3MgdGhyb3VnaCwgcmVmcmFjdGVkLCB3aXRoIGJyaWdodCBzaGFyZCBlZGdlcwogICAgZmxvYXQgdHIgPSBjbGFtcCguNSAtIChxLnkgKyBSZi55Ki44KSouNSwgMC4sIDEuKTsKICAgIHZlYzMgZmxvb3JDID0gdmVjMyhtaXgoLjEwLC4yNCx0cikpKnZlYzMoMS4sLjgyLC42KSAqICguODUrLjMqbW90dCk7CiAgICB2ZWMzIGdsYXNzID0gbWl4KGZsb29yQywgdmVjMyguNzAsLjU4LC40MCksIC4yMipzaGFyZCArIC4xOCooMS4teikpICogKC44Ky4yKnopOwogICAgZmxvYXQgZGVwdGggPSBwb3cocnMsIDEuNSk7CiAgICB2ZWMzIGNvcmUgPSBtaXgodmVjMyguMjYsLjA1LDAuKSwgdmVjMyguOTUsLjM2LC4wMyksIGRlcHRoKSAqICguNzUrLjUqc2hhcmQpOwogICAgY29yZSA9IG1peChjb3JlLCB2ZWMzKDEuLC42NiwuMjIpLCBzbW9vdGhzdGVwKC41LDEuLHJzKSpzbW9vdGhzdGVwKC0uMSwuOSwtTi55KSk7ICAgLy8gYW1iZXIgcG9vbGluZyBhdCB0aGUgYm90dG9tCiAgICB2ZWMzIGludGVyaW9yID0gbWl4KGdsYXNzLCBjb3JlLCB1SG92ZXIpOwogICAgaW50ZXJpb3IgKz0gZmFjZXQgKiBtaXgodmVjMygxLiwuODYsLjYwKSooLjU1Ky40NSp6KSwgdmVjMygxLiwuNzAsLjM1KSouNiwgdUhvdmVyKTsKICAgIGZsb2F0IHB0ID0gc21vb3Roc3RlcCguMTAsIDAuLCB2ci54KSAqICguNSsuNSpzaW4odVRpbWUqMi4rdnIueio0MC4pKTsKICAgIGludGVyaW9yICs9IHB0ICogbWl4KHZlYzMoMS4sLjg4LC42NiksIHZlYzMoMS4sLjkyLC43NSksIHVIb3ZlcikgKiAoLjU1Ky40NSp1SG92ZXIpOwogICAgLy8gbGlnaHRpbmcKICAgIHZlYzMgTDEgPSBub3JtYWxpemUodmVjMygtLjQ1LC43NSwuNSkpOwogICAgZmxvYXQgYmxvYiA9IHNtb290aHN0ZXAoLjcyLC45ODUsIGRvdChOLCBub3JtYWxpemUodmVjMygtLjE4LC43MiwuNjcpKSkpOwogICAgZmxvYXQgc3BlYyA9IHBvdyhtYXgoZG90KHJlZmxlY3QoLUwxLE4pLFYpLDAuKSwgOTAuKTsKICAgIHZlYzMgcmltQ29sID0gbWl4KHZlYzMoMS4sLjg2LC42MiksIHZlYzMoMS4sLjcyLC40MCksIHVIb3Zlcik7CiAgICB2ZWMzIGMgPSBpbnRlcmlvciooMS4tLjQ1KmZyZXMpICsgcmltQ29sKmZyZXMqLjk7CiAgICBjICs9IGJsb2IqLjQyKigxLi0uNSp1SG92ZXIpICsgc3BlYyouOTsKICAgIGZsb2F0IGdsaW50ID0gc21vb3Roc3RlcCguNTUsMS4scnMpICogc21vb3Roc3RlcCguMTUsMS4sLU4ueSk7CiAgICBjICs9IG1peCh2ZWMzKC45MiwuNzAsLjQwKSwgdmVjMygxLiwuNTAsLjEyKSwgdUhvdmVyKSAqIGdsaW50ICogLjU1OwogICAgcmV0dXJuIG1peCh3ZWxsLCBjLCBzcGgpOwogIH0KCiAgdm9pZCBtYWluKCl7CiAgICB2ZWMyIHAgPSB2ZWMyKGdsX0ZyYWdDb29yZC54LCB1UmVzLnkgLSBnbF9GcmFnQ29vcmQueSkgLyB1VSAtIHZlYzIoNDguKTsKICAgIGZsb2F0IHB4ID0gMS4vdVU7CiAgICB2ZWMyIGMgPSB2ZWMyKGNsYW1wKHAueCwxMTYuLDU5MC4pLDExNi4pOwogICAgdmVjMiBkdiA9IHAgLSBjOyBmbG9hdCBkaXN0ID0gbGVuZ3RoKGR2KTsKICAgIGZsb2F0IGQgPSBkaXN0IC0gMTE2LjsKICAgIHZlYzIga3AgPSBwIC0gdmVjMig1OTAuLDExNi4pOyBmbG9hdCBrciA9IGxlbmd0aChrcCk7CiAgICBmbG9hdCBjb3ZlciA9IDEuIC0gc21vb3Roc3RlcCgtcHgsIHB4LCBkKTsKICAgIGlmIChjb3ZlciA8PSAuMDAxKXsKICAgICAgZmxvYXQgbWE7IHZlYzMgbWMgPSBtZXRhbChwLCBkLCBkdi9tYXgoZGlzdCwxZS00KSwga3AsIHB4LCBtYSk7CiAgICAgIGZyYWdDb2xvciA9IHZlYzQobWMqbWEsIG1hKTsgcmV0dXJuOwogICAgfQogICAgZmxvYXQgaW5zaWRlID0gLWQ7CiAgICB2ZWMyIG4gPSBkaXN0ID4gMC4gPyBkdi9kaXN0IDogdmVjMigwLiwtMS4pOwogICAgZmxvYXQgbGl0ID0gLW4ueTsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLy8gMSBvbiB0aGUgdG9wIGVkZ2UKICAgIGZsb2F0IGJhc2UgPSB0b25lKHAueSkgKiAoMS4gKyAuMDUqKGZibShwKi4wMyktLjUpKTsKICAgIGZsb2F0IGsgPSAuNDIgLSAuMjIqbGl0LCB3ID0gMzQuIC0gMTAuKmxpdDsKICAgIGZsb2F0IGYgPSBwb3cobWF4KDAuLCAxLi0oaW5zaWRlLTIuNSkvdyksIDEuMjUpOwogICAgZmxvYXQgTCA9IGJhc2UgKiAoMS4gLSBrKmYpOwogICAgZmxvYXQgcmltID0gMS4gLSBzbW9vdGhzdGVwKDIuMCwgMy4yLCBpbnNpZGUpOwogICAgTCA9IG1peChMLCAuMzQsIHJpbSk7CiAgICAvLyBmbGVjayBub2lzZTogMi11bml0IGNlbGxzLCBzb2Z0IHJvdW5kIGRvdHMsIGRlbnNlciBsb3dlciBkb3duCiAgICB2ZWMyIGNlbGwgPSBmbG9vcihwKi41KTsgdmVjMiBmYyA9IGZyYWN0KHAqLjUpLS41OwogICAgZmxvYXQgZG90bSA9IHNtb290aHN0ZXAoLjcyLC4yMixsZW5ndGgoZmMpKTsKICAgIGZsb2F0IGgxPWhhc2gyMShjZWxsKSwgaDI9aGFzaDIxKGNlbGwrMTEuMyksIGgzPWhhc2gyMShjZWxsKzIzLjcpLCBoND1oYXNoMjEoY2VsbCszNy4xKTsKICAgIGZsb2F0IGVudkQgPSAuMTUgKyAuODUqc21vb3Roc3RlcCguMDUsLjQwLHAueS8yMzIuKTsKICAgIGZsb2F0IGZsZWNrID0gc3RlcChoMSwuNDIpICogKC4yNSsuNTUqaDIpICogZG90bSAqIGVudkQ7CiAgICBMICo9IDEuIC0gLjMwKmZsZWNrOwogICAgLy8gbWljYSBzcGFya2xlLCB0d2lua2xpbmcKICAgIGZsb2F0IHR3ID0gLjYgKyAuNCpzaW4odVRpbWUqKC44KzEuNipoMykgKyBoNCo2LjI4MzIpOwogICAgZmxvYXQgc3BhcmsgPSBzdGVwKGgzLC4xMCkgKiBoMipoMiAqIGRvdG0gKiB0dzsKICAgIEwgKz0gLjM4KnNwYXJrKiguNSsuNSpzbW9vdGhzdGVwKC4xLC41LHAueS8yMzIuKSk7CiAgICAvLyBwb2ludGVyIHNjcmF0Y2hlczogaGFpcmxpbmUgZ3Jvb3ZlcyBsaXQgZnJvbSBhYm92ZSAoZGFyayB1cHBlciB3YWxsLCBicmlnaHQgbG93ZXIgd2FsbCkKICAgIHZlYzIgdGMgPSBnbF9GcmFnQ29vcmQueHkgLyB1UmVzOwogICAgZmxvYXQgczAgPSB0ZXh0dXJlKHVTY3JhdGNoLCB0YykucjsKICAgIGZsb2F0IHNVID0gdGV4dHVyZSh1U2NyYXRjaCwgdGMgKyB2ZWMyKDAuLCAxLi91UmVzLnkpKS5yOwogICAgZmxvYXQgc0QgPSB0ZXh0dXJlKHVTY3JhdGNoLCB0YyAtIHZlYzIoMC4sIDEuL3VSZXMueSkpLnI7CiAgICBMICs9ICguNTgqKHNVIC0gc0QpIC0gLjA1KnMwKSAqICgxLi1yaW0pOwogICAgdmVjMyBjb2wgPSBtaXgodmVjMyguMDMwLC4wMjQsLjAyMCksIHZlYzMoLjM2LC4yNywuMTcpLCBjbGFtcChMLDAuLDEuMikqTCk7CiAgICBjb2wgKz0gdUhvdmVyICogdmVjMygxLiwuNDUsLjEwKSAqIC4yMiAqIHNtb290aHN0ZXAoMTc1Liw4OC4sa3IpICogKDEuLXJpbSk7ICAgLy8gd2FybSBzcGlsbCBvbiB0aGUgYm9keQogICAgZmxvYXQgd2VsbEEgPSAxLiAtIHNtb290aHN0ZXAoODguLXB4LCA4OC4rcHgsIGtyKTsKICAgIGlmICh3ZWxsQSA+IDAuKSBjb2wgPSBtaXgoY29sLCBjcnlzdGFsKGtwLCBrciwgcHgsIGNvbCksIHdlbGxBKTsKICAgIGlmIChjb3ZlciA8IC45OTkpeyBmbG9hdCBtYTsgdmVjMyBtYyA9IG1ldGFsKHAsIG1heChkLDAuKSwgZHYvbWF4KGRpc3QsMWUtNCksIGtwLCBweCwgbWEpOyBjb2wgPSBtaXgobWMsIGNvbCwgY292ZXIpOyBjb3ZlciA9IG1heChjb3ZlciwgbWEpOyB9CiAgICBmcmFnQ29sb3IgPSB2ZWM0KGNvbCpjb3ZlciwgY292ZXIpOwogIH1gOwoKICBjb25zdCBQVFNfVlMgPSBgI3ZlcnNpb24gMzAwIGVzCiAgaW4gdmVjNCBhU2VlZDsKICB1bmlmb3JtIHZlYzIgdVJlczsgdW5pZm9ybSBmbG9hdCB1VSwgdVRpbWUsIHVIb3ZlcjsKICBvdXQgZmxvYXQgdkE7IG91dCB2ZWMzIHZDb2w7CiAgdm9pZCBtYWluKCl7CiAgICBmbG9hdCBzMD1hU2VlZC54LCBzMT1hU2VlZC55LCBzMj1hU2VlZC56LCBzMz1hU2VlZC53OwogICAgZmxvYXQgc3BlZWQgPSAoLjEwICsgLjMwKnMzKSAqICgxLiArIDIuKnVIb3Zlcik7CiAgICBmbG9hdCB0ID0gdVRpbWUqc3BlZWQgKyBzMCo2LjI4MzI7CiAgICBmbG9hdCByYWQgPSAuMTggKyAuNzIqczE7CiAgICBmbG9hdCB0aWx0ID0gczIqMy4xNDE2LCB5YXcgPSBzMyo2LjI4MzI7CiAgICB2ZWMzIHBsID0gdmVjMyhjb3ModCksIDAuLCBzaW4odCkpICogcmFkOwogICAgdmVjMyBwMSA9IHZlYzMocGwueCwgcGwueSpjb3ModGlsdCktcGwueipzaW4odGlsdCksIHBsLnkqc2luKHRpbHQpK3BsLnoqY29zKHRpbHQpKTsKICAgIHZlYzMgcCA9IHZlYzMocDEueCpjb3MoeWF3KStwMS56KnNpbih5YXcpLCBwMS55LCAtcDEueCpzaW4oeWF3KStwMS56KmNvcyh5YXcpKTsKICAgIC8vIG9uIGhvdmVyIGEgZmV3IGVtYmVycyBkcmlmdCB1cCBvdXQgb2YgdGhlIGNyeXN0YWwgYW5kIGZhZGUKICAgIGZsb2F0IGVzYyA9IHN0ZXAoLjc0LCBzMSkgKiB1SG92ZXI7CiAgICBmbG9hdCByaXNlID0gZnJhY3QodVRpbWUqLjIyICsgczApOwogICAgcC55ICs9IGVzYyAqIHJpc2UgKiAxLjk7IHAueCArPSBlc2MgKiBzaW4ocmlzZSo5LiArIHMyKjYuKSAqIC4xOCAqIHJpc2U7CiAgICBmbG9hdCBmYWRlID0gMS4gLSBlc2Mqc21vb3Roc3RlcCguNSwgMS4sIHJpc2UpOwogICAgdmVjMiByZWYgPSB2ZWMyKDU5MC4sMTE2LikgKyB2ZWMyKHAueCwgLXAueSkgKiA4MC4gKyB2ZWMyKDQ4Lik7CiAgICB2ZWMyIHB4ID0gcmVmICogdVU7IHB4LnkgPSB1UmVzLnkgLSBweC55OwogICAgZ2xfUG9zaXRpb24gPSB2ZWM0KHB4L3VSZXMqMi4tMS4sIDAuLCAxLik7CiAgICBmbG9hdCBkZXB0aCA9IHAueiouNSsuNTsKICAgIGdsX1BvaW50U2l6ZSA9IG1heCgxLiwgKDEuNSArIDIuOCpzMikgKiB1VSAqICguNTUrLjU1KmRlcHRoKSk7CiAgICBmbG9hdCB0dyA9IC42ICsgLjQqc2luKHVUaW1lKigxLisyLipzMikgKyBzMSo2LjI4KTsKICAgIHZBID0gKC40MiArIC41OCp1SG92ZXIpICogKC4zICsgLjcqZGVwdGgpICogdHcgKiBmYWRlOwogICAgdkNvbCA9IG1peCh2ZWMzKDEuLC44MiwuNTIpLCB2ZWMzKDEuLC42NiwuMjgpLCB1SG92ZXIpOwogIH1gOwogIGNvbnN0IExJTkVfVlMgPSBgI3ZlcnNpb24gMzAwIGVzCiAgaW4gdmVjMiBhUDsgaW4gZmxvYXQgYVc7IHVuaWZvcm0gdmVjMiB1UmVzOyB1bmlmb3JtIGZsb2F0IHVVOyBvdXQgZmxvYXQgdlc7CiAgdm9pZCBtYWluKCl7IHZlYzIgcHggPSAoYVAgKyB2ZWMyKDQ4LikpICogdVU7IHB4LnkgPSB1UmVzLnkgLSBweC55OyBnbF9Qb3NpdGlvbiA9IHZlYzQocHgvdVJlcyoyLi0xLiwgMC4sIDEuKTsgdlcgPSBhVzsgfWA7CiAgY29uc3QgTElORV9GUyA9IGAjdmVyc2lvbiAzMDAgZXMKICBwcmVjaXNpb24gbWVkaXVtcCBmbG9hdDsgaW4gZmxvYXQgdlc7IG91dCB2ZWM0IG87IHZvaWQgbWFpbigpeyBvID0gdmVjNCh2Vyk7IH1gOwogIGNvbnN0IEZBREVfRlMgPSBgI3ZlcnNpb24gMzAwIGVzCiAgcHJlY2lzaW9uIG1lZGl1bXAgZmxvYXQ7IHVuaWZvcm0gZmxvYXQgdUZhZGU7IG91dCB2ZWM0IG87IHZvaWQgbWFpbigpeyBvID0gdmVjNCh1RmFkZSk7IH1gOwogIGNvbnN0IFBUU19GUyA9IGAjdmVyc2lvbiAzMDAgZXMKICBwcmVjaXNpb24gbWVkaXVtcCBmbG9hdDsgaW4gZmxvYXQgdkE7IGluIHZlYzMgdkNvbDsgb3V0IHZlYzQgbzsKICB2b2lkIG1haW4oKXsgZmxvYXQgZD1sZW5ndGgoZ2xfUG9pbnRDb29yZC0uNSkqMi47IGZsb2F0IGE9c21vb3Roc3RlcCgxLiwuMTIsZCk7IGEqPWEqdkE7IG89dmVjNCh2Q29sKmEsIGEpOyB9YDsKCiAgLy8gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tIHNldHVwCiAgY29uc3QgZ2wgPSBjdi5nZXRDb250ZXh0KCd3ZWJnbDInLCB7IGFscGhhOnRydWUsIHByZW11bHRpcGxpZWRBbHBoYTp0cnVlLCBhbnRpYWxpYXM6ZmFsc2UsIHBvd2VyUHJlZmVyZW5jZTonbG93LXBvd2VyJyB9KTsKICBpZiAoIWdsKSB7IGN0YS5jbGFzc0xpc3QuYWRkKCduby1nbCcpOyByZXR1cm47IH0KICBjb25zdCBjb21waWxlID0gKHR5cGUsIHNyYykgPT4geyBjb25zdCBzID0gZ2wuY3JlYXRlU2hhZGVyKHR5cGUpOyBnbC5zaGFkZXJTb3VyY2Uocywgc3JjKTsgZ2wuY29tcGlsZVNoYWRlcihzKTsKICAgIGlmICghZ2wuZ2V0U2hhZGVyUGFyYW1ldGVyKHMsIGdsLkNPTVBJTEVfU1RBVFVTKSkgdGhyb3cgbmV3IEVycm9yKGdsLmdldFNoYWRlckluZm9Mb2cocykpOyByZXR1cm4gczsgfTsKICBjb25zdCBwcm9ncmFtID0gKHZzLCBmcykgPT4geyBjb25zdCBwID0gZ2wuY3JlYXRlUHJvZ3JhbSgpOyBnbC5hdHRhY2hTaGFkZXIocCwgY29tcGlsZShnbC5WRVJURVhfU0hBREVSLCB2cykpOyBnbC5hdHRhY2hTaGFkZXIocCwgY29tcGlsZShnbC5GUkFHTUVOVF9TSEFERVIsIGZzKSk7IGdsLmxpbmtQcm9ncmFtKHApOwogICAgaWYgKCFnbC5nZXRQcm9ncmFtUGFyYW1ldGVyKHAsIGdsLkxJTktfU1RBVFVTKSkgdGhyb3cgbmV3IEVycm9yKGdsLmdldFByb2dyYW1JbmZvTG9nKHApKTsgcmV0dXJuIHA7IH07CiAgbGV0IGZhY2UsIHB0cywgbGluZVAsIGZhZGVQLCBVID0ge30sIHZhb1F1YWQsIHZhb1B0cywgdmFvTGluZSwgbGI7CiAgY29uc3QgTl9QVFMgPSAxODA7CiAgdHJ5IHsKICAgIGZhY2UgPSBwcm9ncmFtKFFVQURfVlMsIEZBQ0VfRlMpOyBwdHMgPSBwcm9ncmFtKFBUU19WUywgUFRTX0ZTKTsKICAgIGxpbmVQID0gcHJvZ3JhbShMSU5FX1ZTLCBMSU5FX0ZTKTsgZmFkZVAgPSBwcm9ncmFtKFFVQURfVlMsIEZBREVfRlMpOwogIH0gY2F0Y2ggKGUpIHsgY29uc29sZS5lcnJvcihlKTsgY3RhLmNsYXNzTGlzdC5hZGQoJ25vLWdsJyk7IHJldHVybjsgfQogIGZvciAoY29uc3QgayBvZiBbJ3VSZXMnLCd1VScsJ3VUaW1lJywndUhvdmVyJ10pIHsgVVsnZl8nK2tdID0gZ2wuZ2V0VW5pZm9ybUxvY2F0aW9uKGZhY2UsIGspOyBVWydwXycra10gPSBnbC5nZXRVbmlmb3JtTG9jYXRpb24ocHRzLCBrKTsgfQogIFUuZl91U2NyYXRjaCA9IGdsLmdldFVuaWZvcm1Mb2NhdGlvbihmYWNlLCAndVNjcmF0Y2gnKTsKICBVLmxfdVJlcyA9IGdsLmdldFVuaWZvcm1Mb2NhdGlvbihsaW5lUCwgJ3VSZXMnKTsgVS5sX3VVID0gZ2wuZ2V0VW5pZm9ybUxvY2F0aW9uKGxpbmVQLCAndVUnKTsKICBVLmZhZGUgPSBnbC5nZXRVbmlmb3JtTG9jYXRpb24oZmFkZVAsICd1RmFkZScpOwogIHZhb1F1YWQgPSBnbC5jcmVhdGVWZXJ0ZXhBcnJheSgpOyBnbC5iaW5kVmVydGV4QXJyYXkodmFvUXVhZCk7CiAgY29uc3QgcWIgPSBnbC5jcmVhdGVCdWZmZXIoKTsgZ2wuYmluZEJ1ZmZlcihnbC5BUlJBWV9CVUZGRVIsIHFiKTsKICBnbC5idWZmZXJEYXRhKGdsLkFSUkFZX0JVRkZFUiwgbmV3IEZsb2F0MzJBcnJheShbLTEsLTEsIDEsLTEsIC0xLDEsIDEsMV0pLCBnbC5TVEFUSUNfRFJBVyk7CiAgY29uc3QgYVBvcyA9IGdsLmdldEF0dHJpYkxvY2F0aW9uKGZhY2UsICdhUG9zJyk7IGdsLmVuYWJsZVZlcnRleEF0dHJpYkFycmF5KGFQb3MpOyBnbC52ZXJ0ZXhBdHRyaWJQb2ludGVyKGFQb3MsIDIsIGdsLkZMT0FULCBmYWxzZSwgMCwgMCk7CiAgdmFvUHRzID0gZ2wuY3JlYXRlVmVydGV4QXJyYXkoKTsgZ2wuYmluZFZlcnRleEFycmF5KHZhb1B0cyk7CiAgY29uc3Qgc2VlZHMgPSBuZXcgRmxvYXQzMkFycmF5KE5fUFRTICogNCk7CiAgbGV0IHMgPSAweDI1NDVGNDkxOyBjb25zdCBybmQgPSAoKSA9PiB7IHMgPSAoTWF0aC5pbXVsKHMsIDE2NjQ1MjUpICsgMTAxMzkwNDIyMykgPj4+IDA7IHJldHVybiBzIC8gNDI5NDk2NzI5NjsgfTsKICBmb3IgKGxldCBpID0gMDsgaSA8IHNlZWRzLmxlbmd0aDsgaSsrKSBzZWVkc1tpXSA9IHJuZCgpOwogIGNvbnN0IHBiID0gZ2wuY3JlYXRlQnVmZmVyKCk7IGdsLmJpbmRCdWZmZXIoZ2wuQVJSQVlfQlVGRkVSLCBwYik7IGdsLmJ1ZmZlckRhdGEoZ2wuQVJSQVlfQlVGRkVSLCBzZWVkcywgZ2wuU1RBVElDX0RSQVcpOwogIGNvbnN0IGFTZWVkID0gZ2wuZ2V0QXR0cmliTG9jYXRpb24ocHRzLCAnYVNlZWQnKTsgZ2wuZW5hYmxlVmVydGV4QXR0cmliQXJyYXkoYVNlZWQpOyBnbC52ZXJ0ZXhBdHRyaWJQb2ludGVyKGFTZWVkLCA0LCBnbC5GTE9BVCwgZmFsc2UsIDAsIDApOwogIC8vIHNjcmF0Y2ggc3Ryb2tlczogZHluYW1pYyBsaW5lIGxpc3QgKHgsIHksIGludGVuc2l0eSkgaW4gZGVzaWduIHVuaXRzCiAgdmFvTGluZSA9IGdsLmNyZWF0ZVZlcnRleEFycmF5KCk7IGdsLmJpbmRWZXJ0ZXhBcnJheSh2YW9MaW5lKTsKICBsYiA9IGdsLmNyZWF0ZUJ1ZmZlcigpOyBnbC5iaW5kQnVmZmVyKGdsLkFSUkFZX0JVRkZFUiwgbGIpOyBnbC5idWZmZXJEYXRhKGdsLkFSUkFZX0JVRkZFUiwgMTIgKiA0MDk2LCBnbC5EWU5BTUlDX0RSQVcpOwogIGNvbnN0IGFQID0gZ2wuZ2V0QXR0cmliTG9jYXRpb24obGluZVAsICdhUCcpLCBhVyA9IGdsLmdldEF0dHJpYkxvY2F0aW9uKGxpbmVQLCAnYVcnKTsKICBnbC5lbmFibGVWZXJ0ZXhBdHRyaWJBcnJheShhUCk7IGdsLnZlcnRleEF0dHJpYlBvaW50ZXIoYVAsIDIsIGdsLkZMT0FULCBmYWxzZSwgMTIsIDApOwogIGdsLmVuYWJsZVZlcnRleEF0dHJpYkFycmF5KGFXKTsgZ2wudmVydGV4QXR0cmliUG9pbnRlcihhVywgMSwgZ2wuRkxPQVQsIGZhbHNlLCAxMiwgOCk7CiAgZ2wuYmluZFZlcnRleEFycmF5KG51bGwpOwogIC8vIHNjcmF0Y2ggbWFwOiBhbiBvZmZzY3JlZW4gdGV4dHVyZSB0aGUgcG9pbnRlciBkcmF3cyBpbnRvOyBpdCBmYWRlcyBhIGxpdHRsZSBldmVyeSBmcmFtZQogIGxldCBzY3JhdGNoVGV4ID0gbnVsbCwgZmJvID0gbnVsbDsKICBmdW5jdGlvbiBtYWtlU2NyYXRjaE1hcCh3LCBoKSB7CiAgICBpZiAoc2NyYXRjaFRleCkgeyBnbC5kZWxldGVUZXh0dXJlKHNjcmF0Y2hUZXgpOyBnbC5kZWxldGVGcmFtZWJ1ZmZlcihmYm8pOyB9CiAgICBzY3JhdGNoVGV4ID0gZ2wuY3JlYXRlVGV4dHVyZSgpOyBnbC5iaW5kVGV4dHVyZShnbC5URVhUVVJFXzJELCBzY3JhdGNoVGV4KTsKICAgIGdsLnRleEltYWdlMkQoZ2wuVEVYVFVSRV8yRCwgMCwgZ2wuUkdCQSwgdywgaCwgMCwgZ2wuUkdCQSwgZ2wuVU5TSUdORURfQllURSwgbnVsbCk7CiAgICBnbC50ZXhQYXJhbWV0ZXJpKGdsLlRFWFRVUkVfMkQsIGdsLlRFWFRVUkVfTUlOX0ZJTFRFUiwgZ2wuTElORUFSKTsgZ2wudGV4UGFyYW1ldGVyaShnbC5URVhUVVJFXzJELCBnbC5URVhUVVJFX01BR19GSUxURVIsIGdsLkxJTkVBUik7CiAgICBnbC50ZXhQYXJhbWV0ZXJpKGdsLlRFWFRVUkVfMkQsIGdsLlRFWFRVUkVfV1JBUF9TLCBnbC5DTEFNUF9UT19FREdFKTsgZ2wudGV4UGFyYW1ldGVyaShnbC5URVhUVVJFXzJELCBnbC5URVhUVVJFX1dSQVBfVCwgZ2wuQ0xBTVBfVE9fRURHRSk7CiAgICBmYm8gPSBnbC5jcmVhdGVGcmFtZWJ1ZmZlcigpOyBnbC5iaW5kRnJhbWVidWZmZXIoZ2wuRlJBTUVCVUZGRVIsIGZibyk7CiAgICBnbC5mcmFtZWJ1ZmZlclRleHR1cmUyRChnbC5GUkFNRUJVRkZFUiwgZ2wuQ09MT1JfQVRUQUNITUVOVDAsIGdsLlRFWFRVUkVfMkQsIHNjcmF0Y2hUZXgsIDApOwogICAgZ2wuY2xlYXJDb2xvcigwLCAwLCAwLCAwKTsgZ2wuY2xlYXIoZ2wuQ09MT1JfQlVGRkVSX0JJVCk7CiAgICBnbC5iaW5kRnJhbWVidWZmZXIoZ2wuRlJBTUVCVUZGRVIsIG51bGwpOwogIH0KICBjb25zdCBzZWdzID0gW107CiAgbGV0IHByZXYgPSBudWxsOwogIGN0YS5hZGRFdmVudExpc3RlbmVyKCdwb2ludGVybW92ZScsIGUgPT4gewogICAgY29uc3QgciA9IGN0YS5nZXRCb3VuZGluZ0NsaWVudFJlY3QoKTsgY29uc3QgdSA9IHIud2lkdGggLyA3MDY7CiAgICBjb25zdCB4ID0gKGUuY2xpZW50WCAtIHIubGVmdCkgLyB1LCB5ID0gKGUuY2xpZW50WSAtIHIudG9wKSAvIHU7CiAgICBpZiAoIXByZXYpIHsgcHJldiA9IHsgeCwgeSB9OyByZXR1cm47IH0KICAgIGNvbnN0IGR4ID0geCAtIHByZXYueCwgZHkgPSB5IC0gcHJldi55LCBsZW4gPSBNYXRoLmh5cG90KGR4LCBkeSk7CiAgICBpZiAobGVuIDwgMC44KSByZXR1cm47CiAgICBjb25zdCB0eCA9IGR4IC8gbGVuLCB0eSA9IGR5IC8gbGVuLCBueCA9IC10eSwgbnkgPSB0eDsKICAgIGZvciAobGV0IGkgPSAwOyBpIDwgMzsgaSsrKSB7ICAgICAgICAgICAgICAgICAgICAgLy8gYSBmZXcgaGFpcmxpbmVzIGJlc2lkZSB0aGUgcGF0aCwgbGlrZSBhIGJ1cnIKICAgICAgY29uc3QgbyA9IChybmQoKSAtIDAuNSkgKiA1LCB3ID0gMC4zICsgMC4zNSAqIHJuZCgpLCBqMCA9IHJuZCgpICogMC4zICogbGVuLCBqMSA9IHJuZCgpICogMC4zICogbGVuOwogICAgICBzZWdzLnB1c2gocHJldi54ICsgbnggKiBvICsgdHggKiBqMCwgcHJldi55ICsgbnkgKiBvICsgdHkgKiBqMCwgdywgeCArIG54ICogbyAtIHR4ICogajEsIHkgKyBueSAqIG8gLSB0eSAqIGoxLCB3KTsKICAgIH0KICAgIGlmIChzZWdzLmxlbmd0aCA+IDYgKiAxMDAwKSBzZWdzLnNwbGljZSgwLCBzZWdzLmxlbmd0aCAtIDYgKiAxMDAwKTsKICAgIHByZXYgPSB7IHgsIHkgfTsKICB9KTsKICBjdGEuYWRkRXZlbnRMaXN0ZW5lcigncG9pbnRlcmxlYXZlJywgKCkgPT4geyBwcmV2ID0gbnVsbDsgfSk7CgogIC8vIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSBmcmFtZQogIGxldCBXID0gMCwgSCA9IDAsIGxhc3RUaWNrID0gMCwgcmFmID0gMDsKICBmdW5jdGlvbiByZXNpemUoKSB7CiAgICBjb25zdCByID0gY3RhLmdldEJvdW5kaW5nQ2xpZW50UmVjdCgpOwogICAgY29uc3QgZHByID0gTWF0aC5taW4od2luZG93LmRldmljZVBpeGVsUmF0aW8gfHwgMSwgMik7CiAgICBjb25zdCB1ID0gci53aWR0aCAvIDcwNjsKICAgIGNvbnN0IHcgPSBNYXRoLnJvdW5kKCg3MDYgKyA5NikgKiB1ICogZHByKSwgaCA9IE1hdGgucm91bmQoKDIzMiArIDk2KSAqIHUgKiBkcHIpOwogICAgaWYgKHcgPCA0IHx8IGggPCA0KSByZXR1cm4gZmFsc2U7CiAgICBpZiAodyAhPT0gVyB8fCBoICE9PSBIKSB7IFcgPSB3OyBIID0gaDsgY3Yud2lkdGggPSBXOyBjdi5oZWlnaHQgPSBIOyBtYWtlU2NyYXRjaE1hcChXLCBIKTsgfQogICAgcmV0dXJuIHRydWU7CiAgfQogIGZ1bmN0aW9uIHJlbmRlcihub3cpIHsKICAgIGlmICghcmVzaXplKCkpIHJldHVybjsKICAgIGNvbnN0IGhvdmVyID0gcGFyc2VGbG9hdChnZXRDb21wdXRlZFN0eWxlKGNsb2NrKS5vcGFjaXR5KSB8fCAwOwogICAgY29uc3QgdCA9IHJlZHVjZWQgPyAwIDogbm93IC8gMTAwMDsKICAgIGdsLnZpZXdwb3J0KDAsIDAsIFcsIEgpOwogICAgLy8gMS4gc2NyYXRjaCBtYXA6IGZhZGUgYSB0b3VjaCwgdGhlbiBhZGQgdGhpcyBmcmFtZSdzIHN0cm9rZXMKICAgIGdsLmJpbmRGcmFtZWJ1ZmZlcihnbC5GUkFNRUJVRkZFUiwgZmJvKTsKICAgIGdsLmVuYWJsZShnbC5CTEVORCk7CiAgICBnbC5ibGVuZEVxdWF0aW9uKGdsLkZVTkNfUkVWRVJTRV9TVUJUUkFDVCk7IGdsLmJsZW5kRnVuYyhnbC5PTkUsIGdsLk9ORSk7CiAgICBnbC51c2VQcm9ncmFtKGZhZGVQKTsgZ2wudW5pZm9ybTFmKFUuZmFkZSwgMS4yNSAvIDI1NSk7CiAgICBnbC5iaW5kVmVydGV4QXJyYXkodmFvUXVhZCk7IGdsLmRyYXdBcnJheXMoZ2wuVFJJQU5HTEVfU1RSSVAsIDAsIDQpOwogICAgZ2wuYmxlbmRFcXVhdGlvbihnbC5GVU5DX0FERCk7CiAgICBpZiAoc2Vncy5sZW5ndGgpIHsKICAgICAgZ2wudXNlUHJvZ3JhbShsaW5lUCk7IGdsLnVuaWZvcm0yZihVLmxfdVJlcywgVywgSCk7IGdsLnVuaWZvcm0xZihVLmxfdVUsIFcgLyA4MDIpOwogICAgICBnbC5iaW5kVmVydGV4QXJyYXkodmFvTGluZSk7IGdsLmJpbmRCdWZmZXIoZ2wuQVJSQVlfQlVGRkVSLCBsYik7CiAgICAgIGdsLmJ1ZmZlclN1YkRhdGEoZ2wuQVJSQVlfQlVGRkVSLCAwLCBuZXcgRmxvYXQzMkFycmF5KHNlZ3MpKTsKICAgICAgZ2wuZHJhd0FycmF5cyhnbC5MSU5FUywgMCwgc2Vncy5sZW5ndGggLyAzKTsgc2Vncy5sZW5ndGggPSAwOwogICAgfQogICAgZ2wuYmluZEZyYW1lYnVmZmVyKGdsLkZSQU1FQlVGRkVSLCBudWxsKTsKICAgIC8vIDIuIGZhY2UgKyBjcnlzdGFsCiAgICBnbC5kaXNhYmxlKGdsLkJMRU5EKTsKICAgIGdsLnVzZVByb2dyYW0oZmFjZSk7CiAgICBnbC5hY3RpdmVUZXh0dXJlKGdsLlRFWFRVUkUwKTsgZ2wuYmluZFRleHR1cmUoZ2wuVEVYVFVSRV8yRCwgc2NyYXRjaFRleCk7IGdsLnVuaWZvcm0xaShVLmZfdVNjcmF0Y2gsIDApOwogICAgZ2wudW5pZm9ybTJmKFUuZl91UmVzLCBXLCBIKTsgZ2wudW5pZm9ybTFmKFUuZl91VSwgVyAvIDgwMik7IGdsLnVuaWZvcm0xZihVLmZfdVRpbWUsIHQpOyBnbC51bmlmb3JtMWYoVS5mX3VIb3ZlciwgaG92ZXIpOwogICAgZ2wuYmluZFZlcnRleEFycmF5KHZhb1F1YWQpOyBnbC5kcmF3QXJyYXlzKGdsLlRSSUFOR0xFX1NUUklQLCAwLCA0KTsKICAgIC8vIDMuIHBhcnRpY2xlcwogICAgZ2wuZW5hYmxlKGdsLkJMRU5EKTsgZ2wuYmxlbmRGdW5jKGdsLk9ORSwgZ2wuT05FKTsKICAgIGdsLnVzZVByb2dyYW0ocHRzKTsKICAgIGdsLnVuaWZvcm0yZihVLnBfdVJlcywgVywgSCk7IGdsLnVuaWZvcm0xZihVLnBfdVUsIFcgLyA4MDIpOyBnbC51bmlmb3JtMWYoVS5wX3VUaW1lLCB0KTsgZ2wudW5pZm9ybTFmKFUucF91SG92ZXIsIGhvdmVyKTsKICAgIGdsLmJpbmRWZXJ0ZXhBcnJheSh2YW9QdHMpOyBnbC5kcmF3QXJyYXlzKGdsLlBPSU5UUywgMCwgTl9QVFMpOwogICAgZ2wuYmluZFZlcnRleEFycmF5KG51bGwpOwogICAgbGFzdFRpY2sgPSBwZXJmb3JtYW5jZS5ub3coKTsKICB9CiAgY29uc3QgbG9vcCA9IG5vdyA9PiB7IHJhZiA9IHJlcXVlc3RBbmltYXRpb25GcmFtZShsb29wKTsgcmVuZGVyKG5vdyk7IH07CiAgcmVuZGVyKHBlcmZvcm1hbmNlLm5vdygpKTsgICAgICAgICAgICAgICAgICAgICAgIC8vIHBhaW50IHN5bmNocm9ub3VzbHkgc28gYSBiYWNrZ3JvdW5kIHRhYiBpcyBuZXZlciBibGFuawogIHJhZiA9IHJlcXVlc3RBbmltYXRpb25GcmFtZShsb29wKTsKICAvLyByQUYgY2FuIHN0YWxsIGluIGEgaGlkZGVuIHRhYjsga2VlcCB0aGUgaG92ZXIgc3RhdGUgaG9uZXN0IHdpdGggYSBzbG93IHdhdGNoZG9nCiAgc2V0SW50ZXJ2YWwoKCkgPT4geyBpZiAocGVyZm9ybWFuY2Uubm93KCkgLSBsYXN0VGljayA+IDQwMCkgcmVuZGVyKHBlcmZvcm1hbmNlLm5vdygpKTsgfSwgNTAwKTsKICBhZGRFdmVudExpc3RlbmVyKCdyZXNpemUnLCAoKSA9PiByZW5kZXIocGVyZm9ybWFuY2Uubm93KCkpKTsKICBkb2N1bWVudC5hZGRFdmVudExpc3RlbmVyKCd2aXNpYmlsaXR5Y2hhbmdlJywgKCkgPT4gcmVuZGVyKHBlcmZvcm1hbmNlLm5vdygpKSk7CiAgY3YuYWRkRXZlbnRMaXN0ZW5lcignd2ViZ2xjb250ZXh0bG9zdCcsIGUgPT4geyBlLnByZXZlbnREZWZhdWx0KCk7IGNhbmNlbEFuaW1hdGlvbkZyYW1lKHJhZik7IGN0YS5jbGFzc0xpc3QuYWRkKCduby1nbCcpOyB9KTsKICB3aW5kb3cuX19yZW5kZXIgPSAoKSA9PiByZW5kZXIocGVyZm9ybWFuY2Uubm93KCkpOwp9KSgpOwo8L3NjcmlwdD4KPC9ib2R5Pgo8L2h0bWw+Cg==';
+const COLL = [
+  { name: 'NOIR', notes: 'LOREM / IPSUM / DOLOR', desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do tempor.', accent: '#e8b25a', bg: '#060504', img: 'export/noir-hero.jpg', pos: '50% 55%', mask: 'radial-gradient(ellipse 30% 30% at 50% 57%, #000 60%, transparent 100%)' },
+  { name: 'EMBER', notes: 'TEMPOR / AMET / CONSECTETUR', desc: 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi.', accent: '#f0873a', bg: '#0a0604', img: 'export/ember.jpg', pos: '50% 50%', mask: 'radial-gradient(ellipse 32% 36% at 50% 45%, #000 60%, transparent 100%)' },
+  { name: 'VEIL', notes: 'LABORE / SED / MAGNA', desc: 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore fugiat.', accent: '#b9a2d8', bg: '#070609', img: 'export/veil.jpg', pos: '50% 50%', mask: 'radial-gradient(ellipse 32% 36% at 50% 46%, #000 60%, transparent 100%)' },
+];
+const MAT = [
+  { '--page': '#0b0a09', '--edge': 'rgba(232,178,90,.42)', '--sheen': 'rgba(255,226,180,.07)' },
+  { '--page': '#130c08', '--edge': 'rgba(240,150,70,.72)', '--sheen': 'rgba(255,186,120,.10)' },
+  { '--page': '#0b0a0d', '--edge': 'rgba(192,182,218,.40)', '--sheen': 'rgba(222,212,242,.07)' },
+];
+const FOLIO = COLL.map((c, i) => { const n = c.notes.split(' / '); return { name: c.name, desc: c.desc, img: c.img, pos: c.pos, mask: c.mask, n1: n[0], n2: n[1], n3: n[2], idx: '0' + (i + 1), pgL: '0' + (i * 2 + 1), pgR: '0' + (i * 2 + 2), vis: i === 0 ? 'visible' : 'hidden' }; });
+const NS = 12, BEND = 2.3, LIGHT = 35, D2R = Math.PI / 180;
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const ease = x => x * x * (3 - 2 * x);
+
+class Component extends DCLogic {
+  state = { note: 0, sel: 0, items: [], bagOpen: false, ck: false, mobile: false, stack: false, glFail: false, navH: -1 };
+
+  componentDidMount() {
+    window.__noirCta = id => { if (id === 'discover') this.go('collection')(); if (id === 'acquire') this.addItem(0); };
+    this._msg = e => { const d = e.data; if (!d || typeof d.noirCta !== 'string') return; if (d.noirCta === 'discover') this.go('collection')(); if (d.noirCta === 'acquire') this.addItem(0); };
+    try { const saved = JSON.parse(localStorage.getItem('noir-bag-v1') || '[]'); if (Array.isArray(saved)) this.setState({ items: saved.filter(x => x && COLL[x.id] && x.qty > 0).map(x => ({ id: x.id, qty: Math.min(99, x.qty | 0) })) }); } catch (e) {}
+    this._esc = e => { if (e.key === 'Escape' && this.state.bagOpen) { e.preventDefault(); this.closeBag(); } };
+    window.addEventListener('keydown', this._esc);
+    window.addEventListener('message', this._msg);
+    this.reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.T = { heroT: 0, scentT: 0, noteF: 0, ritualT: 0, finalT: 0, px: 0, py: 0, fogMul: 1, exposure: 1 };
+    this.mq = window.matchMedia('(max-width: 1180px)');
+    this._mq = () => { const fo = document.querySelector('[data-folio]'); const pw = fo ? fo.offsetWidth / 2 : innerWidth / 2; this.setState({ mobile: pw < 340, stack: innerWidth <= 980, navHidden: this.mq.matches }); requestAnimationFrame(() => this.craftUpdate()); };
+    window.addEventListener('resize', this._mq);
+    this._mq(); this.mq.addEventListener('change', this._mq);
+    this._pm = e => { this.T.px = e.clientX / innerWidth * 2 - 1; this.T.py = e.clientY / innerHeight * 2 - 1; };
+    window.addEventListener('pointermove', this._pm, { passive: true });
+    this.tp = { x: 0, y: 0 }; this.tilt = { x: 0, y: 0 };
+    this.cio = new IntersectionObserver(([e]) => { this.collVis = e.isIntersecting; if (e.isIntersecting && !this.reduced) this.startLoop(); }, { rootMargin: '10% 0px' });
+    const cs = document.getElementById('collection'); cs && this.cio.observe(cs);
+    this.initScene();
+    this.initThreeUiCtas();
+    if (!this.reduced) Promise.resolve(window.__noirModules && window.__noirModules.noirWordmark).then(m => m.createWordmark(document.querySelector('[data-wordmark]'))).then(w => { this.wm = w; }).catch(err => console.warn('NOIR: wordmark effect unavailable', err));
+    const wait = () => { if (window.gsap && window.ScrollTrigger) this.setupMotion(); else this._wt = setTimeout(wait, 60); };
+    wait();
+  }
+
+  componentWillUnmount() {
+    delete window.__noirCta;
+    window.removeEventListener('message', this._msg);
+    window.removeEventListener('keydown', this._esc);
+    window.removeEventListener('pointermove', this._pm);
+    this.mq && this.mq.removeEventListener('change', this._mq);
+    window.removeEventListener('resize', this._mq);
+    this.lockScroll(false);
+    clearTimeout(this._wt);
+    this.io && this.io.disconnect();
+    this.cio && this.cio.disconnect();
+    cancelAnimationFrame(this._raf); this.endDrag && this.endDrag();
+    this.api && this.api.dispose();
+    this.wm && this.wm.dispose();
+    this.ctx && this.ctx.revert();
+  }
+
+  initThreeUiCtas() {
+    const raw = atob(THREEUI_CTA_B64);
+    document.querySelectorAll('[data-threeui-cta]').forEach(f => {
+      const qs = '?id=' + f.dataset.threeuiCta + '&label=' + encodeURIComponent(f.dataset.threeuiLabel);
+      f.srcdoc = raw.replace('new URLSearchParams(location.search)', 'new URLSearchParams(' + JSON.stringify(qs) + ')');
+    });
+  }
+
+  async initScene() {
+    const stage = document.querySelector('[data-noir-stage]');
+    try {
+      const mod = await (window.__noirModules && window.__noirModules.noirScene);
+      this.api = await mod.createNoirScene(stage, {
+        reduced: this.reduced, target: this.T,
+        zones: { ritual: document.getElementById('ritual'), imm: document.getElementById('immersion'), craft: document.getElementById('craft'), final: document.getElementById('final') },
+        onImm: c => this.immWarp(c),
+      });
+      const vis = new Set();
+      this.io = new IntersectionObserver(es => {
+        es.forEach(e => (e.isIntersecting ? vis.add(e.target) : vis.delete(e.target)));
+        this.api.setVisible(vis.size > 0);
+      }, { rootMargin: '8% 0px' });
+      document.querySelectorAll('[data-3d]').forEach(el => this.io.observe(el));
+    } catch (err) {
+      console.warn('NOIR: 3D scene unavailable, using still fallback.', err);
+      this.setState({ glFail: true });
+    }
+  }
+
+  setupMotion() {
+    const gsap = window.gsap, ST = window.ScrollTrigger, T = this.T, R = this.reduced;
+    gsap.registerPlugin(ST);
+    this.ctx = gsap.context(() => {
+      ST.create({ trigger: '#hero', start: 'top top', end: 'bottom bottom', onUpdate: s => { T.heroT = s.progress; } });
+      ST.create({ trigger: '#scent', start: 'top bottom', end: 'top top', onUpdate: s => { T.scentT = s.progress; } });
+      ST.create({ trigger: '#scent', start: 'top top', end: 'bottom bottom', onUpdate: s => {
+        const n = Math.min(2, Math.max(0, Math.floor(s.progress * 3)));
+        this.scrollNote = n;
+        if (this.hoverNote == null) { T.noteF = n; if (n !== this.state.note) this.setState({ note: n }); }
+      } });
+      ST.create({ trigger: '#ritual', start: 'top top', end: 'bottom bottom', onUpdate: s => { T.ritualT = s.progress; } });
+      ST.create({ trigger: '#immersion', start: 'top top', end: 'bottom bottom', onUpdate: s => { T.immT = s.progress; } });
+      ST.create({ trigger: '#craft', start: 'top bottom', end: 'bottom top', onUpdate: () => this.craftUpdate(), onRefresh: () => this.craftUpdate() });
+      ST.create({ trigger: '#final', start: 'top bottom', end: 'center center', onUpdate: s => { T.finalT = s.progress; } });
+
+      if (R) {
+        const mq0 = document.querySelector('[data-craft-marquee]');
+        if (mq0) gsap.set(mq0, { transformOrigin: '0% 50%', x: () => innerWidth * 0.04, scale: () => (innerWidth * 0.92) / mq0.scrollWidth });
+        return;
+      }
+
+      gsap.fromTo('[data-scroll-dot]', { yPercent: -100 }, { yPercent: 450, duration: 2.6, ease: 'power2.inOut', repeat: -1, repeatDelay: 0.4 });
+      gsap.fromTo('[data-noir-stage]', { opacity: 0 }, { opacity: 1, duration: 2.6, ease: 'power2.out' });
+      gsap.from('[data-hero-line]', { yPercent: 112, duration: 1.9, ease: 'expo.out', stagger: 0.12, delay: 0.5 });
+      gsap.from('[data-intro]', { opacity: 0, duration: 1.6, ease: 'power2.out', delay: 1.2, stagger: 0.08 });
+
+      gsap.to('[data-hero-x]', { yPercent: -112, ease: 'none', stagger: 0.04, scrollTrigger: { trigger: '#hero', start: 'top top', end: '+=60%', scrub: 1 } });
+      gsap.to('[data-hero-exit]', { opacity: 0, y: -30, ease: 'none', scrollTrigger: { trigger: '#hero', start: 'top top', end: '+=35%', scrub: 1 } });
+
+      gsap.from('[data-scent-reveal]', { yPercent: 115, ease: 'none', stagger: 0.1, scrollTrigger: { trigger: '#scent', start: 'top 80%', end: 'top 10%', scrub: 1 } });
+
+      const rt = gsap.timeline({ scrollTrigger: { trigger: '#ritual', start: 'top top', end: 'bottom bottom', scrub: 1 } });
+      rt.from('[data-ritual-eyebrow]', { opacity: 0, duration: 0.1 }, 0)
+        .from('[data-ritual-line]', { yPercent: 112, stagger: 0.06, duration: 0.2, ease: 'power3.out' }, 0)
+        .set({}, {}, 1);
+      document.querySelectorAll('[data-ritual-step]').forEach((el, i) => {
+        const at = 0.3 + i * 0.2;
+        rt.fromTo(el, { clipPath: 'inset(0% 100% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.16, ease: 'none' }, at)
+          .fromTo(el.querySelector('[data-ritual-rule]'), { scaleX: 0 }, { scaleX: 1, duration: 0.18, ease: 'none' }, at);
+      });
+
+      const imt = gsap.timeline({ scrollTrigger: { trigger: '#immersion', start: 'top top', end: 'bottom bottom', scrub: 1 } });
+      imt.from('[data-imm-eyebrow]', { opacity: 0, duration: 0.06 }, 0)
+        .from('[data-imm-line]', { yPercent: 112, stagger: 0.04, duration: 0.12, ease: 'power3.out' }, 0)
+        .from('[data-imm-sub]', { opacity: 0, y: 14, duration: 0.08 }, 0.1)
+        .to(['[data-imm-eyebrow]', '[data-imm-head]', '[data-imm-sub]'], { opacity: 0, duration: 0.1 }, 0.82)
+        .set({}, {}, 1);
+
+      gsap.set('[data-coll-title]', { clipPath: 'inset(-10% 100% -10% 0%)' });
+      gsap.set('[data-folio-intro]', { z: -380, rotationX: 7, opacity: 0 });
+      gsap.set('[data-coll-late]', { opacity: 0 });
+      const ci = gsap.timeline({ paused: true });
+      ci.to('[data-coll-title]', { clipPath: 'inset(-10% 0% -10% 0%)', duration: 1.6, ease: 'expo.inOut' })
+        .to('[data-folio-intro]', { z: 0, rotationX: 0, opacity: 1, duration: 2.4, ease: 'power3.out', clearProps: 'opacity' }, 0.6)
+        .to('[data-coll-late]', { opacity: 1, duration: 1.2, ease: 'power2.out' }, 2.1);
+      ST.create({ trigger: '#collection', start: 'top 70%', once: true, onEnter: () => ci.play() });
+
+      const mq = document.querySelector('[data-craft-marquee]');
+      const fit = () => (innerWidth * 0.92) / mq.scrollWidth;
+      gsap.set(mq, { transformOrigin: '0% 50%' });
+      gsap.timeline({ scrollTrigger: { trigger: mq, start: 'top 95%', end: 'top 6%', scrub: 1, invalidateOnRefresh: true } })
+        .fromTo(mq, { x: () => innerWidth * 0.12, scale: 1 }, { x: () => -(mq.scrollWidth - innerWidth * 0.94), ease: 'none', duration: 0.45 })
+        .to(mq, { x: () => innerWidth * 0.04, scale: fit, ease: 'power2.inOut', duration: 0.25 })
+        .to({}, { duration: 0.3 });
+      gsap.fromTo(mq, { opacity: 1 }, { opacity: 0.2, ease: 'none', immediateRender: false, scrollTrigger: { trigger: mq, start: 'top 4%', end: 'top -40%', scrub: true } });
+      gsap.fromTo('[data-craft-film]', { clipPath: 'inset(20% 26% 20% 26%)' }, { clipPath: 'inset(0% 0% 0% 0%)', ease: 'none', scrollTrigger: { trigger: '[data-craft-row]', start: 'top 95%', end: 'top 30%', scrub: true } });
+      gsap.fromTo('[data-craft-plate] img', { scale: 1.25 }, { scale: 1, ease: 'none', scrollTrigger: { trigger: '[data-craft-row]', start: 'top 95%', end: 'top 30%', scrub: true } });
+      gsap.fromTo('[data-craft-macro] img', { yPercent: -10 }, { yPercent: 10, ease: 'none', scrollTrigger: { trigger: '[data-craft-macro]', start: 'top bottom', end: 'bottom top', scrub: true } });
+      document.querySelectorAll('[data-craft-item]').forEach(el => {
+        gsap.from(el.querySelectorAll('[data-craft-l]'), { yPercent: 105, duration: 1.4, ease: 'expo.out', stagger: 0.12, scrollTrigger: { trigger: el, start: 'top 72%' } });
+      });
+
+      gsap.set('[data-wordmark]', { clipPath: 'inset(-45% 100% -5% 0%)' });
+      gsap.to('[data-wordmark]', { clipPath: 'inset(-45% 0% -5% 0%)', duration: 3.2, ease: 'power3.inOut', scrollTrigger: { trigger: '[data-wordmark]', start: 'top 92%' } });
+      gsap.fromTo('[data-foot-rule]', { scaleX: 0 }, { scaleX: 1, ease: 'none', scrollTrigger: { trigger: '[data-footer]', start: 'top bottom', end: 'top 55%', scrub: true } });
+      gsap.fromTo('[data-noir-stage]', { opacity: 1 }, { opacity: 0.3, ease: 'none', immediateRender: false, scrollTrigger: { trigger: '[data-footer]', start: 'top bottom', end: 'top 35%', scrub: true } });
+
+      const ft = gsap.timeline({ scrollTrigger: { trigger: '#final', start: 'top 75%', end: 'center center', scrub: 1 } });
+      ft.fromTo('[data-final-l]', { opacity: 0, letterSpacing: '0.34em', xPercent: -8 }, { opacity: 1, letterSpacing: '0.02em', xPercent: 0, ease: 'none' }, 0)
+        .fromTo('[data-final-r]', { opacity: 0, letterSpacing: '0.34em', xPercent: 8 }, { opacity: 1, letterSpacing: '0.02em', xPercent: 0, ease: 'none' }, 0)
+        .fromTo('[data-final-meta]', { opacity: 0 }, { opacity: 1, stagger: 0.1, ease: 'none' }, 0.55);
+
+    });
+  }
+
+  saveBag(items) { try { localStorage.setItem('noir-bag-v1', JSON.stringify(items)); } catch (e) {} }
+
+  roll(sel, dir) {
+    const gsap = window.gsap; if (!gsap || this.reduced) return;
+    document.querySelectorAll(sel).forEach(el => gsap.fromTo(el, { yPercent: dir * 70, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.55, ease: 'power3.out', overwrite: true }));
+  }
+
+  setItems(items, dir, id) {
+    this.saveBag(items);
+    this.setState({ items }, () => {
+      this.roll('[data-bag-count]', dir); this.roll('[data-subtotal]', dir);
+      if (id != null) { this.roll('[data-qty="' + id + '"]', dir); this.roll('[data-line="' + id + '"]', dir); }
+    });
+  }
+
+  addItem(id) {
+    const items = this.state.items.map(x => ({ ...x })), f = items.find(x => x.id === id);
+    if (f) f.qty = Math.min(99, f.qty + 1); else items.push({ id, qty: 1 });
+    this.setItems(items, 1, id);
+  }
+
+  setQty(id, d) {
+    const items = this.state.items.map(x => ({ ...x })), f = items.find(x => x.id === id);
+    if (!f) return; const q = Math.max(1, Math.min(99, f.qty + d)); if (q === f.qty) return;
+    f.qty = q; this.setItems(items, d > 0 ? 1 : -1, id);
+  }
+
+  removeItem(id) {
+    const gsap = window.gsap, row = document.querySelector('[data-bag-row="' + id + '"]');
+    const done = () => {
+      const items = this.state.items.filter(x => x.id !== id);
+      this.saveBag(items);
+      this.setState({ items }, () => {
+        document.querySelectorAll('[data-bag-row]').forEach(el => { if (gsap) gsap.set(el, { clearProps: 'height,opacity' }); else { el.style.height = ''; el.style.opacity = ''; } });
+        this.roll('[data-bag-count]', -1); this.roll('[data-subtotal]', -1);
+        if (!items.length) { const c = document.querySelector('[data-bag-close]'); c && c.focus(); const em = document.querySelector('[data-bag-empty]'); if (em && gsap && !this.reduced) gsap.fromTo(em, { clipPath: 'inset(0% 0% 100% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.1, ease: 'power3.inOut' }); }
+      });
+    };
+    if (!row || !gsap || this.reduced) return done();
+    if (this._removing) return; this._removing = true;
+    gsap.timeline({ onComplete: () => { this._removing = false; done(); } })
+      .to(row, { opacity: 0.25, duration: 0.3, ease: 'power2.out' })
+      .to(row, { height: 0, opacity: 0, duration: 0.6, ease: 'power3.inOut' });
+  }
+
+  lockScroll(on) {
+    const de = document.documentElement;
+    if (on) { const sw = innerWidth - de.clientWidth; de.style.overflow = 'hidden'; if (sw > 0) de.style.paddingRight = sw + 'px'; }
+    else { de.style.overflow = ''; de.style.paddingRight = ''; }
+  }
+
+  openBag() {
+    if (this.state.bagOpen) return;
+    const gsap = window.gsap, layer = document.querySelector('[data-bag-layer]'), dr = document.querySelector('[data-bag-drawer]'), sc = document.querySelector('[data-bag-scrim]');
+    const main = document.querySelector('main'), stage = document.querySelector('[data-noir-stage]');
+    this.lastFocus = document.activeElement;
+    this.setState({ bagOpen: true }); this.lockScroll(true);
+    layer.style.visibility = 'visible';
+    if (!gsap || this.reduced) { sc.style.opacity = 1; dr.style.transform = 'none'; }
+    else {
+      gsap.killTweensOf([dr, sc]); gsap.killTweensOf([main, stage], 'scale');
+      gsap.to(sc, { opacity: 1, duration: 0.9, ease: 'power2.out' });
+      gsap.fromTo(dr, { xPercent: 100 }, { xPercent: 0, duration: 1.15, ease: 'power4.out' });
+      gsap.fromTo(dr, { rotationY: -9, z: -60 }, { rotationY: 0, z: 0, duration: 0.8, ease: 'power3.out' });
+      gsap.to(main, { scale: 0.985, transformOrigin: '50% ' + (scrollY + innerHeight / 2) + 'px', duration: 1.1, ease: 'power3.out' });
+      gsap.to(stage, { scale: 0.985, transformOrigin: '50% 50%', duration: 1.1, ease: 'power3.out' });
+    }
+    setTimeout(() => { const c = document.querySelector('[data-bag-close]'); c && c.focus({ preventScroll: true }); }, 60);
+  }
+
+  closeBag(after) {
+    if (!this.state.bagOpen) return;
+    const gsap = window.gsap, layer = document.querySelector('[data-bag-layer]'), dr = document.querySelector('[data-bag-drawer]'), sc = document.querySelector('[data-bag-scrim]');
+    const main = document.querySelector('main'), stage = document.querySelector('[data-noir-stage]');
+    const finish = () => {
+      layer.style.visibility = 'hidden'; this.lockScroll(false);
+      if (gsap) gsap.set([main, stage], { clearProps: 'scale,transformOrigin' });
+      this.setState({ bagOpen: false });
+      const b = document.querySelector('[data-bag-btn]');
+      b && b.focus({ preventScroll: true });
+      after && after();
+    };
+    if (!gsap || this.reduced) { sc.style.opacity = 0; return finish(); }
+    gsap.killTweensOf([dr, sc]); gsap.killTweensOf([main, stage], 'scale');
+    gsap.to(sc, { opacity: 0, duration: 0.8, ease: 'power2.inOut' });
+    gsap.to([main, stage], { scale: 1, duration: 0.85, ease: 'power3.inOut' });
+    gsap.to(dr, { xPercent: 100, rotationY: -5, duration: 0.85, ease: 'power3.inOut', onComplete: finish });
+  }
+
+  bagKey(e) {
+    if (e.key !== 'Tab') return;
+    const dr = document.querySelector('[data-bag-drawer]');
+    const f = [...dr.querySelectorAll('button, a[href], [tabindex]:not([tabindex="-1"])')].filter(el => !el.disabled && el.offsetParent !== null);
+    if (!f.length) return;
+    const first = f[0], last = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  }
+
+  craftUpdate() {
+    const T = this.T; if (!T) return;
+    const c = this._cu || (this._cu = { items: [...document.querySelectorAll('[data-craft-item]')], film: document.querySelector('[data-craft-film]'), plate: document.querySelector('[data-craft-plate]'), idx: document.querySelector('[data-craft-idx]'), macro: document.querySelector('[data-craft-macro]'), macroL: document.querySelector('[data-craft-macro-l]') });
+    if (!c.film || !c.items.length) return;
+    const vh = innerHeight, pr = c.film.getBoundingClientRect(), stack = this.state.stack;
+    const refY = stack ? pr.bottom + (vh - pr.bottom) * 0.5 : vh * 0.5;
+    const rs = c.items.map(el => el.getBoundingClientRect());
+    let f = clamp((refY - rs[0].top) / rs[0].height, -1, 0);
+    rs.forEach((r, i) => { const p = (refY - r.top) / r.height; if (p >= 0) f = i + Math.min(p, 0.999); });
+    T.craftF = f;
+    const sec = c.sec || (c.sec = document.getElementById('craft'));
+    T.craftIn = clamp((vh - sec.getBoundingClientRect().top) / (vh * 0.7), 0, 1);
+    T.craftX = ((pr.left + pr.width / 2) / innerWidth) * 2 - 1;
+    T.craftY = -(((pr.top + pr.height / 2) / vh) * 2 - 1);
+    const act = f < 0 ? -1 : Math.min(3, Math.floor(f));
+    const ss = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
+    c.items.forEach((el, i) => {
+      let o = act === i ? 1 : 0.34;
+      if (stack) o *= clamp((rs[i].bottom - pr.bottom) / 120, 0, 1);
+      el.style.opacity = o;
+      const nm = el.querySelector('[data-craft-name]'); if (nm) nm.style.color = act === i ? '#e8b25a' : '#ede3d1';
+    });
+    const d4 = c.items[3] && c.items[3].querySelector('[data-craft-desc]');
+    if (d4) { const r = this.reduced ? 1 : ss(0.3, 0.58, f - 3); d4.style.clipPath = 'inset(0% ' + ((1 - r) * 100).toFixed(2) + '% 0% 0%)'; }
+    if (c.macro) { const m = this.reduced ? (act === 1 ? 1 : 0) : ss(1.02, 1.3, f) * (1 - ss(1.85, 2.1, f)); c.macro.style.clipPath = 'inset(' + ((1 - m) * 100).toFixed(2) + '% 0% 0% 0%)'; if (c.macroL) c.macroL.style.opacity = m; }
+    if (c.plate && !this.state.glFail) { const w = this.reduced ? (f > -0.2 ? 1 : 0) : ss(-0.4, 0.02, f); c.plate.style.clipPath = 'inset(' + (w * 100).toFixed(2) + '% 0% 0% 0%)'; }
+    if (c.idx) {
+      const NM = ['LOREM', 'IPSUM DOL', 'SIT AMET ELIT', 'SED & TEMPOR'];
+      const txt = act < 0 ? '' : 'INSPECTION 0' + (act + 1) + ' / 04 — ' + NM[act];
+      if (c.idx.textContent !== txt) c.idx.textContent = txt;
+      c.idx.style.opacity = act < 0 ? 0 : 1;
+    }
+  }
+
+  immWarp(c) {
+    if (this.reduced) return;
+    const w = this._iw || (this._iw = { d: document.querySelector('[data-imm-disp]'), n: document.querySelector('[data-imm-turb]'), h: document.querySelector('[data-imm-head]') });
+    if (!w.d || !w.h) return;
+    const sc = c * 18;
+    w.d.setAttribute('scale', sc.toFixed(1));
+    w.n.setAttribute('baseFrequency', '0.006 ' + (0.045 + 0.015 * Math.sin(performance.now() / 260)).toFixed(4));
+    w.h.style.filter = sc > 0.3 ? 'url(#immWarp)' : 'none';
+  }
+
+  go(id) {
+    return e => {
+      e && e.preventDefault();
+      const el = document.getElementById(id); if (!el) return;
+      window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY + (id === 'final' ? el.offsetHeight * 0.34 : 0), behavior: this.reduced ? 'auto' : 'smooth' });
+    };
+  }
+
+  fe() {
+    if (this._fe) return this._fe;
+    const root = document.getElementById('collection'), nf = n => !n.closest('[data-leaf-host]');
+    const by = (sel, key) => [...root.querySelectorAll(sel)].filter(nf).sort((a, b) => a.dataset[key] - b.dataset[key]);
+    return (this._fe = { root, stage: root.querySelector('[data-folio-stage]'), folio: root.querySelector('[data-folio]'), host: root.querySelector('[data-leaf-host]'),
+      lp: by('[data-lp]', 'lp'), rp: by('[data-rp]', 'rp'), shL: root.querySelector('[data-shadow="L"]'), shR: root.querySelector('[data-shadow="R"]') });
+  }
+
+  show(list, k) { list.forEach((el, x) => { el.style.visibility = x === k ? 'visible' : 'hidden'; }); }
+
+  setWorld(j) {
+    const gsap = window.gsap, E = this.fe(), inst = !gsap || this.reduced;
+    document.querySelectorAll('[data-coll-atmos]').forEach((el, k) => inst ? (el.style.opacity = k === j ? 1 : 0) : gsap.to(el, { opacity: k === j ? 1 : 0, duration: 2, ease: 'power2.inOut' }));
+    if (inst) { E.root.style.backgroundColor = COLL[j].bg; Object.entries(MAT[j]).forEach(([k, v]) => E.folio.style.setProperty(k, v)); return; }
+    gsap.to(E.root, { backgroundColor: COLL[j].bg, duration: 2, ease: 'power2.inOut' });
+    gsap.to(E.folio, { ...MAT[j], duration: 1.8, ease: 'power2.inOut' });
+  }
+
+  face(src, off, W, sw, back) {
+    const f = document.createElement('div');
+    f.style.cssText = 'position:absolute;top:0;left:0;width:' + (sw + 0.8) + 'px;height:100%;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden;' + (back ? 'transform-origin:' + (sw / 2) + 'px 50%;transform:rotateY(180deg);' : '');
+    const c = src.cloneNode(true);
+    c.removeAttribute('data-lp'); c.removeAttribute('data-rp');
+    Object.assign(c.style, { position: 'absolute', inset: 'auto', top: '0', left: -off + 'px', width: W + 'px', height: '100%', visibility: 'visible' });
+    const d = document.createElement('div'); d.style.cssText = 'position:absolute;inset:0;background:#000;opacity:0;';
+    const s = document.createElement('div'); s.style.cssText = 'position:absolute;inset:0;opacity:0;background:linear-gradient(90deg,rgba(255,232,196,0),rgba(255,232,196,.5),rgba(255,232,196,0));';
+    f.append(c, d, s);
+    return { f, c, d, s };
+  }
+
+  begin(j, dir) {
+    const E = this.fe(), i = this.state.sel, fwd = dir > 0;
+    const W = E.host.offsetWidth, sw = W / NS;
+    const front = E.rp[fwd ? i : j], back = E.lp[fwd ? j : i];
+    E.host.innerHTML = '';
+    let parent = E.host; const strips = [], faces = [], titles = [];
+    for (let k = 0; k < NS; k++) {
+      const s = document.createElement('div');
+      s.style.cssText = 'position:absolute;top:0;left:' + (k ? sw : 0) + 'px;width:' + sw + 'px;height:100%;transform-origin:0 50%;transform-style:preserve-3d;';
+      const fr = this.face(front, k * sw, W, sw, false), bk = this.face(back, (NS - 1 - k) * sw, W, sw, true);
+      if (fwd) { bk.c.querySelectorAll('[data-meta]').forEach(m => { m.style.opacity = 0; }); titles.push(bk.c.querySelector('[data-title]')); }
+      s.append(fr.f, bk.f); parent.appendChild(s); parent = s;
+      strips.push(s); faces.push({ fr, bk });
+    }
+    const rest = fwd ? 0 : 1, goal = fwd ? 1 : 0;
+    if (fwd) { this.show(E.rp, j); this.rVis = j; }
+    else {
+      this.show(E.lp, j);
+      E.lp[j].querySelectorAll('[data-meta]').forEach(m => { m.style.opacity = 0; });
+    }
+    this.turn = { i, j, dir, fwd, rest, goal, p: rest, v: 0, drive: { t: rest }, strips, faces, titles, baseTitle: E.lp[j].querySelector('[data-title]') };
+    this.render(this.turn);
+    this.startLoop();
+    return this.turn;
+  }
+
+  driveTo(t, target, dur, ez) {
+    t.tw && t.tw.kill(); t.done = false; t.settle = target;
+    t.tw = window.gsap.to(t.drive, { t: target, duration: dur, ease: ez, onComplete: () => { t.done = true; } });
+  }
+
+  commit(ez) {
+    const t = this.turn; if (!t || t.committed) return;
+    t.committed = true; t.preview = false;
+    this.driveTo(t, t.goal, 0.5 + 1.4 * Math.abs(t.goal - t.drive.t), ez || 'power2.inOut');
+    this.setWorld(t.j);
+  }
+
+  release() {
+    const t = this.turn; if (!t) return;
+    t.preview = false;
+    this.driveTo(t, t.rest, 0.4 + 0.9 * Math.abs(t.drive.t - t.rest), 'power2.out');
+  }
+
+  render(t) {
+    const E = this.fe(), p = t.p, th0 = -180 * p, s1 = Math.sin(Math.PI * p);
+    let b = -BEND * (0.8 * Math.sin(2 * Math.PI * p) + 0.35 * t.dir * s1);
+    b = clamp(b, (-180 - th0) / (NS - 1), -th0 / (NS - 1));
+    t.strips.forEach((s, k) => { s.style.transform = 'rotateY(' + (k ? b : th0) + 'deg)'; });
+    const shade = (o, rel) => {
+      const x = Math.abs(rel) - LIGHT;
+      o.d.style.opacity = Math.max(0, 0.82 - Math.cos(x * D2R)) * 1.25;
+      o.s.style.opacity = Math.exp(-(x / 14) * (x / 14)) * 0.22 * s1;
+    };
+    t.faces.forEach((fc, k) => { const A = th0 + (k + 0.5) * b; shade(fc.fr, -A); shade(fc.bk, A + 180); });
+    const th = -(th0 + (NS / 2) * b) * D2R, sn = Math.sin(th), cs = Math.cos(th);
+    E.shR.style.opacity = cs > -0.15 ? sn * 0.8 : 0; E.shR.style.transform = 'scaleX(' + clamp(cs + 0.32 * sn, 0, 1) + ')';
+    E.shL.style.opacity = cs < 0.15 ? sn * 0.8 : 0; E.shL.style.transform = 'scaleX(' + clamp(-cs + 0.32 * sn, 0, 1) + ')';
+    E.stage.style.perspective = (2400 - 800 * s1) + 'px';
+    if (t.fwd) { const ty = (1 - ease(clamp((p - 0.5) / 0.4, 0, 1))) * 102; t.titles.forEach(el => { el.style.transform = 'translateY(' + ty + '%)'; }); }
+    else t.baseTitle.style.transform = 'translateY(' + ease(clamp((p - 0.35) / 0.5, 0, 1)) * 102 + '%)';
+  }
+
+  finish(done) {
+    const t = this.turn, E = this.fe(), gsap = window.gsap;
+    t.tw && t.tw.kill(); this.turn = null;
+    E.host.innerHTML = '';
+    E.shL.style.opacity = 0; E.shR.style.opacity = 0; E.stage.style.perspective = '2400px';
+    const k = done ? t.j : t.i;
+    this.show(E.lp, k); this.show(E.rp, k); this.rVis = k;
+    E.lp.forEach(el => { const ti = el.querySelector('[data-title]'); if (ti) ti.style.transform = ''; });
+    if (done) {
+      const metas = E.lp[k].querySelectorAll('[data-meta]');
+      if (t.fwd) metas.forEach(m => { m.style.opacity = 0; });
+      gsap.fromTo(metas, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 1.1, ease: 'power2.out', stagger: 0.09, clearProps: 'transform' });
+      this.setState({ sel: k });
+    } else {
+      E.lp.forEach(el => el.querySelectorAll('[data-meta]').forEach(m => { m.style.opacity = ''; }));
+      this.setWorld(k);
+    }
+  }
+
+  startLoop() {
+    if (this._raf || this.reduced) return;
+    let last = performance.now();
+    const tick = now => {
+      const dt = Math.min(0.05, (now - last) / 1000); last = now;
+      this.frame(dt);
+      const idle = !this.collVis && !this.turn && Math.abs(this.tilt.x) + Math.abs(this.tilt.y) < 0.001;
+      this._raf = idle ? null : requestAnimationFrame(tick);
+    };
+    this._raf = requestAnimationFrame(tick);
+  }
+
+  frame(dt) {
+    const E = this.fe(); if (!E.folio) return;
+    const tl = this.tilt, f = Math.min(1, dt * 2.6);
+    tl.x += (this.tp.x - tl.x) * f; tl.y += (this.tp.y - tl.y) * f;
+    E.folio.style.transform = 'rotateX(' + (-tl.y * 2.2).toFixed(3) + 'deg) rotateY(' + (tl.x * 2.8).toFixed(3) + 'deg)';
+    E.folio.style.setProperty('--hx', (50 + tl.x * 34).toFixed(1) + '%');
+    E.folio.style.setProperty('--hy', (40 + tl.y * 30).toFixed(1) + '%');
+    const t = this.turn;
+    if (t) {
+      const a = 38 * (t.drive.t - t.p) - 11 * t.v;
+      t.v += a * dt; t.p += t.v * dt;
+      if (t.p < 0 || t.p > 1) { t.p = clamp(t.p, 0, 1); t.v = 0; }
+      this.render(t);
+      if (!t.dragging && t.done && Math.abs(t.p - t.settle) < 0.002 && Math.abs(t.v) < 0.02 && t.settle !== undefined && !t.preview) {
+        if (t.settle === t.goal) this.finish(true); else if (t.settle === t.rest) this.finish(false);
+      }
+    }
+    const rp = E.rp[this.rVis ?? this.state.sel]; if (!rp) return;
+    const u = this.turn && this.turn.fwd ? 1 - this.turn.p : 0;
+    const env = rp.querySelector('[data-env]'), bot = rp.querySelector('[data-bottle]');
+    if (env) env.style.transform = 'translate(' + (tl.x * -6 - u * 10).toFixed(2) + 'px,' + (tl.y * -4).toFixed(2) + 'px)';
+    if (bot) bot.style.transform = 'translate(' + (tl.x * 5 - u * 22).toFixed(2) + 'px,' + (tl.y * 3).toFixed(2) + 'px)';
+  }
+
+  instant(j) {
+    const E = this.fe();
+    this.show(E.lp, j); this.show(E.rp, j); this.rVis = j;
+    this.setWorld(j); this.setState({ sel: j });
+  }
+
+  chapter(j) {
+    const sel = this.state.sel;
+    if (j === sel) return;
+    if (this.reduced || !window.gsap) return this.instant(j);
+    const t = this.turn;
+    if (t) { if (t.j === j && !t.committed && !t.dragging) this.commit(); return; }
+    this.begin(j, j > sel ? 1 : -1); this.commit();
+  }
+
+  preview(j) {
+    if (this.reduced || !window.gsap || this.turn || j === this.state.sel || this.drag) return;
+    const t = this.begin(j, j > this.state.sel ? 1 : -1);
+    t.preview = true;
+    t.tw = window.gsap.to(t.drive, { t: t.rest + (t.goal - t.rest) * 0.045, duration: 1, ease: 'power2.out' });
+  }
+
+  unpreview() { const t = this.turn; if (t && t.preview && !t.committed) this.release(); }
+
+  folioDown(e) {
+    if (this.reduced || !window.gsap || (e.button && e.button > 0) || e.target.closest('a')) return;
+    if (this.turn) { if (this.turn.preview && !this.turn.committed) this.finish(false); else return; }
+    const r = this.fe().folio.getBoundingClientRect();
+    const d = this.drag = { x0: e.clientX, y0: e.clientY, r, side: e.clientX > r.left + r.width / 2 ? 1 : -1, started: false, last: 0, lt: performance.now(), vel: 0 };
+    const move = ev => {
+      const dx = ev.clientX - d.x0, dy = ev.clientY - d.y0;
+      if (!d.started) {
+        if (Math.abs(dx) < 8 || Math.abs(dx) < Math.abs(dy)) return;
+        const sel = this.state.sel, t = this.begin(d.side > 0 ? (sel + 1) % 3 : (sel + 2) % 3, d.side);
+        t.dragging = true; d.started = true;
+        d.spine = d.r.left + d.r.width / 2; d.W = d.r.width / 2;
+        d.a0 = Math.acos(clamp((d.x0 - d.spine) / d.W, -1, 1)) / Math.PI; d.last = t.rest;
+      }
+      const t = this.turn; if (!t) return;
+      const a = Math.acos(clamp((ev.clientX - d.spine) / d.W, -1, 1)) / Math.PI;
+      const v = clamp(t.rest + (a - d.a0), 0, 1), now = performance.now(), dtt = Math.max(0.001, (now - d.lt) / 1000);
+      d.vel = d.vel * 0.6 + ((v - d.last) / dtt) * 0.4; d.last = v; d.lt = now;
+      t.drive.t = v;
+    };
+    const up = ev => {
+      this.endDrag();
+      if (!d.started) {
+        const x = (ev.clientX - r.left) / r.width, sel = this.state.sel;
+        if (ev.type === 'pointerup' && x > 0.5) this.chapter((sel + 1) % 3);
+        else if (ev.type === 'pointerup' && x < 0.15) this.chapter((sel + 2) % 3);
+        return;
+      }
+      const t = this.turn; if (!t) return;
+      t.dragging = false;
+      const sgn = t.goal > t.rest ? 1 : -1, frac = (t.drive.t - t.rest) * sgn, vg = d.vel * sgn;
+      if ((frac > 0.38 || vg > 0.9) && vg > -0.6) this.commit('power2.out'); else this.release();
+    };
+    this.endDrag = () => { window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', up); this.drag = null; this.endDrag = null; };
+    window.addEventListener('pointermove', move); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', up);
+  }
+
+  renderVals() {
+    const s = this.state, v = {};
+    if (this.T) { this.T.fogMul = this.props.fogAmount ?? 1; this.T.exposure = this.props.exposure ?? 1; }
+    for (let i = 0; i < 4; i++) {
+      v['navEnter' + i] = () => this.setState({ navH: i });
+      v['nl' + i] = s.navH === i ? 'scaleX(1)' : 'scaleX(0)';
+    }
+    v.navLeave = () => this.setState({ navH: -1 });
+    v.navDisplay = s.navHidden ? 'none' : 'flex';
+
+    for (let i = 0; i < 3; i++) {
+      const on = s.note === i;
+      v['noteEnter' + i] = () => { this.hoverNote = i; if (this.T) this.T.noteF = i; this.setState({ note: i }); };
+      v['wc' + i] = on ? '#ede3d1' : 'rgba(237,227,209,0)';
+      v['ws' + i] = on ? 'rgba(237,227,209,0)' : 'rgba(237,227,209,.32)';
+      v['do' + i] = on ? 1 : 0;
+      v['dt' + i] = on ? 'translateY(0)' : 'translateY(10px)';
+      v['mk' + i] = on ? '28px' : '0px';
+    }
+    v.noteLeave = () => { this.hoverNote = null; const n = this.scrollNote ?? 0; if (this.T) this.T.noteF = n; this.setState({ note: n }); };
+    v.noteNum = '0' + (s.note + 1);
+
+    const c = COLL[s.sel];
+    v.cNotes = c.notes; v.cDesc = c.desc; v.cIdx = '0' + (s.sel + 1);
+    v.folio = FOLIO; v.mobile = s.mobile; v.detailDisp = s.mobile ? 'none' : 'flex'; v.idxDisp = s.mobile ? 'none' : 'inline';
+    for (let i = 0; i < 3; i++) {
+      v['ch' + i] = e => { e && e.preventDefault(); this.chapter(i); };
+      v['chEnter' + i] = () => this.preview(i);
+      v['chc' + i] = s.sel === i ? '#e8b25a' : 'rgba(237,227,209,.42)';
+    }
+    v.chLeave = () => this.unpreview();
+    v.folioDown = e => this.folioDown(e);
+    v.collMove = e => {
+      if (e.pointerType === 'touch' || this.reduced || !this.tp) return;
+      const r = this.fe().folio.getBoundingClientRect();
+      this.tp.x = clamp((e.clientX - (r.left + r.width / 2)) / (r.width / 2 + 160), -1, 1);
+      this.tp.y = clamp((e.clientY - (r.top + r.height / 2)) / (r.height / 2 + 160), -1, 1);
+    };
+    v.collLeave = () => { if (this.tp) { this.tp.x = 0; this.tp.y = 0; } };
+
+    v.addBag = e => { e && e.preventDefault(); this.addItem(s.sel); };
+    const money = n => '$' + n.toLocaleString('en-US');
+    const PRICE = 185, count = s.items.reduce((a, x) => a + x.qty, 0);
+    v.bag = count; v.glFail = s.glFail;
+    v.bagLabel = count + (count === 1 ? ' ITEM' : ' ITEMS');
+    v.bagHas = s.items.length > 0; v.bagEmpty = s.items.length === 0; v.bagExp = s.bagOpen ? 'true' : 'false';
+    v.subtotal = money(count * PRICE);
+    v.cart = s.items.map(x => ({
+      id: x.id, name: COLL[x.id].name, idx: '0' + (x.id + 1), qtyS: String(x.qty).padStart(2, '0'),
+      total: money(x.qty * PRICE), unit: x.qty > 1 ? money(PRICE) + ' EACH' : '', minusO: x.qty > 1 ? 1 : 0.3,
+      d0: x.id === 0 ? 'block' : 'none', d1: x.id === 1 ? 'block' : 'none', d2: x.id === 2 ? 'block' : 'none',
+      dec: () => this.setQty(x.id, -1), inc: () => this.setQty(x.id, 1), rm: () => this.removeItem(x.id),
+    }));
+    v.openBag = e => { e && e.preventDefault(); this.openBag(); };
+    v.bagBtnKey = e => { if (e.key === ' ') { e.preventDefault(); this.openBag(); } };
+    v.closeBag = () => this.closeBag();
+    v.bagKey = e => this.bagKey(e);
+    v.exploreColl = () => this.closeBag(() => this.go('collection')());
+    v.ckEnter = () => this.setState({ ck: true }); v.ckLeave = () => this.setState({ ck: false });
+    v.ckFill = s.ck ? 'scaleX(1)' : 'scaleX(0)'; v.ckText = s.ck ? '#0a0806' : '#ede3d1'; v.ckLine = s.ck ? '34px' : '18px';
+    v.craftBg = s.glFail ? '#080706' : 'transparent';
+    v.craftVisB = s.stack ? '100%' : '440px'; v.craftVisH = s.stack ? '58vh' : '100vh'; v.craftFilmH = s.stack ? '50vh' : 'min(84vh,900px)';
+
+    v.goHero = this.go('hero'); v.goScent = this.go('scent'); v.goCollection = this.go('collection');
+    v.goRitual = this.go('ritual'); v.goFinal = this.go('final');
+    return v;
+  }
+}
+</script>
+
+
+</body></html>

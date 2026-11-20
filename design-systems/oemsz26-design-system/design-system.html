@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Moveflux Design System</title>
+<!-- preview capture: the Overview frame reports once fonts are in and the weight chart's 1 s Chart.js
+     draw-in has finished (the page has no other intro) -->
+<meta name="preview-ready-selector" content="body.ds-overview-ready">
+<meta name="preview-ready-after-ms" content="400">
+<link rel="icon" href="assets/overview/assets/oemsz26.aura.build/favicon.ico">
+<link rel="stylesheet" href="assets/overview/assets/fonts.googleapis.com/css2__qc92705f1.css">
+<script src="assets/overview/assets/cdn.tailwindcss.com/3.4.17.js"></script>
+<style>
+/* ================================================================ catalog shell
+   Routing and layout only. The page ships no navbar (its "Header" slot is empty), so the bar below is
+   derived from its own pieces: the ink icon tile (goal-row tile on the stone-900 hero fill) and the
+   week-strip pills (selected = bg-stone-900 text-stone-100, default = ring-1 bg-stone-50 ring-stone-200).
+   Every specimen keeps the Overview's Tailwind classes, Inter and lucide markup. */
+:root { --ds-nav-h: 64px; --ds-mono: ui-monospace, SFMono-Regular, Menlo, monospace; }
+html, body { height: 100%; }
+body { overflow: hidden; }
+#overview-frame { position: fixed; inset: 0; width: 100%; height: 100%; border: 0; display: block; z-index: 0; background: #e7e5e4; }
+
+#ds-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 40; border-bottom: 1px solid transparent;
+  transition: background-color .3s, border-color .3s; }
+/* once the page moves (and always in Components) the bar keeps the canvas colour as a frosted backing */
+#ds-nav.is-stuck { background: rgba(231,229,228,.86); -webkit-backdrop-filter: blur(14px) saturate(1.1); backdrop-filter: blur(14px) saturate(1.1);
+  border-bottom-color: rgba(28,25,23,.08); }
+#ds-nav .ds-links a { transition: color .2s, background-color .2s; }
+#ds-nav .ds-links a:hover { color: #1c1917; }
+#ds-nav .ds-links a.is-active { background-color: #1c1917; color: #f5f5f4; --tw-ring-color: #1c1917; }
+#ds-nav .ds-links a[aria-disabled="true"] { opacity: .4; pointer-events: none; }
+
+/* ------------------------------------------------------------ components view */
+#view-components { position: fixed; top: var(--ds-nav-h); left: 0; right: 0; bottom: 0; z-index: 10; display: none; background: #e7e5e4; }
+body.is-components #view-components { display: grid; grid-template-columns: 248px minmax(0, 1fr); }
+body.is-components #overview-frame { visibility: hidden; }
+
+/* sidebar: its own dark glass (the hero card's stone-900 ink), legible over anything behind it */
+#ds-side { margin: 16px 0 16px 16px; border-radius: 24px; overflow-y: auto; padding: 22px 12px 24px;
+  background: rgba(28,25,23,.94); -webkit-backdrop-filter: blur(16px) saturate(1.1); backdrop-filter: blur(16px) saturate(1.1);
+  box-shadow: 0 2.8px 2.2px rgba(0,0,0,.034), 0 6.7px 5.3px rgba(0,0,0,.048), 0 12.5px 10px rgba(0,0,0,.06), 0 22.3px 17.9px rgba(0,0,0,.072); }
+#ds-side p { margin: 0 12px 12px; font-size: 12px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: #a8a29e; }
+#ds-side a { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 12px; font-size: 14px; font-weight: 500;
+  color: #d6d3d1; transition: color .2s, background-color .2s; }
+#ds-side a b { font-size: 11px; font-weight: 500; color: #a8a29e; font-variant-numeric: tabular-nums; }
+#ds-side a:hover { color: #fff; }
+#ds-side a.is-current { color: #fff; background: #292524; }
+#ds-side a.is-current b { color: #fbbf24; }
+
+#ds-main { position: relative; overflow-y: auto; overflow-x: hidden; padding: 40px clamp(20px, 3.4vw, 56px) 140px; }
+#ds-main > * { max-width: 1180px; }
+.ds-group { padding-bottom: 88px; scroll-margin-top: 24px; }
+.ds-head { margin-bottom: 32px; }
+.ds-kicker { display: flex; justify-content: space-between; font-size: 12px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: #57534e; }
+.ds-head h2 { margin-top: 10px; padding-top: 14px; border-top: 1px solid rgba(28,25,23,.14); font-size: clamp(26px, 3vw, 34px); line-height: 1.15;
+  font-weight: 600; letter-spacing: -.025em; color: #1c1917; }
+.ds-sub { margin: 40px 0 16px; font-size: 12px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: #57534e; }
+.ds-sub:first-child, .ds-head + .ds-sub { margin-top: 0; }
+.ds-spec { margin: 0 0 44px; min-width: 0; }
+.ds-spec:last-child { margin-bottom: 0; }
+.ds-spec > h3 { margin: 0 0 12px; font-size: 14px; font-weight: 600; letter-spacing: -.01em; color: #1c1917; }
+.ds-meta { display: block; margin-top: 12px; font: 11.5px/1.55 var(--ds-mono); color: #57534e; overflow-wrap: anywhere; }
+.ds-meta b { color: #1c1917; font-weight: 500; }
+.ds-note { margin: 8px 0 0; max-width: 76ch; font-size: 13px; line-height: 1.6; color: #57534e; }
+.ds-note code { font: 12px var(--ds-mono); color: #1c1917; }
+.ds-row { display: flex; flex-wrap: wrap; align-items: center; gap: 20px 28px; }
+.ds-cell { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; min-width: 0; }
+.ds-cell > small { font-size: 11px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: #57534e; }
+.ds-famname { margin: 0 0 10px; font-size: 13px; font-weight: 600; color: #1c1917; }
+
+/* typography: role | live sample | declared size */
+.ds-type { display: grid; grid-template-columns: 190px minmax(0, 1fr) 170px; gap: 28px; align-items: center; padding: 22px 0;
+  border-top: 1px solid rgba(28,25,23,.12); }
+.ds-type:last-child { border-bottom: 1px solid rgba(28,25,23,.12); }
+.ds-type .role { font-size: 14px; font-weight: 600; color: #1c1917; }
+.ds-type .face { margin-top: 4px; font-size: 12px; color: #57534e; }
+.ds-type .face code { display: block; margin-top: 6px; font: 11px/1.5 var(--ds-mono); color: #78716c; overflow-wrap: anywhere; }
+.ds-type .sample { min-width: 0; overflow-wrap: break-word; }
+.ds-type .sizes { text-align: right; font: 12px/1.6 var(--ds-mono); color: #1c1917; }
+.ds-onsurf { display: inline-block; padding: 14px 18px; border-radius: 16px; }
+
+/* colors: live chip on its surface + label, value, token, use */
+.ds-colors { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 22px 28px; }
+.ds-sw { display: grid; grid-template-columns: 76px minmax(0, 1fr); gap: 14px; align-items: start; }
+.ds-chip { position: relative; height: 76px; border-radius: 16px; overflow: hidden; display: grid; place-items: center; background: #fff;
+  box-shadow: inset 0 0 0 1px rgba(28,25,23,.1); }
+.ds-chip::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 1px rgba(28,25,23,.1); pointer-events: none; }
+.ds-chip .aa { position: relative; font-size: 26px; font-weight: 600; letter-spacing: -.03em; line-height: 1; }
+.ds-chip .fill { position: absolute; inset: 0; }
+.ds-chip .bar { position: absolute; left: 12px; right: 12px; top: 50%; height: 8px; margin-top: -4px; border-radius: 9999px; }
+.ds-chip img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.ds-chip img.ds-av { position: static; width: 44px; height: 44px; }
+.ds-sw strong { display: block; font-size: 13px; font-weight: 600; color: #1c1917; }
+.ds-sw code { display: block; margin-top: 3px; font: 11px/1.45 var(--ds-mono); color: #1c1917; overflow-wrap: anywhere; }
+.ds-sw code.tok { color: #78716c; }
+.ds-sw p { margin: 4px 0 0; font-size: 12px; line-height: 1.45; color: #57534e; }
+.ds-states { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px; margin-bottom: 26px; }
+.ds-state { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.ds-state small { font-size: 11px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: #57534e; }
+.ds-state code { font: 11px/1.45 var(--ds-mono); color: #1c1917; overflow-wrap: anywhere; }
+
+/* backgrounds, surfaces and layout helpers */
+.ds-window { position: relative; height: 340px; border-radius: 24px; overflow: hidden; }
+.ds-surfaces { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 24px; align-items: start; }
+.ds-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 24px; align-items: start; }
+.ds-cards > * { min-width: 0; }
+.ds-wide { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 440px), 1fr)); gap: 24px; align-items: start; }
+.ds-wide > * { min-width: 0; }
+.ds-fit { max-width: 400px; }
+.ds-fit-l { max-width: 520px; }
+
+/* icons: five to a row, id under each */
+.ds-icons { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 34px 20px; }
+.ds-icon { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; min-width: 0; }
+.ds-icon .stage { height: 36px; display: flex; align-items: center; }
+.ds-icon code { font: 11px/1.45 var(--ds-mono); color: #1c1917; overflow-wrap: anywhere; }
+.ds-icon code i { display: block; font-style: normal; color: #78716c; }
+
+@media (max-width: 1080px) {
+  .ds-type { grid-template-columns: 150px minmax(0, 1fr); }
+  .ds-type .sizes { grid-column: 2; text-align: left; }
+  .ds-icons { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 767px) {
+  body.is-components #view-components { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); }
+  #ds-side { display: flex; align-items: center; gap: 4px; margin: 10px 16px 0; border-radius: 16px; overflow-x: auto; overflow-y: hidden;
+    padding: 8px; scrollbar-width: none; }
+  #ds-side::-webkit-scrollbar { display: none; }
+  #ds-side p { display: none; }
+  #ds-side a { flex: 0 0 auto; padding: 7px 12px; white-space: nowrap; }
+  #ds-main { padding: 28px 16px 120px; }
+  .ds-type { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .ds-type .sizes { grid-column: auto; text-align: left; }
+  .ds-window { height: 300px; }
+}
+/* same 390px fixes as the Overview (listed there): day-pill side padding and the Distance card's pill */
+@media (max-width: 420px) {
+  #ds-main .grid-cols-7 > div.px-3 { padding-left: 0; padding-right: 0; }
+  #ds-main button.bg-stone-900.px-3 { padding-left: .5rem; padding-right: .5rem; }
+}
+@media (max-width: 480px) {
+  .ds-icons { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ds-colors { grid-template-columns: minmax(0, 1fr); }
+}
+</style>
+</head>
+<body class="antialiased bg-stone-200 text-stone-900" style="font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, Apple Color Emoji, Segoe UI Emoji;">
+
+<!-- Top bar (derived: the page's "Header" slot is empty). Tile = the goal-row icon tile on the hero's
+     stone-900 ink; links = the week-strip day pills (selected / default) -->
+<header id="ds-nav">
+  <nav class="mx-auto max-w-7xl px-4 h-16 flex items-center justify-between gap-3">
+    <a href="#overview" class="flex items-center gap-2.5 min-w-0">
+      <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-stone-900 text-stone-100 shadow-md">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="zap" class="lucide lucide-zap h-5 w-5"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path></svg>
+      </span>
+      <span class="text-sm font-semibold tracking-tight whitespace-nowrap">Moveflux</span>
+    </a>
+    <div class="ds-links flex items-center gap-2 text-xs font-medium text-stone-600">
+      <a id="nav-overview" class="rounded-xl px-3 py-2 ring-1 bg-stone-50 ring-stone-200" href="#overview">Overview</a>
+      <a id="nav-components" class="rounded-xl px-3 py-2 ring-1 bg-stone-50 ring-stone-200" href="#components">Components</a>
+    </div>
+  </nav>
+</header>
+
+<iframe id="overview-frame" title="Overview" src="assets/overview/index.html"></iframe>
+
+<div id="view-components">
+<aside id="ds-side">
+  <p>Components</p>
+  <a href="#components-typography"><b>01</b>Typography</a>
+  <a href="#components-colors"><b>02</b>Colors</a>
+  <a href="#components-backgrounds"><b>03</b>Backgrounds</a>
+  <a href="#components-surfaces"><b>04</b>Surfaces</a>
+  <a href="#components-icons"><b>05</b>Icons</a>
+  <a href="#components-actions"><b>06</b>Actions</a>
+  <a href="#components-badges"><b>07</b>Badges and status</a>
+  <a href="#components-controls"><b>08</b>Controls</a>
+  <a href="#components-data"><b>09</b>Data display</a>
+  <a href="#components-rows"><b>10</b>List rows</a>
+  <a href="#components-cards"><b>11</b>Cards</a>
+</aside>
+<main id="ds-main">
+
+<section class="ds-group" id="components-typography">
+<div class="ds-head">
+  <div class="ds-kicker"><span>Foundations</span><span>(01)</span></div>
+  <h2>Typography</h2>
+</div>
+<p class="ds-note" style="margin:0 0 22px">One family throughout: <code>Inter</code> from Google Fonts (weights 300–700, mirrored locally), set on <code>body</code> with the page's system fallback stack. Hierarchy comes from weight 600 plus <code>tracking-tight</code>; everything secondary is <code>text-stone-500</code>. Chart ticks use Chart.js' default 12px at weight 500 in <code>#e7e5e4</code>.</p>
+<div class="ds-typelist">
+<div class="ds-type">
+  <div><div class="role">Display</div><div class="face">Inter · Semibold 600 · tracking-tight<code>p.text-2xl.md:text-3xl.font-semibold.tracking-tight.text-white</code></div></div>
+  <div class="sample"><div class="ds-onsurf bg-stone-900"><p class="text-2xl md:text-3xl font-semibold tracking-tight text-white">Moveflux<br>Design System</p></div></div>
+  <div class="sizes">30px | 24px</div>
+</div>
+<div class="ds-type">
+  <div><div class="role">Timer</div><div class="face">Inter · Semibold 600 · tabular-nums<code>p#live-timer.text-3xl.font-semibold.tracking-tight.tabular-nums</code></div></div>
+  <div class="sample"><p class="text-3xl font-semibold tracking-tight tabular-nums">00:18:16</p></div>
+  <div class="sizes">30px</div>
+</div>
+<div class="ds-type">
+  <div><div class="role">Heading 1</div><div class="face">Inter · Semibold 600 · tracking-tight<code>h2.text-xl.md:text-2xl.font-semibold.tracking-tight</code></div></div>
+  <div class="sample"><h2 class="text-xl md:text-2xl font-semibold tracking-tight">Lorem Ipsum</h2></div>
+  <div class="sizes">24px | 20px</div>
+</div>
+<div class="ds-type">
+  <div><div class="role">Metric</div><div class="face">Inter · Semibold 600 · unit Medium 500<code>p.text-2xl.font-semibold.tracking-tight › span.ml-1.text-base.font-medium.text-stone-500</code></div></div>
+  <div class="sample"><p class="text-2xl font-semibold tracking-tight">3.37<span class="ml-1 text-base font-medium text-stone-500">km</span></p></div>
+  <div class="sizes">24px · unit 16px</div>
+</div>
+<div class="ds-type">
+  <div><div class="role">Heading 2</div><div class="face">Inter · Semibold 600 · tracking-tight<code>h2.text-xl.font-semibold.tracking-tight</code></div></div>
+  <div class="sample"><h2 class="text-xl font-semibold tracking-tight">Dolor Sit Amet</h2></div>
+  <div class="sizes">20px</div>
+</div>
+<div class="ds-type">
+  <div><div class="role">Ring value</div><div class="face">Inter · Semibold 600 · tracking-tight<code>p.text-xl.font-semibold.tracking-tight (heart ring)</code></div></div>
+  <div class="sample"><p class="text-xl font-semibold tracking-tight">120</p></div>
+  <div class="sizes">20px</div>
+</div>
+<div class="ds-type">
+  <div><div class="role">Heading 3</div><div class="face">Inter · Semibold 600 · tracking-tight<code>h2.text-lg.font-semibold.tracking-tight · p.text-lg (nutrition ring)</code></div></div>
+  <div class="sample"><h2 class="text-lg font-semibold tracking-tight">Ipsum</h2></div>
+  <div class="sizes">18px</div>
+</div>
+<div class="ds-type">
+  <div><div class="role">Title</div><div class="face">Inter · Medium 500<code>p.font-medium (workout rows)</code></div></div>
+  <div class="sample"><p class="font-medium">Lorem Ipsum</p></div>
+  <div class="sizes">16px</div>
+</div>
+<div class="ds-type">
+  <div><div class="role">Label</div><div class="face">Inter · Medium 500<code>p.text-sm.font-medium.text-stone-500</code></div></div>
+  <div class="sample"><p class="text-sm font-medium text-stone-500">Heart Rate</p></div>
+  <div class="sizes">14px</div>
+</div>
+<div class="ds-type">
+  <div><div class="role">Text</div><div class="face">Inter · Regular 400<code>p.text-sm.text-stone-500</code></div></div>
+  <div class="sample"><p class="text-sm text-stone-500">Mon 17 — Sun 23</p></div>
+  <div class="sizes">14px</div>
+</div>
+<div class="ds-type">
+  <div><div class="role">Value</div><div class="face">Inter · Semibold 600 · Medium 500<code>p.text-sm.font-semibold · p.text-sm.font-medium</code></div></div>
+  <div class="sample"><p class="text-sm font-semibold">178g</p><p class="text-sm font-medium">100%</p></div>
+  <div class="sizes">14px</div>
+</div>
+<div class="ds-type">
+  <div><div class="role">Caption</div><div class="face">Inter · Regular 400<code>p.text-xs.text-stone-500 · span.text-xs.text-stone-400</code></div></div>
+  <div class="sample"><p class="text-xs text-stone-500">22,000 / 22,000</p></div>
+  <div class="sizes">12px</div>
+</div>
+<div class="ds-type">
+  <div><div class="role">Badge / Button</div><div class="face">Inter · Medium 500<code>span.text-xs.font-medium · button.text-xs.font-medium</code></div></div>
+  <div class="sample"><span class="text-xs font-medium text-emerald-700 bg-emerald-100 px-2 py-1 rounded-full">Completed</span></div>
+  <div class="sizes">12px</div>
+</div>
+</div>
+</section>
+
+<section class="ds-group" id="components-colors">
+<div class="ds-head">
+  <div class="ds-kicker"><span>Foundations</span><span>(02)</span></div>
+  <h2>Colors</h2>
+</div>
+<p class="ds-note" style="margin:0 0 26px">Tailwind's default palette, used through utility classes (the class is the source token). Warm stone neutrals carry the whole UI; saturated hues appear only as icon tints, gradient fills and status tiles.</p>
+<p class="ds-sub">Brand and Accent</p>
+<div class="ds-colors">
+<div class="ds-sw"><div class="ds-chip"><span class="fill bg-stone-900"></span></div><div><strong>Ink</strong><code>#1c1917</code><code class="tok">bg-stone-900</code><p>Hero card fill, primary pill, selected day</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="fill bg-amber-500"></span></div><div><strong>Chart accent</strong><code>#f59e0b</code><code class="tok">pointBorderColor</code><p>Weight chart point rings and highlighted point</p></div></div>
+<div class="ds-sw"><div class="ds-chip" style="background:#57534e"><span class="bar" style="background:#fef3c7"></span></div><div><strong>Chart line</strong><code>#fef3c7</code><code class="tok">borderColor</code><p>Weight chart line on the photo card</p></div></div>
+<div class="ds-sw"><div class="ds-chip" style="background:#fff"><span class="aa text-rose-500">Aa</span></div><div><strong>Heart</strong><code>#f43f5e</code><code class="tok">text-rose-500</code><p>Heart Rate icon</p></div></div>
+<div class="ds-sw"><div class="ds-chip" style="background:#fff"><span class="aa text-blue-600">Aa</span></div><div><strong>Navigation</strong><code>#2563eb</code><code class="tok">text-blue-600</code><p>Distance icon, Water tile, Protein label</p></div></div>
+<div class="ds-sw"><div class="ds-chip" style="background:#fff"><span class="aa text-indigo-600">Aa</span></div><div><strong>Sleep</strong><code>#4f46e5</code><code class="tok">text-indigo-600</code><p>Sleep icon</p></div></div>
+<div class="ds-sw"><div class="ds-chip" style="background:#fff"><span class="aa text-yellow-600">Aa</span></div><div><strong>Energy</strong><code>#ca8a04</code><code class="tok">text-yellow-600</code><p>Active icon, Fats label</p></div></div>
+</div>
+<p class="ds-sub">Surfaces</p>
+<div class="ds-colors">
+<div class="ds-sw"><div class="ds-chip"><span class="fill bg-stone-200"></span></div><div><strong>Page canvas</strong><code>#e7e5e4</code><code class="tok">bg-stone-200</code><p>body background</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="fill bg-white"></span></div><div><strong>Card</strong><code>#ffffff</code><code class="tok">bg-white</code><p>Every light card, ring inner discs</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="fill bg-stone-50"></span></div><div><strong>Inset tile</strong><code>#fafaf9</code><code class="tok">bg-stone-50</code><p>Goal rows, history tiles, default day pills</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="fill bg-stone-900"></span></div><div><strong>Media card</strong><code>#1c1917</code><code class="tok">bg-stone-900</code><p>Hero card behind the photo</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="fill bg-stone-200"></span></div><div><strong>Track</strong><code>#e7e5e4</code><code class="tok">bg-stone-200</code><p>Progress tracks, Pending badge</p></div></div>
+</div>
+<p class="ds-sub">Text and Icons</p>
+<div class="ds-colors">
+<div class="ds-sw"><div class="ds-chip" style="background:#fff"><span class="aa text-stone-900">Aa</span></div><div><strong>Primary text</strong><code>#1c1917</code><code class="tok">text-stone-900</code><p>Body text, headings, values</p></div></div>
+<div class="ds-sw"><div class="ds-chip" style="background:#fff"><span class="aa text-stone-600">Aa</span></div><div><strong>Strong secondary</strong><code>#57534e</code><code class="tok">text-stone-600</code><p>Day strip labels, 97%, Pending badge</p></div></div>
+<div class="ds-sw"><div class="ds-chip" style="background:#fff"><span class="aa text-stone-500">Aa</span></div><div><strong>Secondary text</strong><code>#78716c</code><code class="tok">text-stone-500</code><p>Labels, subtitles, captions, icon buttons</p></div></div>
+<div class="ds-sw"><div class="ds-chip" style="background:#fff"><span class="aa text-stone-400">Aa</span></div><div><strong>Tertiary text</strong><code>#a8a29e</code><code class="tok">text-stone-400</code><p>Friend timestamps (2h)</p></div></div>
+<div class="ds-sw"><div class="ds-chip" style="background:#1c1917"><span class="aa text-white">Aa</span></div><div><strong>On ink</strong><code>#ffffff</code><code class="tok">text-white</code><p>Hero title</p></div></div>
+<div class="ds-sw"><div class="ds-chip" style="background:#1c1917"><span class="aa text-stone-100">Aa</span></div><div><strong>On ink, UI</strong><code>#f5f5f4</code><code class="tok">text-stone-100</code><p>Primary pill label, selected day, photo card copy</p></div></div>
+<div class="ds-sw"><div class="ds-chip" style="background:#1c1917"><span class="aa text-stone-200">Aa</span></div><div><strong>On photo, subtitle</strong><code>#e7e5e4</code><code class="tok">text-stone-200</code><p>Hero subtitle; chart ticks #e7e5e4</p></div></div>
+<div class="ds-sw"><div class="ds-chip" style="background:#44403c"><span class="aa text-stone-300">Aa</span></div><div><strong>On photo, muted</strong><code>#d6d3d1</code><code class="tok">text-stone-300</code><p>Photo card subtitle and ellipsis button</p></div></div>
+</div>
+<p class="ds-sub">Borders</p>
+<div class="ds-colors">
+<div class="ds-sw"><div class="ds-chip"><span class="fill m-3 rounded-2xl ring-1 ring-stone-200 bg-white"></span></div><div><strong>Hairline</strong><code>#e7e5e4 · 1px</code><code class="tok">ring-1 ring-stone-200</code><p>Cards, tiles, outlined icon buttons</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="fill m-3 rounded-2xl ring-1 ring-emerald-200 bg-white"></span></div><div><strong>Success hairline</strong><code>#a7f3d0</code><code class="tok">ring-emerald-200</code><p>Completed workout row</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="fill m-3 rounded-2xl ring-1 ring-red-200 bg-white"></span></div><div><strong>Carbs hairline</strong><code>#fecaca</code><code class="tok">ring-red-200</code><p>Carbs macro tile</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="fill m-3 rounded-2xl ring-1 ring-blue-200 bg-white"></span></div><div><strong>Protein hairline</strong><code>#bfdbfe</code><code class="tok">ring-blue-200</code><p>Protein macro tile</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="fill m-3 rounded-2xl ring-1 ring-yellow-200 bg-white"></span></div><div><strong>Fats hairline</strong><code>#fef08a</code><code class="tok">ring-yellow-200</code><p>Fats macro tile</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><img src="assets/overview/assets/hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/5c473785-e642-4d2f-8148-f2bfbb42dbf0_320w.jpg" alt="" class="ds-av rounded-full object-cover ring-2 ring-white"></div><div><strong>Avatar separator</strong><code>#ffffff · 2px</code><code class="tok">ring-2 ring-white</code><p>Overlapped avatar in the stack</p></div></div>
+</div>
+<p class="ds-sub">Semantic</p>
+<div class="ds-colors">
+<div class="ds-sw"><div class="ds-chip" style="background:#d1fae5"><span class="aa text-emerald-700 text-base">Done</span></div><div><strong>Success</strong><code>#047857 on #d1fae5</code><code class="tok">text-emerald-700 bg-emerald-100</code><p>Completed badge</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="fill bg-emerald-500"></span></div><div><strong>Success fill</strong><code>#10b981</code><code class="tok">bg-emerald-500</code><p>Completed workout icon tile</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="fill bg-emerald-50"></span></div><div><strong>Success surface</strong><code>#ecfdf5</code><code class="tok">bg-emerald-50</code><p>Completed workout row</p></div></div>
+<div class="ds-sw"><div class="ds-chip" style="background:#ffedd5"><span class="aa text-orange-700 text-base">Next</span></div><div><strong>Upcoming</strong><code>#c2410c on #ffedd5</code><code class="tok">text-orange-700 bg-orange-100</code><p>Next badge</p></div></div>
+<div class="ds-sw"><div class="ds-chip" style="background:#e7e5e4"><span class="aa text-stone-600 text-base">Wait</span></div><div><strong>Pending</strong><code>#57534e on #e7e5e4</code><code class="tok">text-stone-600 bg-stone-200</code><p>Pending badge</p></div></div>
+<div class="ds-sw"><div class="ds-chip" style="background:#fff"><span class="aa text-red-600">Aa</span></div><div><strong>Carbs</strong><code>#dc2626 · fill #f87171</code><code class="tok">text-red-600 · bg-red-400</code><p>Carbs label and meter</p></div></div>
+</div>
+<p class="ds-sub">Interactive States</p>
+<div class="ds-states">
+<div class="ds-state"><small>Primary · Default</small><div class="ds-chip"><span class="fill bg-stone-900"></span></div><code>bg-stone-900 #1c1917</code></div>
+<div class="ds-state"><small>Primary · Hover</small><div class="ds-chip"><span class="fill bg-stone-800"></span></div><code>hover:bg-stone-800 #292524</code></div>
+<div class="ds-state"><small>Ghost · Default</small><div class="ds-chip"><span class="fill bg-white"></span></div><code>transparent on white</code></div>
+<div class="ds-state"><small>Ghost · Hover</small><div class="ds-chip"><span class="fill bg-stone-50"></span></div><code>hover:bg-stone-50 #fafaf9</code></div>
+<div class="ds-state"><small>Day · Selected</small><div class="ds-chip"><span class="fill bg-stone-900"></span></div><code>bg-stone-900 text-stone-100</code></div>
+<div class="ds-state"><small>Day · Default</small><div class="ds-chip"><span class="fill bg-stone-50"></span></div><code>bg-stone-50 ring-stone-200</code></div>
+<div class="ds-state"><small>On photo · Hover</small><div class="ds-chip" style="background:#57534e"><span class="fill bg-stone-700/40"></span></div><code>hover:bg-stone-700/40</code></div>
+</div>
+<p class="ds-sub">Overlays</p>
+<div class="ds-colors">
+<div class="ds-sw"><div class="ds-chip"><img src="assets/overview/assets/hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/d7d9b7c8-28b9-4129-953f-61dd5c9ecc6c_800w.jpg" alt=""><span class="fill bg-gradient-to-tr to-transparent from-stone-900/70 via-stone-900/10"></span></div><div><strong>Hero scrim</strong><code>rgba(28,25,23,.7) → .1 → transparent</code><code class="tok">bg-gradient-to-tr from-stone-900/70 via-stone-900/10 to-transparent</code><p>Lifts the hero copy off the photo</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><img src="assets/overview/assets/hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/f3e4ed66-8b4b-4d7a-b556-68b4b142faae_800w.jpg" alt=""><span class="fill m-3 rounded-xl bg-stone-900/30"></span></div><div><strong>Glass panel</strong><code>rgba(28,25,23,.3)</code><code class="tok">bg-stone-900/30</code><p>Chart panel on the photo card</p></div></div>
+<div class="ds-sw"><div class="ds-chip" style="background:#44403c"><span class="fill" style="background:rgba(251,191,36,.15)"></span></div><div><strong>Chart area</strong><code>rgba(251,191,36,0.15)</code><code class="tok">backgroundColor</code><p>Fill under the weight line</p></div></div>
+<div class="ds-sw"><div class="ds-chip" style="background:#111827"><span class="aa text-white text-base">Tip</span></div><div><strong>Chart tooltip</strong><code>#111827 · title #fff · body #e5e7eb</code><code class="tok">tooltip.backgroundColor</code><p>Weight chart hover tooltip</p></div></div>
+</div>
+</section>
+
+<section class="ds-group" id="components-backgrounds">
+<div class="ds-head">
+  <div class="ds-kicker"><span>Foundations</span><span>(03)</span></div>
+  <h2>Backgrounds</h2>
+</div>
+<p class="ds-note" style="margin:0 0 26px">The page has no animated background: its principal background is the flat stone canvas, which is also the live ground of this whole Components view. Two photographic backgrounds live inside cards.</p>
+<div class="ds-spec">
+  <h3>Page canvas</h3>
+  <div class="ds-window bg-stone-200 ring-1 ring-stone-300 grid place-items-center"><p class="text-sm font-medium text-stone-500">bg-stone-200</p></div>
+  <span class="ds-meta"><b>body.min-h-full.antialiased.bg-stone-200.text-stone-900</b> · #e7e5e4 · font-family Inter, ui-sans-serif, system-ui … · content in .mx-auto.max-w-7xl.px-4.py-8</span>
+</div>
+<div class="ds-spec">
+  <h3>Hero photo with ink scrim</h3>
+  <div style="max-width:560px">
+<article class="relative overflow-hidden h-80 bg-stone-900 rounded-3xl shadow-[0_2.8px_2.2px_rgba(0,_0,_0,_0.034),_0_6.7px_5.3px_rgba(0,_0,_0,_0.048),_0_12.5px_10px_rgba(0,_0,_0,_0.06),_0_22.3px_17.9px_rgba(0,_0,_0,_0.072),_0_41.8px_33.4px_rgba(0,_0,_0,_0.086),_0_100px_80px_rgba(0,_0,_0,_0.12)]">
+    <img src="assets/overview/assets/hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/d7d9b7c8-28b9-4129-953f-61dd5c9ecc6c_800w.jpg" alt="" class="h-full w-full object-cover" style="">
+    <div class="absolute inset-0 bg-gradient-to-tr to-transparent from-stone-900/70 via-stone-900/10 shadow-[0_2.8px_2.2px_rgba(0,_0,_0,_0.034),_0_6.7px_5.3px_rgba(0,_0,_0,_0.048),_0_12.5px_10px_rgba(0,_0,_0,_0.06),_0_22.3px_17.9px_rgba(0,_0,_0,_0.072),_0_41.8px_33.4px_rgba(0,_0,_0,_0.086),_0_100px_80px_rgba(0,_0,_0,_0.12)]"></div>
+  </article>
+  </div>
+  <span class="ds-meta"><b>article.relative.overflow-hidden.h-80.bg-stone-900.rounded-3xl</b> · img.h-full.w-full.object-cover · scrim .absolute.inset-0.bg-gradient-to-tr.from-stone-900/70.via-stone-900/10.to-transparent · deep 6-step shadow</span>
+</div>
+<div class="ds-spec">
+  <h3>Photo card</h3>
+  <div style="max-width:560px">
+  <article class="overflow-hidden h-80 shadow-[0_2.8px_2.2px_rgba(0,_0,_0,_0.034),_0_6.7px_5.3px_rgba(0,_0,_0,_0.048),_0_12.5px_10px_rgba(0,_0,_0,_0.06),_0_22.3px_17.9px_rgba(0,_0,_0,_0.072),_0_41.8px_33.4px_rgba(0,_0,_0,_0.086),_0_100px_80px_rgba(0,_0,_0,_0.12)] text-stone-100 bg-cover rounded-3xl pt-6 pr-6 pb-6 pl-6 bg-center bg-[url(assets/overview/assets/hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/f3e4ed66-8b4b-4d7a-b556-68b4b142faae_800w.jpg)]" style=""></article>
+  </div>
+  <span class="ds-meta"><b>article.bg-cover.bg-center.bg-[url(…f3e4ed66…_800w.jpg)].rounded-3xl.h-80.text-stone-100</b> · same deep shadow · copy in stone-100 / stone-300 straight on the photo</span>
+</div>
+</section>
+
+<section class="ds-group" id="components-surfaces">
+<div class="ds-head">
+  <div class="ds-kicker"><span>Foundations</span><span>(04)</span></div>
+  <h2>Surfaces</h2>
+</div>
+<div class="ds-surfaces">
+<div class="ds-spec"><h3>Card</h3><div class="ring-1 ring-stone-200 bg-white rounded-3xl shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),_0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] h-44 pt-5 pr-5 pb-5 pl-5"><p class="text-sm font-medium text-stone-500">Heart Rate</p></div><span class="ds-meta"><b>.ring-1.ring-stone-200.bg-white.rounded-3xl.p-5|p-6</b> · shadow 0 0 0 1px + five -0.5→-12px steps at rgba(0,0,0,.06)</span></div>
+<div class="ds-spec"><h3>Media card</h3><article class="relative overflow-hidden h-44 bg-stone-900 rounded-3xl shadow-[0_2.8px_2.2px_rgba(0,_0,_0,_0.034),_0_6.7px_5.3px_rgba(0,_0,_0,_0.048),_0_12.5px_10px_rgba(0,_0,_0,_0.06),_0_22.3px_17.9px_rgba(0,_0,_0,_0.072),_0_41.8px_33.4px_rgba(0,_0,_0,_0.086),_0_100px_80px_rgba(0,_0,_0,_0.12)]"><div class="absolute bottom-5 left-5 right-5"><p class="mt-1 text-sm text-stone-200">Soft stone cards, vivid gradients.</p></div></article><span class="ds-meta"><b>article.bg-stone-900.rounded-3xl</b> · shadow 2.8px → 100px 80px, alpha .034 → .12 (also on the photo card)</span></div>
+<div class="ds-spec"><h3>Inset tile</h3><div class="bg-white rounded-3xl p-5 text-sm"><div class="grid grid-cols-2 gap-3"><div class="rounded-2xl p-3 ring-1 bg-stone-50 ring-stone-200"><p class="text-stone-500">5d ago</p><p class="font-medium">10.37km</p></div><div class="rounded-xl px-3 py-2 ring-1 bg-stone-50 ring-stone-200 text-center text-xs font-medium text-stone-600"><p>Tue</p><p class="mt-0.5 font-medium">18</p></div></div></div><span class="ds-meta"><b>.rounded-2xl.p-3|p-4.ring-1.bg-stone-50.ring-stone-200</b> · rounded-xl for day pills · always on a white card</span></div>
+<div class="ds-spec"><h3>Tinted tiles</h3><div class="bg-white rounded-3xl p-5"><div class="grid grid-cols-2 gap-3 text-center"><div class="rounded-2xl p-3 ring-1 bg-emerald-50 ring-emerald-200"><p class="text-xs font-medium text-emerald-700">Completed</p></div><div class="rounded-2xl p-3 ring-1 bg-red-50 ring-red-200"><p class="text-xs font-medium text-red-600">Carbs</p></div><div class="rounded-2xl p-3 ring-1 bg-blue-50 ring-blue-200"><p class="text-xs font-medium text-blue-600">Protein</p></div><div class="rounded-2xl p-3 ring-1 bg-yellow-50 ring-yellow-200"><p class="text-xs font-medium text-yellow-600">Fats</p></div></div></div><span class="ds-meta"><b>.rounded-2xl.ring-1.bg-{hue}-50.ring-{hue}-200</b> · emerald (done workout row), red / blue / yellow (macro tiles)</span></div>
+<div class="ds-spec"><h3>Glass panel on photo</h3><div class="rounded-3xl overflow-hidden bg-cover bg-center p-5 bg-[url(assets/overview/assets/hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/f3e4ed66-8b4b-4d7a-b556-68b4b142faae_800w.jpg)]"><div class="h-36 bg-stone-900/30 rounded-2xl pt-3 pr-3 pb-3 pl-3"></div></div><span class="ds-meta"><b>.h-44.bg-stone-900/30.rounded-2xl.p-3</b> · rgba(28,25,23,.3), no blur · holds the weight chart</span></div>
+</div>
+</section>
+
+<section class="ds-group" id="components-icons">
+<div class="ds-head">
+  <div class="ds-kicker"><span>Foundations</span><span>(05)</span></div>
+  <h2>Icons</h2>
+</div>
+<p class="ds-note" style="margin:0 0 26px">lucide (UMD, <code>lucide.createIcons()</code>), 24×24 viewBox, stroke-width 1.5, round caps and joins. Sizes <code>h-3</code> / <code>h-4</code> / <code>h-5</code>; colour is either a tint class on the icon or inherited from its button or tile.</p>
+<div class="ds-icons">
+<div class="ds-icon"><div class="stage"><span class="text-stone-900" style="display:inline-flex"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="play" class="lucide lucide-play h-5 w-5"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"></path></svg></span></div><code>lucide-play<i>h-5 w-5 · inherits text-stone-900 · hero button</i></code></div>
+<div class="ds-icon"><div class="stage"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="heart" class="lucide lucide-heart h-4 w-4 text-rose-500"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"></path></svg></div><code>lucide-heart<i>h-4 w-4 text-rose-500 · stat header</i></code></div>
+<div class="ds-icon"><div class="stage"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="navigation" class="lucide lucide-navigation h-4 w-4 text-blue-600"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg></div><code>lucide-navigation<i>h-4 w-4 text-blue-600 · stat header</i></code></div>
+<div class="ds-icon"><div class="stage"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="moon" class="lucide lucide-moon h-4 w-4 text-indigo-600"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"></path></svg></div><code>lucide-moon<i>h-4 w-4 text-indigo-600 · stat header</i></code></div>
+<div class="ds-icon"><div class="stage"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="zap" class="lucide lucide-zap h-4 w-4 text-yellow-600"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path></svg></div><code>lucide-zap<i>h-4 w-4 text-yellow-600 · stat header</i></code></div>
+<div class="ds-icon"><div class="stage"><span class="text-stone-500" style="display:inline-flex"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="pause" class="lucide lucide-pause h-4 w-4"><rect x="14" y="3" width="5" height="18" rx="1"></rect><rect x="5" y="3" width="5" height="18" rx="1"></rect></svg></span></div><code>lucide-pause<i>h-4 w-4 · inherits text-stone-500 · timer control</i></code></div>
+<div class="ds-icon"><div class="stage"><span class="text-stone-500" style="display:inline-flex"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="more-horizontal" class="lucide lucide-more-horizontal h-5 w-5"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg></span></div><code>lucide-more-horizontal<i>h-5 w-5 · inherits text-stone-500 · card menu</i></code></div>
+<div class="ds-icon"><div class="stage"><span class="text-stone-500" style="display:inline-flex"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="plus" class="lucide lucide-plus h-5 w-5"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg></span></div><code>lucide-plus<i>h-5 w-5 · inherits text-stone-500 · card action</i></code></div>
+<div class="ds-icon"><div class="stage"><span class="text-stone-500" style="display:inline-flex"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="utensils" class="lucide lucide-utensils h-5 w-5"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"></path><path d="M7 2v20"></path><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"></path></svg></span></div><code>lucide-utensils<i>h-5 w-5 · inherits text-stone-500 · card action</i></code></div>
+<div class="ds-icon"><div class="stage"><span class="text-stone-500" style="display:inline-flex"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="users" class="lucide lucide-users h-4 w-4"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><path d="M16 3.128a4 4 0 0 1 0 7.744"></path><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><circle cx="9" cy="7" r="4"></circle></svg></span></div><code>lucide-users<i>h-4 w-4 · inherits text-stone-500 · card action</i></code></div>
+<div class="ds-icon"><div class="stage"><span class="text-amber-700" style="display:inline-flex"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="footprints" class="lucide lucide-footprints h-5 w-5"><path d="M4 16v-2.38C4 11.5 2.97 10.5 3 8c.03-2.72 1.49-6 4.5-6C9.37 2 10 3.8 10 5.5c0 3.11-2 5.66-2 8.68V16a2 2 0 1 1-4 0Z"></path><path d="M20 20v-2.38c0-2.12 1.03-3.12 1-5.62-.03-2.72-1.49-6-4.5-6C14.63 6 14 7.8 14 9.5c0 3.11 2 5.66 2 8.68V20a2 2 0 1 0 4 0Z"></path><path d="M16 17h4"></path><path d="M4 13h4"></path></svg></span></div><code>lucide-footprints<i>h-5 w-5 · inherits text-amber-700 · goal tile</i></code></div>
+<div class="ds-icon"><div class="stage"><span class="text-rose-600" style="display:inline-flex"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="flame" class="lucide lucide-flame h-5 w-5"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path></svg></span></div><code>lucide-flame<i>h-5 w-5 · inherits text-rose-600 · goal tile</i></code></div>
+<div class="ds-icon"><div class="stage"><span class="text-blue-600" style="display:inline-flex"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="droplets" class="lucide lucide-droplets h-5 w-5"><path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z"></path><path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97"></path></svg></span></div><code>lucide-droplets<i>h-5 w-5 · inherits text-blue-600 · goal tile</i></code></div>
+<div class="ds-icon"><div class="stage"><span class="text-emerald-600" style="display:inline-flex"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="brain" class="lucide lucide-brain h-5 w-5"><path d="M12 18V5"></path><path d="M15 13a4.17 4.17 0 0 1-3-4 4.17 4.17 0 0 1-3 4"></path><path d="M17.598 6.5A3 3 0 1 0 12 5a3 3 0 1 0-5.598 1.5"></path><path d="M17.997 5.125a4 4 0 0 1 2.526 5.77"></path><path d="M18 18a4 4 0 0 0 2-7.464"></path><path d="M19.967 17.483A4 4 0 1 1 12 18a4 4 0 1 1-7.967-.517"></path><path d="M6 18a4 4 0 0 1-2-7.464"></path><path d="M6.003 5.125a4 4 0 0 0-2.526 5.77"></path></svg></span></div><code>lucide-brain<i>h-5 w-5 · inherits text-emerald-600 · goal tile</i></code></div>
+<div class="ds-icon"><div class="stage"><span class="text-orange-600" style="display:inline-flex"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="dumbbell" class="lucide lucide-dumbbell h-5 w-5"><path d="M17.596 12.768a2 2 0 1 0 2.829-2.829l-1.768-1.767a2 2 0 0 0 2.828-2.829l-2.828-2.828a2 2 0 0 0-2.829 2.828l-1.767-1.768a2 2 0 1 0-2.829 2.829z"></path><path d="m2.5 21.5 1.4-1.4"></path><path d="m20.1 3.9 1.4-1.4"></path><path d="M5.343 21.485a2 2 0 1 0 2.829-2.828l1.767 1.768a2 2 0 1 0 2.829-2.829l-6.364-6.364a2 2 0 1 0-2.829 2.829l1.768 1.767a2 2 0 0 0-2.828 2.829z"></path><path d="m9.6 14.4 4.8-4.8"></path></svg></span></div><code>lucide-dumbbell<i>h-5 w-5 · inherits text-orange-600 · workout tile</i></code></div>
+<div class="ds-icon"><div class="stage"><span class="text-purple-600" style="display:inline-flex"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="stretch-horizontal" class="lucide lucide-stretch-horizontal h-5 w-5"><rect width="20" height="6" x="2" y="4" rx="2"></rect><rect width="20" height="6" x="2" y="14" rx="2"></rect></svg></span></div><code>lucide-stretch-horizontal<i>h-5 w-5 · inherits text-purple-600 · workout tile</i></code></div>
+<div class="ds-icon"><div class="stage"><span class="ds-onsurf !p-2 !rounded-lg bg-emerald-500 text-white" style="display:inline-flex"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="check" class="lucide lucide-check h-5 w-5"><path d="M20 6 9 17l-5-5"></path></svg></span></div><code>lucide-check<i>h-5 w-5 · inherits text-white · done tile</i></code></div>
+<div class="ds-icon"><div class="stage"><span class="ds-onsurf !px-3 !py-2 !rounded-xl bg-stone-900 text-stone-100" style="display:inline-flex"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-right" class="lucide lucide-arrow-right h-3 w-3"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></span></div><code>lucide-arrow-right<i>h-3 w-3 · inherits text-stone-100 · in primary pill</i></code></div>
+<div class="ds-icon"><div class="stage"><span class="ds-onsurf !p-2 !rounded-xl bg-cover bg-center bg-[url(assets/overview/assets/hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/f3e4ed66-8b4b-4d7a-b556-68b4b142faae_800w.jpg)] text-stone-300" style="display:inline-flex"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="ellipsis" class="lucide lucide-ellipsis h-5 w-5"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg></span></div><code>lucide-ellipsis<i>h-5 w-5 · inherits text-stone-300 · on photo card</i></code></div>
+</div>
+<p class="ds-sub">Icon tiles</p>
+<div class="ds-row">
+<div class="ds-cell"><div class="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-100 text-amber-700">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="footprints" class="lucide lucide-footprints h-5 w-5"><path d="M4 16v-2.38C4 11.5 2.97 10.5 3 8c.03-2.72 1.49-6 4.5-6C9.37 2 10 3.8 10 5.5c0 3.11-2 5.66-2 8.68V16a2 2 0 1 1-4 0Z"></path><path d="M20 20v-2.38c0-2.12 1.03-3.12 1-5.62-.03-2.72-1.49-6-4.5-6C14.63 6 14 7.8 14 9.5c0 3.11 2 5.66 2 8.68V20a2 2 0 1 0 4 0Z"></path><path d="M16 17h4"></path><path d="M4 13h4"></path></svg>
+                </div><small style="text-transform:none;letter-spacing:0">bg-amber-100</small></div>
+<div class="ds-cell"><div class="flex h-9 w-9 items-center justify-center rounded-lg bg-rose-100 text-rose-600">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="flame" class="lucide lucide-flame h-5 w-5"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path></svg>
+                </div><small style="text-transform:none;letter-spacing:0">bg-rose-100</small></div>
+<div class="ds-cell"><div class="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-100 text-blue-600">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="droplets" class="lucide lucide-droplets h-5 w-5"><path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z"></path><path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97"></path></svg>
+                </div><small style="text-transform:none;letter-spacing:0">bg-blue-100</small></div>
+<div class="ds-cell"><div class="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-100 text-emerald-600">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="brain" class="lucide lucide-brain h-5 w-5"><path d="M12 18V5"></path><path d="M15 13a4.17 4.17 0 0 1-3-4 4.17 4.17 0 0 1-3 4"></path><path d="M17.598 6.5A3 3 0 1 0 12 5a3 3 0 1 0-5.598 1.5"></path><path d="M17.997 5.125a4 4 0 0 1 2.526 5.77"></path><path d="M18 18a4 4 0 0 0 2-7.464"></path><path d="M19.967 17.483A4 4 0 1 1 12 18a4 4 0 1 1-7.967-.517"></path><path d="M6 18a4 4 0 0 1-2-7.464"></path><path d="M6.003 5.125a4 4 0 0 0-2.526 5.77"></path></svg>
+                </div><small style="text-transform:none;letter-spacing:0">bg-emerald-100</small></div>
+<div class="ds-cell"><div class="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-500 text-white">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="check" class="lucide lucide-check h-5 w-5"><path d="M20 6 9 17l-5-5"></path></svg>
+                </div><small style="text-transform:none;letter-spacing:0">bg-emerald-500</small></div>
+<div class="ds-cell"><div class="flex h-10 w-10 items-center justify-center rounded-lg bg-orange-100 text-orange-600">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="dumbbell" class="lucide lucide-dumbbell h-5 w-5"><path d="M17.596 12.768a2 2 0 1 0 2.829-2.829l-1.768-1.767a2 2 0 0 0 2.828-2.829l-2.828-2.828a2 2 0 0 0-2.829 2.828l-1.767-1.768a2 2 0 1 0-2.829 2.829z"></path><path d="m2.5 21.5 1.4-1.4"></path><path d="m20.1 3.9 1.4-1.4"></path><path d="M5.343 21.485a2 2 0 1 0 2.829-2.828l1.767 1.768a2 2 0 1 0 2.829-2.829l-6.364-6.364a2 2 0 1 0-2.829 2.829l1.768 1.767a2 2 0 0 0-2.828 2.829z"></path><path d="m9.6 14.4 4.8-4.8"></path></svg>
+                </div><small style="text-transform:none;letter-spacing:0">bg-orange-100</small></div>
+<div class="ds-cell"><div class="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-100 text-purple-600">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="stretch-horizontal" class="lucide lucide-stretch-horizontal h-5 w-5"><rect width="20" height="6" x="2" y="4" rx="2"></rect><rect width="20" height="6" x="2" y="14" rx="2"></rect></svg>
+                </div><small style="text-transform:none;letter-spacing:0">bg-purple-100</small></div>
+</div>
+<span class="ds-meta"><b>.flex.h-9.w-9|h-10.w-10.items-center.justify-center.rounded-lg.bg-{hue}-100.text-{hue}-600|700</b> · h-9 in goal rows, h-10 in workout rows</span>
+</section>
+
+<section class="ds-group" id="components-actions">
+<div class="ds-head">
+  <div class="ds-kicker"><span>Components</span><span>(06)</span></div>
+  <h2>Actions</h2>
+</div>
+<div class="ds-spec"><h3>Play button</h3><div class="ds-row">
+<div class="ds-cell"><small>Default</small><div class="relative overflow-hidden h-28 w-52 rounded-3xl bg-stone-900"><img src="assets/overview/assets/hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/d7d9b7c8-28b9-4129-953f-61dd5c9ecc6c_800w.jpg" alt="" class="h-full w-full object-cover" style=""><div class="absolute inset-0 bg-gradient-to-tr to-transparent from-stone-900/70 via-stone-900/10 shadow-[0_2.8px_2.2px_rgba(0,_0,_0,_0.034),_0_6.7px_5.3px_rgba(0,_0,_0,_0.048),_0_12.5px_10px_rgba(0,_0,_0,_0.06),_0_22.3px_17.9px_rgba(0,_0,_0,_0.072),_0_41.8px_33.4px_rgba(0,_0,_0,_0.086),_0_100px_80px_rgba(0,_0,_0,_0.12)]"></div><button class="absolute right-5 bottom-5 inline-flex h-11 w-11 items-center justify-center rounded-full shadow-md ring-1 bg-white text-stone-900 ring-stone-200 hover:bg-stone-50" aria-label="Start">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="play" class="lucide lucide-play h-5 w-5"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"></path></svg>
+            </button></div></div>
+<div class="ds-cell"><small>Hover</small><div class="relative overflow-hidden h-28 w-52 rounded-3xl bg-stone-900"><img src="assets/overview/assets/hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/d7d9b7c8-28b9-4129-953f-61dd5c9ecc6c_800w.jpg" alt="" class="h-full w-full object-cover" style=""><div class="absolute inset-0 bg-gradient-to-tr to-transparent from-stone-900/70 via-stone-900/10 shadow-[0_2.8px_2.2px_rgba(0,_0,_0,_0.034),_0_6.7px_5.3px_rgba(0,_0,_0,_0.048),_0_12.5px_10px_rgba(0,_0,_0,_0.06),_0_22.3px_17.9px_rgba(0,_0,_0,_0.072),_0_41.8px_33.4px_rgba(0,_0,_0,_0.086),_0_100px_80px_rgba(0,_0,_0,_0.12)]"></div><button class="absolute right-5 bottom-5 inline-flex h-11 w-11 items-center justify-center rounded-full shadow-md ring-1 bg-stone-50 text-stone-900 ring-stone-200 hover:bg-stone-50" aria-label="Start">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="play" class="lucide lucide-play h-5 w-5"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"></path></svg>
+            </button></div></div>
+</div><span class="ds-meta"><b>button.inline-flex.h-11.w-11.rounded-full.shadow-md.ring-1.bg-white.text-stone-900.ring-stone-200.hover:bg-stone-50</b> · lucide-play h-5 · pinned absolute right-5 bottom-5 on the hero photo</span></div>
+<div class="ds-spec"><h3>Primary pill</h3><div class="bg-white rounded-3xl p-5 ds-row">
+<div class="ds-cell"><small>Default</small><button class="inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-medium bg-stone-900 text-stone-100 hover:bg-stone-800">
+                  Running
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-right" class="lucide lucide-arrow-right h-3 w-3"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+                </button></div>
+<div class="ds-cell"><small>Hover</small><button class="inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-medium bg-stone-800 text-stone-100 hover:bg-stone-800">
+                  Running
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-right" class="lucide lucide-arrow-right h-3 w-3"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+                </button></div>
+</div>
+<span class="ds-meta"><b>button.inline-flex.items-center.gap-1.5.rounded-xl.px-3.py-1.5.text-xs.font-medium.bg-stone-900.text-stone-100.hover:bg-stone-800</b> · trailing lucide-arrow-right h-3</span></div>
+<div class="ds-spec"><h3>Outlined icon button</h3><div class="bg-white rounded-3xl p-5 ds-row">
+<div class="ds-cell"><small>Default</small><div class="flex items-center gap-2 text-stone-500"><button class="inline-flex h-8 w-8 items-center justify-center rounded-lg ring-1 ring-stone-200 hover:bg-stone-50" aria-label="Pause">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="pause" class="lucide lucide-pause h-4 w-4"><rect x="14" y="3" width="5" height="18" rx="1"></rect><rect x="5" y="3" width="5" height="18" rx="1"></rect></svg>
+                </button><button class="inline-flex h-8 w-8 items-center justify-center rounded-lg ring-1 ring-stone-200 hover:bg-stone-50" aria-label="Play">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="play" class="lucide lucide-play h-4 w-4"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"></path></svg>
+                </button></div></div>
+<div class="ds-cell"><small>Hover</small><div class="flex items-center gap-2 text-stone-500"><button class="inline-flex h-8 w-8 items-center justify-center rounded-lg ring-1 ring-stone-200 bg-stone-50" aria-label="Pause">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="pause" class="lucide lucide-pause h-4 w-4"><rect x="14" y="3" width="5" height="18" rx="1"></rect><rect x="5" y="3" width="5" height="18" rx="1"></rect></svg>
+                </button></div></div>
+</div>
+<span class="ds-meta"><b>button.inline-flex.h-8.w-8.items-center.justify-center.rounded-lg.ring-1.ring-stone-200.hover:bg-stone-50</b> · inherits text-stone-500 · lucide h-4 · timer pause / play</span></div>
+<div class="ds-spec"><h3>Ghost icon button</h3><div class="bg-white rounded-3xl p-5 ds-row">
+<div class="ds-cell"><small>Default</small><div class="flex items-center gap-2"><button class="rounded-xl p-2 text-stone-500 hover:bg-stone-50">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="plus" class="lucide lucide-plus h-5 w-5"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
+              </button><button class="rounded-xl p-2 text-stone-500 hover:bg-stone-50">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="utensils" class="lucide lucide-utensils h-5 w-5"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"></path><path d="M7 2v20"></path><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"></path></svg>
+              </button><button class="rounded-xl p-2 text-stone-500 hover:bg-stone-50">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="users" class="lucide lucide-users h-4 w-4"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><path d="M16 3.128a4 4 0 0 1 0 7.744"></path><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><circle cx="9" cy="7" r="4"></circle></svg>
+              </button></div></div>
+<div class="ds-cell"><small>Hover</small><button class="rounded-xl p-2 text-stone-500 bg-stone-50">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="plus" class="lucide lucide-plus h-5 w-5"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
+              </button></div>
+<div class="ds-cell"><small>Ring · Default</small><button class="rounded-xl p-2 text-stone-500 ring-1 ring-transparent hover:bg-stone-50 hover:ring-stone-200">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="more-horizontal" class="lucide lucide-more-horizontal h-5 w-5"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
+              </button></div>
+<div class="ds-cell"><small>Ring · Hover</small><button class="rounded-xl p-2 text-stone-500 ring-1 ring-stone-200 bg-stone-50 hover:ring-stone-200">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="more-horizontal" class="lucide lucide-more-horizontal h-5 w-5"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
+              </button></div>
+</div>
+<span class="ds-meta"><b>button.rounded-xl.p-2.text-stone-500.hover:bg-stone-50</b> · ring variant adds .ring-1.ring-transparent.hover:ring-stone-200 (card menu) · lucide h-5 | h-4 (users)</span></div>
+<div class="ds-spec"><h3>Ghost icon button on photo</h3><div class="ds-row">
+<div class="ds-cell"><small>Default</small><div class="rounded-2xl bg-cover bg-center p-4 bg-[url(assets/overview/assets/hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/f3e4ed66-8b4b-4d7a-b556-68b4b142faae_800w.jpg)]"><button class="rounded-xl p-2 text-stone-300 hover:bg-stone-700/40">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="ellipsis" class="lucide lucide-ellipsis h-5 w-5"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
+              </button></div></div>
+<div class="ds-cell"><small>Hover</small><div class="rounded-2xl bg-cover bg-center p-4 bg-[url(assets/overview/assets/hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/f3e4ed66-8b4b-4d7a-b556-68b4b142faae_800w.jpg)]"><button class="rounded-xl p-2 text-stone-300 bg-stone-700/40">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="ellipsis" class="lucide lucide-ellipsis h-5 w-5"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
+              </button></div></div>
+</div><span class="ds-meta"><b>button.rounded-xl.p-2.text-stone-300.hover:bg-stone-700/40</b> · lucide-ellipsis h-5 · photo card header</span></div>
+</section>
+
+<section class="ds-group" id="components-badges">
+<div class="ds-head">
+  <div class="ds-kicker"><span>Components</span><span>(07)</span></div>
+  <h2>Badges and status</h2>
+</div>
+<div class="ds-spec"><h3>Status pill</h3><div class="bg-white rounded-3xl p-5 ds-row">
+<div class="ds-cell"><small>Completed</small><span class="text-xs font-medium text-emerald-700 bg-emerald-100 px-2 py-1 rounded-full">Completed</span></div>
+<div class="ds-cell"><small>Next</small><span class="text-xs font-medium text-orange-700 bg-orange-100 px-2 py-1 rounded-full">Next</span></div>
+<div class="ds-cell"><small>Pending</small><span class="text-xs font-medium text-stone-600 bg-stone-200 px-2 py-1 rounded-full">Pending</span></div>
+</div>
+<span class="ds-meta"><b>span.text-xs.font-medium.px-2.py-1.rounded-full</b> · text-emerald-700 bg-emerald-100 | text-orange-700 bg-orange-100 | text-stone-600 bg-stone-200 · end of workout rows</span></div>
+<div class="ds-spec"><h3>Status label</h3><div class="bg-white rounded-3xl p-5 space-y-3" style="max-width:420px">
+<div class="flex items-center justify-between text-sm">
+                    <p class="font-medium">Steps</p>
+                    <p class="text-stone-500">Completed</p>
+                  </div>
+<div class="flex items-center justify-between text-sm">
+                    <p class="font-medium">Calories</p>
+                    <p class="text-stone-500">In Progress</p>
+                  </div>
+<div class="flex items-center justify-between text-sm">
+                    <p class="font-medium">Meditation</p>
+                    <p class="text-stone-500">Pending</p>
+                  </div>
+</div><span class="ds-meta"><b>.flex.items-center.justify-between.text-sm</b> · p.font-medium + p.text-stone-500 (Completed | In Progress | Pending) · goal-row header</span></div>
+</section>
+
+<section class="ds-group" id="components-controls">
+<div class="ds-head">
+  <div class="ds-kicker"><span>Components</span><span>(08)</span></div>
+  <h2>Controls</h2>
+</div>
+<div class="ds-spec"><h3>Week strip</h3><div class="bg-white rounded-3xl p-6" style="max-width:520px">
+<div class="grid grid-cols-7 gap-2 text-center text-xs font-medium text-stone-600">
+              <div class="rounded-xl px-3 py-2 bg-stone-900 text-stone-100">
+                <p class="font-medium">Mon</p>
+                <p class="mt-0.5 text-sm font-semibold tracking-tight">17</p>
+              </div>
+              <div class="rounded-xl px-3 py-2 ring-1 bg-stone-50 ring-stone-200">
+                <p>Tue</p><p class="mt-0.5 font-medium">18</p>
+              </div>
+              <div class="rounded-xl px-3 py-2 ring-1 bg-stone-50 ring-stone-200">
+                <p>Wed</p><p class="mt-0.5 font-medium">19</p>
+              </div>
+              <div class="rounded-xl px-3 py-2 ring-1 bg-stone-50 ring-stone-200">
+                <p>Thu</p><p class="mt-0.5 font-medium">20</p>
+              </div>
+              <div class="rounded-xl px-3 py-2 ring-1 bg-stone-50 ring-stone-200">
+                <p>Fri</p><p class="mt-0.5 font-medium">21</p>
+              </div>
+              <div class="rounded-xl px-3 py-2 ring-1 bg-stone-50 ring-stone-200">
+                <p>Sat</p><p class="mt-0.5 font-medium">22</p>
+              </div>
+              <div class="rounded-xl px-3 py-2 ring-1 bg-stone-50 ring-stone-200">
+                <p>Sun</p><p class="mt-0.5 font-medium">23</p>
+              </div>
+            </div>
+</div><span class="ds-meta"><b>.grid.grid-cols-7.gap-2.text-center.text-xs.font-medium.text-stone-600</b> · selected .rounded-xl.px-3.py-2.bg-stone-900.text-stone-100 (day in text-sm semibold) · default .ring-1.bg-stone-50.ring-stone-200 · static in the page (no click handler)</span></div>
+<div class="ds-spec"><h3>Timer controls</h3><div data-ds-timer class="bg-white rounded-3xl pt-5 pr-5 pb-5 pl-5" style="max-width:400px">
+<div class="flex items-center justify-between">
+              <p class="text-sm font-medium text-stone-500">Tracking Now</p>
+              <div class="flex items-center gap-2 text-stone-500">
+                <button data-ds-timer-pause class="inline-flex h-8 w-8 items-center justify-center rounded-lg ring-1 ring-stone-200 hover:bg-stone-50" aria-label="Pause">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="pause" class="lucide lucide-pause h-4 w-4"><rect x="14" y="3" width="5" height="18" rx="1"></rect><rect x="5" y="3" width="5" height="18" rx="1"></rect></svg>
+                </button>
+                <button data-ds-timer-play class="inline-flex h-8 w-8 items-center justify-center rounded-lg ring-1 ring-stone-200 hover:bg-stone-50" aria-label="Play">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="play" class="lucide lucide-play h-4 w-4"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"></path></svg>
+                </button>
+              </div>
+            </div>
+<p data-ds-timer-out class="mt-3 text-3xl font-semibold tracking-tight tabular-nums">00:18:16</p>
+</div><span class="ds-meta"><b>#timer-pause / #timer-play → #live-timer</b> · the page's own setInterval (1 s) counts up from 00:18:16; pause stops it, play resumes · live here</span></div>
+</section>
+
+<section class="ds-group" id="components-data">
+<div class="ds-head">
+  <div class="ds-kicker"><span>Components</span><span>(09)</span></div>
+  <h2>Data display</h2>
+</div>
+<div class="ds-spec"><h3>Gradient progress bar</h3><div class="bg-white rounded-3xl p-5" style="max-width:520px">
+<div class="space-y-4"><div class="ds-cell" style="width:100%"><small>amber-400 → orange-500 · 100%</small><div style="width:100%"><div class="mt-2 h-2 w-full overflow-hidden rounded-full bg-stone-200">
+                    <div class="h-full rounded-full bg-gradient-to-r to-orange-500 from-amber-400" style="width: 100%"></div>
+                  </div></div></div>
+<div class="ds-cell" style="width:100%"><small>rose-400 → pink-500 · 85%</small><div style="width:100%"><div class="mt-2 h-2 w-full overflow-hidden rounded-full bg-stone-200">
+                    <div class="h-full rounded-full bg-gradient-to-r to-pink-500 from-rose-400" style="width: 85%"></div>
+                  </div></div></div>
+<div class="ds-cell" style="width:100%"><small>blue-400 → cyan-500 · 73%</small><div style="width:100%"><div class="mt-2 h-2 w-full overflow-hidden rounded-full bg-stone-200">
+                    <div class="h-full rounded-full bg-gradient-to-r to-cyan-500 from-blue-400" style="width: 73%"></div>
+                  </div></div></div>
+<div class="ds-cell" style="width:100%"><small>emerald-400 → green-500 · 0%</small><div style="width:100%"><div class="mt-2 h-2 w-full overflow-hidden rounded-full bg-stone-200">
+                    <div class="h-full rounded-full bg-gradient-to-r to-green-500 from-emerald-400" style="width: 0%"></div>
+                  </div></div></div>
+<div class="ds-cell" style="width:100%"><small>indigo-400 → purple-500 · 89%</small><div style="width:100%"><div class="mt-3 h-2 w-full overflow-hidden rounded-full bg-stone-200">
+                <div class="h-full rounded-full bg-gradient-to-r from-indigo-400 to-purple-500" style="width: 89%"></div>
+              </div></div></div></div>
+</div><span class="ds-meta"><b>.h-2.w-full.overflow-hidden.rounded-full.bg-stone-200 › .h-full.rounded-full.bg-gradient-to-r.from-{a}.to-{b}</b> · width set inline (style="width: n%") · goal rows and Sleep</span></div>
+<div class="ds-spec"><h3>Progress with value</h3><div class="bg-white rounded-3xl p-5" style="max-width:260px">
+<div class="mt-3 flex items-center gap-2">
+                <div class="flex-1 h-2 overflow-hidden rounded-full bg-stone-200">
+                  <div class="h-full rounded-full bg-gradient-to-r from-yellow-400 to-orange-500" style="width: 97%"></div>
+                </div>
+                <p class="text-xs font-medium text-stone-600">97%</p>
+              </div>
+</div><span class="ds-meta"><b>.flex.items-center.gap-2 › .flex-1.h-2 bar (yellow-400 → orange-500) + p.text-xs.font-medium.text-stone-600</b> · Active card</span></div>
+<div class="ds-spec"><h3>Gradient ring</h3><div class="bg-white rounded-3xl p-5" style="max-width:360px">
+<div class="ds-row" style="gap:40px"><div class="ds-cell"><small>Heart · inset-1</small><div class="relative h-24 w-24">
+                  <div class="absolute inset-0 rounded-full bg-[conic-gradient(var(--tw-gradient-stops))] from-rose-400 via-orange-300 to-amber-400"></div>
+                  <div class="absolute inset-1 rounded-full bg-white"></div>
+                  <div class="absolute inset-0 flex items-center justify-center">
+                    <div class="text-center">
+                      <p class="text-xl font-semibold tracking-tight">120</p>
+                      <p class="text-xs text-stone-500">BPM</p>
+                    </div>
+                  </div>
+                </div></div><div class="ds-cell"><small>Nutrition · inset-2</small><div class="relative mx-auto h-24 w-24">
+                  <div class="absolute inset-0 rounded-full bg-[conic-gradient(var(--tw-gradient-stops))] from-green-400 via-yellow-400 to-red-400"></div>
+                  <div class="absolute inset-2 rounded-full bg-white"></div>
+                  <div class="absolute inset-0 flex items-center justify-center">
+                    <div class="text-center">
+                      <p class="text-lg font-semibold tracking-tight">1,420</p>
+                      <p class="text-xs text-stone-500">kcal</p>
+                    </div>
+                  </div>
+                </div></div></div>
+</div><span class="ds-meta"><b>.relative.h-24.w-24 › .absolute.inset-0.rounded-full.bg-[conic-gradient(var(--tw-gradient-stops))]</b> + white disc .inset-1 (heart: rose-400 → orange-300 → amber-400) | .inset-2 (nutrition: green-400 → yellow-400 → red-400) · static</span></div>
+<div class="ds-spec"><h3>Macro meter tiles</h3><div class="bg-white rounded-3xl p-5" style="max-width:360px">
+<div class="grid grid-cols-3 gap-3 text-center">
+                <div class="rounded-2xl p-3 ring-1 bg-red-50 ring-red-200">
+                  <div class="h-2 w-full overflow-hidden rounded-full bg-red-200 mb-2">
+                    <div class="h-full rounded-full bg-red-400" style="width: 65%"></div>
+                  </div>
+                  <p class="text-xs font-medium text-red-600">Carbs</p>
+                  <p class="text-sm font-semibold">178g</p>
+                </div>
+                <div class="rounded-2xl p-3 ring-1 bg-blue-50 ring-blue-200">
+                  <div class="h-2 w-full overflow-hidden rounded-full bg-blue-200 mb-2">
+                    <div class="h-full rounded-full bg-blue-400" style="width: 80%"></div>
+                  </div>
+                  <p class="text-xs font-medium text-blue-600">Protein</p>
+                  <p class="text-sm font-semibold">92g</p>
+                </div>
+                <div class="rounded-2xl p-3 ring-1 bg-yellow-50 ring-yellow-200">
+                  <div class="h-2 w-full overflow-hidden rounded-full bg-yellow-200 mb-2">
+                    <div class="h-full rounded-full bg-yellow-400" style="width: 45%"></div>
+                  </div>
+                  <p class="text-xs font-medium text-yellow-600">Fats</p>
+                  <p class="text-sm font-semibold">38g</p>
+                </div>
+              </div>
+</div><span class="ds-meta"><b>.rounded-2xl.p-3.ring-1.bg-{hue}-50.ring-{hue}-200 › .h-2.rounded-full.bg-{hue}-200.mb-2 › .bg-{hue}-400</b> · label text-xs font-medium text-{hue}-600 · value text-sm font-semibold</span></div>
+<div class="ds-spec"><h3>History tiles</h3><div class="bg-white rounded-3xl p-5" style="max-width:400px">
+<div class="grid grid-cols-3 gap-3 text-sm">
+              <div class="rounded-2xl p-3 ring-1 bg-stone-50 ring-stone-200">
+                <p class="text-stone-500">5d ago</p>
+                <p class="font-medium">10.37km</p>
+              </div>
+              <div class="rounded-2xl p-3 ring-1 bg-stone-50 ring-stone-200">
+                <p class="text-stone-500">8d ago</p>
+                <p class="font-medium">8.21km</p>
+              </div>
+              <div class="rounded-2xl p-3 ring-1 bg-stone-50 ring-stone-200">
+                <p class="text-stone-500">14d ago</p>
+                <p class="font-medium">9.54km</p>
+              </div>
+            </div>
+</div><span class="ds-meta"><b>.grid.grid-cols-3.gap-3.text-sm › .rounded-2xl.p-3.ring-1.bg-stone-50.ring-stone-200</b> · p.text-stone-500 + p.font-medium · Timer card</span></div>
+<div class="ds-spec"><h3>Avatar stack</h3><div class="bg-white rounded-3xl p-5" style="max-width:220px">
+<div class="flex items-center gap-2">
+                  <img class="h-6 w-6 rounded-full object-cover" src="assets/overview/assets/hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/eac34b73-c643-4433-82f0-5ec79e8f5fc9_320w.jpg" alt="" style="">
+                  <img class="h-6 w-6 -ml-2 rounded-full object-cover ring-2 ring-white" src="assets/overview/assets/hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/5c473785-e642-4d2f-8148-f2bfbb42dbf0_320w.jpg" alt="">
+                </div>
+</div><span class="ds-meta"><b>img.h-6.w-6.rounded-full.object-cover</b> + second img .-ml-2.ring-2.ring-white · the parent's gap-2 cancels the overlap, as on the page</span></div>
+<div class="ds-spec"><h3>Line chart</h3><div class="rounded-3xl bg-cover bg-center p-6 text-stone-100 bg-[url(assets/overview/assets/hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/f3e4ed66-8b4b-4d7a-b556-68b4b142faae_800w.jpg)]" style="max-width:360px"><div class="h-44 bg-stone-900/30 rounded-2xl pt-3 pr-3 pb-3 pl-3">
+              <div class="relative h-full w-full">
+                <canvas data-ds-chart class="h-full w-full"></canvas>
+              </div>
+            </div></div><span class="ds-meta"><b>Chart.js 4.4.3 line</b> · tension .38 · line #fef3c7 · fill rgba(251,191,36,.15) · points r4 (hover 6), border #f59e0b, Apr point filled #f59e0b · ticks #e7e5e4 weight 500 · grid rgba(231,229,228,.08) · y 70–78 · tooltip #111827 " 73.4 kg" · 1 s draw-in (Chart.js default) · live</span></div>
+</section>
+
+<section class="ds-group" id="components-rows">
+<div class="ds-head">
+  <div class="ds-kicker"><span>Components</span><span>(10)</span></div>
+  <h2>List rows</h2>
+</div>
+<div class="ds-spec"><h3>Goal row</h3><div class="bg-white rounded-3xl p-5" style="max-width:520px">
+<div class="space-y-3"><div class="flex items-center gap-4 rounded-2xl p-4 ring-1 bg-stone-50 ring-stone-200">
+                <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-100 text-amber-700">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="footprints" class="lucide lucide-footprints h-5 w-5"><path d="M4 16v-2.38C4 11.5 2.97 10.5 3 8c.03-2.72 1.49-6 4.5-6C9.37 2 10 3.8 10 5.5c0 3.11-2 5.66-2 8.68V16a2 2 0 1 1-4 0Z"></path><path d="M20 20v-2.38c0-2.12 1.03-3.12 1-5.62-.03-2.72-1.49-6-4.5-6C14.63 6 14 7.8 14 9.5c0 3.11 2 5.66 2 8.68V20a2 2 0 1 0 4 0Z"></path><path d="M16 17h4"></path><path d="M4 13h4"></path></svg>
+                </div>
+                <div class="flex-1">
+                  <div class="flex items-center justify-between text-sm">
+                    <p class="font-medium">Steps</p>
+                    <p class="text-stone-500">Completed</p>
+                  </div>
+                  <div class="mt-2 h-2 w-full overflow-hidden rounded-full bg-stone-200">
+                    <div class="h-full rounded-full bg-gradient-to-r to-orange-500 from-amber-400" style="width: 100%"></div>
+                  </div>
+                  <p class="mt-1 text-xs text-stone-500">22,000 / 22,000</p>
+                </div>
+                <p class="text-sm font-medium">100%</p>
+              </div>
+<div class="flex items-center gap-4 rounded-2xl p-4 ring-1 bg-stone-50 ring-stone-200">
+                <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-rose-100 text-rose-600">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="flame" class="lucide lucide-flame h-5 w-5"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path></svg>
+                </div>
+                <div class="flex-1">
+                  <div class="flex items-center justify-between text-sm">
+                    <p class="font-medium">Calories</p>
+                    <p class="text-stone-500">In Progress</p>
+                  </div>
+                  <div class="mt-2 h-2 w-full overflow-hidden rounded-full bg-stone-200">
+                    <div class="h-full rounded-full bg-gradient-to-r to-pink-500 from-rose-400" style="width: 85%"></div>
+                  </div>
+                  <p class="mt-1 text-xs text-stone-500">1,420 / 1,680 cal</p>
+                </div>
+                <p class="text-sm font-medium">85%</p>
+              </div>
+<div class="flex items-center gap-4 rounded-2xl p-4 ring-1 bg-stone-50 ring-stone-200">
+                <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-100 text-blue-600">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="droplets" class="lucide lucide-droplets h-5 w-5"><path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z"></path><path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97"></path></svg>
+                </div>
+                <div class="flex-1">
+                  <div class="flex items-center justify-between text-sm">
+                    <p class="font-medium">Water</p>
+                    <p class="text-stone-500">In Progress</p>
+                  </div>
+                  <div class="mt-2 h-2 w-full overflow-hidden rounded-full bg-stone-200">
+                    <div class="h-full rounded-full bg-gradient-to-r to-cyan-500 from-blue-400" style="width: 73%"></div>
+                  </div>
+                  <p class="mt-1 text-xs text-stone-500">2.2 / 3 L</p>
+                </div>
+                <p class="text-sm font-medium">73%</p>
+              </div>
+<div class="flex items-center gap-4 rounded-2xl p-4 ring-1 bg-stone-50 ring-stone-200">
+                <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-100 text-emerald-600">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="brain" class="lucide lucide-brain h-5 w-5"><path d="M12 18V5"></path><path d="M15 13a4.17 4.17 0 0 1-3-4 4.17 4.17 0 0 1-3 4"></path><path d="M17.598 6.5A3 3 0 1 0 12 5a3 3 0 1 0-5.598 1.5"></path><path d="M17.997 5.125a4 4 0 0 1 2.526 5.77"></path><path d="M18 18a4 4 0 0 0 2-7.464"></path><path d="M19.967 17.483A4 4 0 1 1 12 18a4 4 0 1 1-7.967-.517"></path><path d="M6 18a4 4 0 0 1-2-7.464"></path><path d="M6.003 5.125a4 4 0 0 0-2.526 5.77"></path></svg>
+                </div>
+                <div class="flex-1">
+                  <div class="flex items-center justify-between text-sm">
+                    <p class="font-medium">Meditation</p>
+                    <p class="text-stone-500">Pending</p>
+                  </div>
+                  <div class="mt-2 h-2 w-full overflow-hidden rounded-full bg-stone-200">
+                    <div class="h-full rounded-full bg-gradient-to-r to-green-500 from-emerald-400" style="width: 0%"></div>
+                  </div>
+                  <p class="mt-1 text-xs text-stone-500">0 / 15 min</p>
+                </div>
+                <p class="text-sm font-medium">0%</p>
+              </div></div>
+</div><span class="ds-meta"><b>.flex.items-center.gap-4.rounded-2xl.p-4.ring-1.bg-stone-50.ring-stone-200</b> · icon tile h-9 · header (title + status) · gradient bar · caption · percent text-sm font-medium · Completed | In Progress | Pending</span></div>
+<div class="ds-spec"><h3>Workout row</h3><div class="bg-white rounded-3xl p-5" style="max-width:520px">
+<div class="space-y-3"><div class="flex items-center gap-4 rounded-2xl p-4 ring-1 bg-emerald-50 ring-emerald-200">
+                <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-500 text-white">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="check" class="lucide lucide-check h-5 w-5"><path d="M20 6 9 17l-5-5"></path></svg>
+                </div>
+                <div class="flex-1">
+                  <p class="font-medium">Lorem Ipsum</p>
+                  <p class="text-sm text-stone-500">6:30 AM • 45 min</p>
+                </div>
+                <span class="text-xs font-medium text-emerald-700 bg-emerald-100 px-2 py-1 rounded-full">Completed</span>
+              </div>
+<div class="flex items-center gap-4 rounded-2xl p-4 ring-1 bg-stone-50 ring-stone-200">
+                <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-orange-100 text-orange-600">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="dumbbell" class="lucide lucide-dumbbell h-5 w-5"><path d="M17.596 12.768a2 2 0 1 0 2.829-2.829l-1.768-1.767a2 2 0 0 0 2.828-2.829l-2.828-2.828a2 2 0 0 0-2.829 2.828l-1.767-1.768a2 2 0 1 0-2.829 2.829z"></path><path d="m2.5 21.5 1.4-1.4"></path><path d="m20.1 3.9 1.4-1.4"></path><path d="M5.343 21.485a2 2 0 1 0 2.829-2.828l1.767 1.768a2 2 0 1 0 2.829-2.829l-6.364-6.364a2 2 0 1 0-2.829 2.829l1.768 1.767a2 2 0 0 0-2.828 2.829z"></path><path d="m9.6 14.4 4.8-4.8"></path></svg>
+                </div>
+                <div class="flex-1">
+                  <p class="font-medium">Dolor Sit Amet</p>
+                  <p class="text-sm text-stone-500">2:00 PM • 60 min</p>
+                </div>
+                <span class="text-xs font-medium text-orange-700 bg-orange-100 px-2 py-1 rounded-full">Next</span>
+              </div>
+<div class="flex items-center gap-4 rounded-2xl p-4 ring-1 bg-stone-50 ring-stone-200">
+                <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-100 text-purple-600">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="stretch-horizontal" class="lucide lucide-stretch-horizontal h-5 w-5"><rect width="20" height="6" x="2" y="4" rx="2"></rect><rect width="20" height="6" x="2" y="14" rx="2"></rect></svg>
+                </div>
+                <div class="flex-1">
+                  <p class="font-medium">Consectetur</p>
+                  <p class="text-sm text-stone-500">7:00 PM • 30 min</p>
+                </div>
+                <span class="text-xs font-medium text-stone-600 bg-stone-200 px-2 py-1 rounded-full">Pending</span>
+              </div></div>
+</div><span class="ds-meta"><b>.flex.items-center.gap-4.rounded-2xl.p-4.ring-1</b> · done = bg-emerald-50 ring-emerald-200 + bg-emerald-500 tile · default = bg-stone-50 ring-stone-200 + tinted tile · icon tile h-10 · status pill</span></div>
+<div class="ds-spec"><h3>Friend row</h3><div class="bg-white rounded-3xl p-5" style="max-width:360px">
+<div class="space-y-3"><div class="flex items-center gap-3">
+                <img class="h-8 w-8 rounded-full object-cover" src="assets/overview/assets/hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/c6c3834b-2622-431b-8e32-b6ab8e8dbfc9_800w.jpg" alt="">
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium truncate">Lorem Ipsum</p>
+                  <p class="text-xs text-stone-500">Dolor sit amet elit</p>
+                </div>
+                <span class="text-xs text-stone-400">2h</span>
+              </div>
+<div class="flex items-center gap-3">
+                <img class="h-8 w-8 rounded-full object-cover" src="assets/overview/assets/hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/eac34b73-c643-4433-82f0-5ec79e8f5fc9_320w.jpg" alt="" style="">
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium truncate">Sit Consectetur</p>
+                  <p class="text-xs text-stone-500">Sed do eiusmod tempor</p>
+                </div>
+                <span class="text-xs text-stone-400">4h</span>
+              </div>
+<div class="flex items-center gap-3">
+                <img class="h-8 w-8 rounded-full object-cover" src="assets/overview/assets/hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/e9f01031-12a2-4214-96af-13f1facd3e61_320w.jpg" alt="" style="">
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium truncate">Amet Tempor</p>
+                  <p class="text-xs text-stone-500">Ut labore et dolore</p>
+                </div>
+                <span class="text-xs text-stone-400">6h</span>
+              </div></div>
+</div><span class="ds-meta"><b>.flex.items-center.gap-3</b> · img.h-8.w-8.rounded-full · .flex-1.min-w-0 › p.text-sm.font-medium.truncate + p.text-xs.text-stone-500 · span.text-xs.text-stone-400</span></div>
+</section>
+
+<section class="ds-group" id="components-cards">
+<div class="ds-head">
+  <div class="ds-kicker"><span>Components</span><span>(11)</span></div>
+  <h2>Cards</h2>
+</div>
+<p class="ds-sub">Left column</p>
+<div class="ds-cards" style="grid-template-columns:repeat(auto-fill,minmax(min(100%,380px),1fr))">
+<div class="ds-spec"><h3>Hero card</h3><article class="relative overflow-hidden h-80 bg-stone-900 rounded-3xl shadow-[0_2.8px_2.2px_rgba(0,_0,_0,_0.034),_0_6.7px_5.3px_rgba(0,_0,_0,_0.048),_0_12.5px_10px_rgba(0,_0,_0,_0.06),_0_22.3px_17.9px_rgba(0,_0,_0,_0.072),_0_41.8px_33.4px_rgba(0,_0,_0,_0.086),_0_100px_80px_rgba(0,_0,_0,_0.12)]">
+            <img src="assets/overview/assets/hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/d7d9b7c8-28b9-4129-953f-61dd5c9ecc6c_800w.jpg" alt="" class="h-full w-full object-cover" style="">
+            <div class="absolute inset-0 bg-gradient-to-tr to-transparent from-stone-900/70 via-stone-900/10 shadow-[0_2.8px_2.2px_rgba(0,_0,_0,_0.034),_0_6.7px_5.3px_rgba(0,_0,_0,_0.048),_0_12.5px_10px_rgba(0,_0,_0,_0.06),_0_22.3px_17.9px_rgba(0,_0,_0,_0.072),_0_41.8px_33.4px_rgba(0,_0,_0,_0.086),_0_100px_80px_rgba(0,_0,_0,_0.12)]"></div>
+            <div class="absolute bottom-5 left-5 right-5">
+              <p class="text-2xl md:text-3xl font-semibold tracking-tight text-white">Moveflux<br>Design System</p>
+              <p class="mt-1 text-sm text-stone-200">Soft stone cards, vivid gradients.</p>
+            </div>
+            <button class="absolute right-5 bottom-5 inline-flex h-11 w-11 items-center justify-center rounded-full shadow-md ring-1 bg-white text-stone-900 ring-stone-200 hover:bg-stone-50" aria-label="Start">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="play" class="lucide lucide-play h-5 w-5"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"></path></svg>
+            </button>
+          </article><span class="ds-meta"><b>article.relative.overflow-hidden.h-80.bg-stone-900.rounded-3xl</b> · photo + ink scrim · title + subtitle .absolute.bottom-5.left-5.right-5 · play button</span></div>
+<div class="ds-spec"><h3>Stat cards</h3><div class="space-y-4"><div class="grid grid-cols-2 gap-4">
+            <div class="ring-1 ring-stone-200 h-44 bg-white rounded-3xl pt-5 pr-5 pb-5 pl-5 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),_0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)]">
+              <div class="flex items-center justify-between">
+                <p class="text-sm font-medium text-stone-500">Heart Rate</p>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="heart" class="lucide lucide-heart h-4 w-4 text-rose-500"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"></path></svg>
+              </div>
+              <div class="mt-4 flex items-center justify-center">
+                <div class="relative h-24 w-24">
+                  <div class="absolute inset-0 rounded-full bg-[conic-gradient(var(--tw-gradient-stops))] from-rose-400 via-orange-300 to-amber-400"></div>
+                  <div class="absolute inset-1 rounded-full bg-white"></div>
+                  <div class="absolute inset-0 flex items-center justify-center">
+                    <div class="text-center">
+                      <p class="text-xl font-semibold tracking-tight">120</p>
+                      <p class="text-xs text-stone-500">BPM</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="ring-1 ring-stone-200 h-44 bg-white rounded-3xl pt-5 pr-5 pb-5 pl-5 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),_0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)]">
+              <div class="flex items-center justify-between">
+                <p class="text-sm font-medium text-stone-500">Distance</p>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="navigation" class="lucide lucide-navigation h-4 w-4 text-blue-600"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>
+              </div>
+              <p class="mt-3 text-2xl font-semibold tracking-tight">3.37<span class="ml-1 text-base font-medium text-stone-500">km</span></p>
+              <div class="mt-4 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <img class="h-6 w-6 rounded-full object-cover" src="assets/overview/assets/hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/eac34b73-c643-4433-82f0-5ec79e8f5fc9_320w.jpg" alt="" style="">
+                  <img class="h-6 w-6 -ml-2 rounded-full object-cover ring-2 ring-white" src="assets/overview/assets/hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/5c473785-e642-4d2f-8148-f2bfbb42dbf0_320w.jpg" alt="">
+                </div>
+                <button class="inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-medium bg-stone-900 text-stone-100 hover:bg-stone-800">
+                  Running
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-right" class="lucide lucide-arrow-right h-3 w-3"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+                </button>
+              </div>
+            </div>
+          </div><div class="grid grid-cols-2 gap-4">
+            <div class="ring-1 ring-stone-200 h-44 bg-white rounded-3xl pt-5 pr-5 pb-5 pl-5 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),_0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)]">
+              <div class="flex items-center justify-between">
+                <p class="text-sm font-medium text-stone-500">Sleep</p>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="moon" class="lucide lucide-moon h-4 w-4 text-indigo-600"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"></path></svg>
+              </div>
+              <p class="mt-3 text-2xl font-semibold tracking-tight">7h 32m</p>
+              <div class="mt-3 h-2 w-full overflow-hidden rounded-full bg-stone-200">
+                <div class="h-full rounded-full bg-gradient-to-r from-indigo-400 to-purple-500" style="width: 89%"></div>
+              </div>
+              <p class="mt-2 text-xs text-stone-500">Quality: 89%</p>
+            </div>
+
+            <div class="ring-1 ring-stone-200 h-44 bg-white rounded-3xl pt-5 pr-5 pb-5 pl-5 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),_0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)]">
+              <div class="flex items-center justify-between">
+                <p class="text-sm font-medium text-stone-500">Active</p>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="zap" class="lucide lucide-zap h-4 w-4 text-yellow-600"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path></svg>
+              </div>
+              <p class="mt-3 text-2xl font-semibold tracking-tight">58<span class="ml-1 text-base font-medium text-stone-500">min</span></p>
+              <div class="mt-3 flex items-center gap-2">
+                <div class="flex-1 h-2 overflow-hidden rounded-full bg-stone-200">
+                  <div class="h-full rounded-full bg-gradient-to-r from-yellow-400 to-orange-500" style="width: 97%"></div>
+                </div>
+                <p class="text-xs font-medium text-stone-600">97%</p>
+              </div>
+              <p class="mt-2 text-xs text-stone-500">Goal: 60 min</p>
+            </div>
+          </div></div><span class="ds-meta"><b>.grid.grid-cols-2.gap-4 › .h-44.bg-white.rounded-3xl.p-5</b> · header (label + tinted lucide h-4) · ring | metric + avatars + pill | metric + bar</span></div>
+<div class="ds-spec"><h3>Timer card</h3><div data-ds-timer class="ring-1 ring-stone-200 bg-white rounded-3xl pt-5 pr-5 pb-5 pl-5 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),_0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)]">
+            <div class="flex items-center justify-between">
+              <p class="text-sm font-medium text-stone-500">Tracking Now</p>
+              <div class="flex items-center gap-2 text-stone-500">
+                <button data-ds-timer-pause class="inline-flex h-8 w-8 items-center justify-center rounded-lg ring-1 ring-stone-200 hover:bg-stone-50" aria-label="Pause">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="pause" class="lucide lucide-pause h-4 w-4"><rect x="14" y="3" width="5" height="18" rx="1"></rect><rect x="5" y="3" width="5" height="18" rx="1"></rect></svg>
+                </button>
+                <button data-ds-timer-play class="inline-flex h-8 w-8 items-center justify-center rounded-lg ring-1 ring-stone-200 hover:bg-stone-50" aria-label="Play">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="play" class="lucide lucide-play h-4 w-4"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"></path></svg>
+                </button>
+              </div>
+            </div>
+            <p data-ds-timer-out class="mt-3 text-3xl font-semibold tracking-tight tabular-nums">00:18:16</p>
+            <div class="mt-4 grid grid-cols-3 gap-3 text-sm">
+              <div class="rounded-2xl p-3 ring-1 bg-stone-50 ring-stone-200">
+                <p class="text-stone-500">5d ago</p>
+                <p class="font-medium">10.37km</p>
+              </div>
+              <div class="rounded-2xl p-3 ring-1 bg-stone-50 ring-stone-200">
+                <p class="text-stone-500">8d ago</p>
+                <p class="font-medium">8.21km</p>
+              </div>
+              <div class="rounded-2xl p-3 ring-1 bg-stone-50 ring-stone-200">
+                <p class="text-stone-500">14d ago</p>
+                <p class="font-medium">9.54km</p>
+              </div>
+            </div>
+          </div><span class="ds-meta"><b>.bg-white.rounded-3xl.p-5</b> · outlined controls · live counter (tabular-nums) · history tiles · live</span></div>
+</div>
+<p class="ds-sub">Middle column</p>
+<div class="ds-wide" style="grid-template-columns:repeat(auto-fill,minmax(min(100%,480px),1fr))">
+<div class="ds-spec"><h3>Daily activity card</h3><article class="ring-1 ring-stone-200 h-[580px] flex flex-col bg-white rounded-3xl pt-6 pr-6 pb-6 pl-6 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),_0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)]">
+            <div class="mb-5 flex items-start justify-between">
+              <div class="">
+                <h2 class="text-xl md:text-2xl font-semibold tracking-tight">Lorem Ipsum</h2>
+                <p class="text-sm text-stone-500">Mon 17 — Sun 23</p>
+              </div>
+              <button class="rounded-xl p-2 text-stone-500 ring-1 ring-transparent hover:bg-stone-50 hover:ring-stone-200">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="more-horizontal" class="lucide lucide-more-horizontal h-5 w-5"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
+              </button>
+            </div>
+
+            <div class="mb-6 grid grid-cols-7 gap-2 text-center text-xs font-medium text-stone-600">
+              <div class="rounded-xl px-3 py-2 bg-stone-900 text-stone-100">
+                <p class="font-medium">Mon</p>
+                <p class="mt-0.5 text-sm font-semibold tracking-tight">17</p>
+              </div>
+              <div class="rounded-xl px-3 py-2 ring-1 bg-stone-50 ring-stone-200">
+                <p>Tue</p><p class="mt-0.5 font-medium">18</p>
+              </div>
+              <div class="rounded-xl px-3 py-2 ring-1 bg-stone-50 ring-stone-200">
+                <p>Wed</p><p class="mt-0.5 font-medium">19</p>
+              </div>
+              <div class="rounded-xl px-3 py-2 ring-1 bg-stone-50 ring-stone-200">
+                <p>Thu</p><p class="mt-0.5 font-medium">20</p>
+              </div>
+              <div class="rounded-xl px-3 py-2 ring-1 bg-stone-50 ring-stone-200">
+                <p>Fri</p><p class="mt-0.5 font-medium">21</p>
+              </div>
+              <div class="rounded-xl px-3 py-2 ring-1 bg-stone-50 ring-stone-200">
+                <p>Sat</p><p class="mt-0.5 font-medium">22</p>
+              </div>
+              <div class="rounded-xl px-3 py-2 ring-1 bg-stone-50 ring-stone-200">
+                <p>Sun</p><p class="mt-0.5 font-medium">23</p>
+              </div>
+            </div>
+
+            <div class="flex-1 space-y-3">
+              <div class="flex items-center gap-4 rounded-2xl p-4 ring-1 bg-stone-50 ring-stone-200">
+                <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-100 text-amber-700">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="footprints" class="lucide lucide-footprints h-5 w-5"><path d="M4 16v-2.38C4 11.5 2.97 10.5 3 8c.03-2.72 1.49-6 4.5-6C9.37 2 10 3.8 10 5.5c0 3.11-2 5.66-2 8.68V16a2 2 0 1 1-4 0Z"></path><path d="M20 20v-2.38c0-2.12 1.03-3.12 1-5.62-.03-2.72-1.49-6-4.5-6C14.63 6 14 7.8 14 9.5c0 3.11 2 5.66 2 8.68V20a2 2 0 1 0 4 0Z"></path><path d="M16 17h4"></path><path d="M4 13h4"></path></svg>
+                </div>
+                <div class="flex-1">
+                  <div class="flex items-center justify-between text-sm">
+                    <p class="font-medium">Steps</p>
+                    <p class="text-stone-500">Completed</p>
+                  </div>
+                  <div class="mt-2 h-2 w-full overflow-hidden rounded-full bg-stone-200">
+                    <div class="h-full rounded-full bg-gradient-to-r to-orange-500 from-amber-400" style="width: 100%"></div>
+                  </div>
+                  <p class="mt-1 text-xs text-stone-500">22,000 / 22,000</p>
+                </div>
+                <p class="text-sm font-medium">100%</p>
+              </div>
+              <div class="flex items-center gap-4 rounded-2xl p-4 ring-1 bg-stone-50 ring-stone-200">
+                <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-rose-100 text-rose-600">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="flame" class="lucide lucide-flame h-5 w-5"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path></svg>
+                </div>
+                <div class="flex-1">
+                  <div class="flex items-center justify-between text-sm">
+                    <p class="font-medium">Calories</p>
+                    <p class="text-stone-500">In Progress</p>
+                  </div>
+                  <div class="mt-2 h-2 w-full overflow-hidden rounded-full bg-stone-200">
+                    <div class="h-full rounded-full bg-gradient-to-r to-pink-500 from-rose-400" style="width: 85%"></div>
+                  </div>
+                  <p class="mt-1 text-xs text-stone-500">1,420 / 1,680 cal</p>
+                </div>
+                <p class="text-sm font-medium">85%</p>
+              </div>
+              <div class="flex items-center gap-4 rounded-2xl p-4 ring-1 bg-stone-50 ring-stone-200">
+                <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-100 text-blue-600">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="droplets" class="lucide lucide-droplets h-5 w-5"><path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z"></path><path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97"></path></svg>
+                </div>
+                <div class="flex-1">
+                  <div class="flex items-center justify-between text-sm">
+                    <p class="font-medium">Water</p>
+                    <p class="text-stone-500">In Progress</p>
+                  </div>
+                  <div class="mt-2 h-2 w-full overflow-hidden rounded-full bg-stone-200">
+                    <div class="h-full rounded-full bg-gradient-to-r to-cyan-500 from-blue-400" style="width: 73%"></div>
+                  </div>
+                  <p class="mt-1 text-xs text-stone-500">2.2 / 3 L</p>
+                </div>
+                <p class="text-sm font-medium">73%</p>
+              </div>
+              <div class="flex items-center gap-4 rounded-2xl p-4 ring-1 bg-stone-50 ring-stone-200">
+                <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-100 text-emerald-600">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="brain" class="lucide lucide-brain h-5 w-5"><path d="M12 18V5"></path><path d="M15 13a4.17 4.17 0 0 1-3-4 4.17 4.17 0 0 1-3 4"></path><path d="M17.598 6.5A3 3 0 1 0 12 5a3 3 0 1 0-5.598 1.5"></path><path d="M17.997 5.125a4 4 0 0 1 2.526 5.77"></path><path d="M18 18a4 4 0 0 0 2-7.464"></path><path d="M19.967 17.483A4 4 0 1 1 12 18a4 4 0 1 1-7.967-.517"></path><path d="M6 18a4 4 0 0 1-2-7.464"></path><path d="M6.003 5.125a4 4 0 0 0-2.526 5.77"></path></svg>
+                </div>
+                <div class="flex-1">
+                  <div class="flex items-center justify-between text-sm">
+                    <p class="font-medium">Meditation</p>
+                    <p class="text-stone-500">Pending</p>
+                  </div>
+                  <div class="mt-2 h-2 w-full overflow-hidden rounded-full bg-stone-200">
+                    <div class="h-full rounded-full bg-gradient-to-r to-green-500 from-emerald-400" style="width: 0%"></div>
+                  </div>
+                  <p class="mt-1 text-xs text-stone-500">0 / 15 min</p>
+                </div>
+                <p class="text-sm font-medium">0%</p>
+              </div>
+            </div>
+          </article><span class="ds-meta"><b>article.h-[580px].flex.flex-col.bg-white.rounded-3xl.p-6</b> · heading + menu button · week strip · four goal rows (.flex-1.space-y-3)</span></div>
+<div class="ds-spec"><h3>Workouts card</h3><article class="ring-1 ring-stone-200 bg-white rounded-3xl pt-6 pr-6 pb-6 pl-6 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),_0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)]">
+            <div class="mb-5 flex items-start justify-between">
+              <div class="">
+                <h2 class="text-xl font-semibold tracking-tight">Dolor Sit Amet</h2>
+                <p class="text-sm text-stone-500">3 sessions planned</p>
+              </div>
+              <button class="rounded-xl p-2 text-stone-500 hover:bg-stone-50">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="plus" class="lucide lucide-plus h-5 w-5"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
+              </button>
+            </div>
+
+            <div class="space-y-3">
+              <div class="flex items-center gap-4 rounded-2xl p-4 ring-1 bg-emerald-50 ring-emerald-200">
+                <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-500 text-white">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="check" class="lucide lucide-check h-5 w-5"><path d="M20 6 9 17l-5-5"></path></svg>
+                </div>
+                <div class="flex-1">
+                  <p class="font-medium">Lorem Ipsum</p>
+                  <p class="text-sm text-stone-500">6:30 AM • 45 min</p>
+                </div>
+                <span class="text-xs font-medium text-emerald-700 bg-emerald-100 px-2 py-1 rounded-full">Completed</span>
+              </div>
+
+              <div class="flex items-center gap-4 rounded-2xl p-4 ring-1 bg-stone-50 ring-stone-200">
+                <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-orange-100 text-orange-600">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="dumbbell" class="lucide lucide-dumbbell h-5 w-5"><path d="M17.596 12.768a2 2 0 1 0 2.829-2.829l-1.768-1.767a2 2 0 0 0 2.828-2.829l-2.828-2.828a2 2 0 0 0-2.829 2.828l-1.767-1.768a2 2 0 1 0-2.829 2.829z"></path><path d="m2.5 21.5 1.4-1.4"></path><path d="m20.1 3.9 1.4-1.4"></path><path d="M5.343 21.485a2 2 0 1 0 2.829-2.828l1.767 1.768a2 2 0 1 0 2.829-2.829l-6.364-6.364a2 2 0 1 0-2.829 2.829l1.768 1.767a2 2 0 0 0-2.828 2.829z"></path><path d="m9.6 14.4 4.8-4.8"></path></svg>
+                </div>
+                <div class="flex-1">
+                  <p class="font-medium">Dolor Sit Amet</p>
+                  <p class="text-sm text-stone-500">2:00 PM • 60 min</p>
+                </div>
+                <span class="text-xs font-medium text-orange-700 bg-orange-100 px-2 py-1 rounded-full">Next</span>
+              </div>
+
+              <div class="flex items-center gap-4 rounded-2xl p-4 ring-1 bg-stone-50 ring-stone-200">
+                <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-100 text-purple-600">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="stretch-horizontal" class="lucide lucide-stretch-horizontal h-5 w-5"><rect width="20" height="6" x="2" y="4" rx="2"></rect><rect width="20" height="6" x="2" y="14" rx="2"></rect></svg>
+                </div>
+                <div class="flex-1">
+                  <p class="font-medium">Consectetur</p>
+                  <p class="text-sm text-stone-500">7:00 PM • 30 min</p>
+                </div>
+                <span class="text-xs font-medium text-stone-600 bg-stone-200 px-2 py-1 rounded-full">Pending</span>
+              </div>
+            </div>
+          </article><span class="ds-meta"><b>article.bg-white.rounded-3xl.p-6</b> · heading + plus button · three workout rows (.space-y-3)</span></div>
+</div>
+<p class="ds-sub">Right column</p>
+<div class="ds-cards" style="grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr))">
+<div class="ds-spec"><h3>Photo chart card</h3><article class="overflow-hidden h-80 shadow-[0_2.8px_2.2px_rgba(0,_0,_0,_0.034),_0_6.7px_5.3px_rgba(0,_0,_0,_0.048),_0_12.5px_10px_rgba(0,_0,_0,_0.06),_0_22.3px_17.9px_rgba(0,_0,_0,_0.072),_0_41.8px_33.4px_rgba(0,_0,_0,_0.086),_0_100px_80px_rgba(0,_0,_0,_0.12)] text-stone-100 bg-cover rounded-3xl pt-6 pr-6 pb-6 pl-6 bg-center bg-[url(assets/overview/assets/hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/f3e4ed66-8b4b-4d7a-b556-68b4b142faae_800w.jpg)]" style="">
+            <div class="mb-4 flex items-start justify-between">
+              <div>
+                <h2 class="text-xl font-semibold tracking-tight">Lorem Dolor</h2>
+                <p class="text-sm text-stone-300">72 kg target</p>
+              </div>
+              <button class="rounded-xl p-2 text-stone-300 hover:bg-stone-700/40">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="ellipsis" class="lucide lucide-ellipsis h-5 w-5"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
+              </button>
+            </div>
+            <p class="text-sm text-stone-300">Sed do eiusmod</p>
+            <div class="h-44 bg-stone-900/30 rounded-2xl mt-3 pt-3 pr-3 pb-3 pl-3">
+              <div class="relative h-full w-full">
+                <canvas data-ds-chart class="h-full w-full"></canvas>
+              </div>
+            </div>
+          </article><span class="ds-meta"><b>article.h-80.bg-cover.bg-center.bg-[url(…)].rounded-3xl.p-6.text-stone-100</b> · deep shadow · glass panel + Chart.js line · live</span></div>
+<div class="ds-spec"><h3>Nutrition card</h3><article class="ring-1 ring-stone-200 h-80 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),_0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] bg-white rounded-3xl pt-6 pr-6 pb-6 pl-6">
+            <div class="mb-4 flex items-start justify-between">
+              <div class="">
+                <h2 class="text-xl font-semibold tracking-tight">Consectetur</h2>
+                <p class="text-sm text-stone-500">Tempor incidi</p>
+              </div>
+              <button class="rounded-xl p-2 text-stone-500 hover:bg-stone-50">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="utensils" class="lucide lucide-utensils h-5 w-5"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"></path><path d="M7 2v20"></path><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"></path></svg>
+              </button>
+            </div>
+
+            <div class="space-y-4">
+              <div class="text-center">
+                <div class="relative mx-auto h-24 w-24">
+                  <div class="absolute inset-0 rounded-full bg-[conic-gradient(var(--tw-gradient-stops))] from-green-400 via-yellow-400 to-red-400"></div>
+                  <div class="absolute inset-2 rounded-full bg-white"></div>
+                  <div class="absolute inset-0 flex items-center justify-center">
+                    <div class="text-center">
+                      <p class="text-lg font-semibold tracking-tight">1,420</p>
+                      <p class="text-xs text-stone-500">kcal</p>
+                    </div>
+                  </div>
+                </div>
+                <p class="mt-2 text-sm text-stone-500">680 kcal remaining</p>
+              </div>
+
+              <div class="grid grid-cols-3 gap-3 text-center">
+                <div class="rounded-2xl p-3 ring-1 bg-red-50 ring-red-200">
+                  <div class="h-2 w-full overflow-hidden rounded-full bg-red-200 mb-2">
+                    <div class="h-full rounded-full bg-red-400" style="width: 65%"></div>
+                  </div>
+                  <p class="text-xs font-medium text-red-600">Carbs</p>
+                  <p class="text-sm font-semibold">178g</p>
+                </div>
+                <div class="rounded-2xl p-3 ring-1 bg-blue-50 ring-blue-200">
+                  <div class="h-2 w-full overflow-hidden rounded-full bg-blue-200 mb-2">
+                    <div class="h-full rounded-full bg-blue-400" style="width: 80%"></div>
+                  </div>
+                  <p class="text-xs font-medium text-blue-600">Protein</p>
+                  <p class="text-sm font-semibold">92g</p>
+                </div>
+                <div class="rounded-2xl p-3 ring-1 bg-yellow-50 ring-yellow-200">
+                  <div class="h-2 w-full overflow-hidden rounded-full bg-yellow-200 mb-2">
+                    <div class="h-full rounded-full bg-yellow-400" style="width: 45%"></div>
+                  </div>
+                  <p class="text-xs font-medium text-yellow-600">Fats</p>
+                  <p class="text-sm font-semibold">38g</p>
+                </div>
+              </div>
+            </div>
+          </article><span class="ds-meta"><b>article.h-80.bg-white.rounded-3xl.p-6</b> · gradient ring (inset-2) · remaining caption · macro meter tiles</span></div>
+<div class="ds-spec"><h3>Friends card</h3><article class="ring-1 ring-stone-200 bg-white rounded-3xl pt-6 pr-6 pb-6 pl-6 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),_0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)]">
+            <div class="mb-4 flex items-start justify-between">
+              <div class="">
+                <h2 class="text-lg font-semibold tracking-tight">Ipsum</h2>
+                <p class="text-sm text-stone-500">Labore dolore</p>
+              </div>
+              <button class="rounded-xl p-2 text-stone-500 hover:bg-stone-50">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lucide="users" class="lucide lucide-users h-4 w-4"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><path d="M16 3.128a4 4 0 0 1 0 7.744"></path><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><circle cx="9" cy="7" r="4"></circle></svg>
+              </button>
+            </div>
+
+            <div class="space-y-3">
+              <div class="flex items-center gap-3">
+                <img class="h-8 w-8 rounded-full object-cover" src="assets/overview/assets/hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/c6c3834b-2622-431b-8e32-b6ab8e8dbfc9_800w.jpg" alt="">
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium truncate">Lorem Ipsum</p>
+                  <p class="text-xs text-stone-500">Dolor sit amet elit</p>
+                </div>
+                <span class="text-xs text-stone-400">2h</span>
+              </div>
+              
+              <div class="flex items-center gap-3">
+                <img class="h-8 w-8 rounded-full object-cover" src="assets/overview/assets/hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/eac34b73-c643-4433-82f0-5ec79e8f5fc9_320w.jpg" alt="" style="">
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium truncate">Sit Consectetur</p>
+                  <p class="text-xs text-stone-500">Sed do eiusmod tempor</p>
+                </div>
+                <span class="text-xs text-stone-400">4h</span>
+              </div>
+              
+              <div class="flex items-center gap-3">
+                <img class="h-8 w-8 rounded-full object-cover" src="assets/overview/assets/hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/e9f01031-12a2-4214-96af-13f1facd3e61_320w.jpg" alt="" style="">
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium truncate">Amet Tempor</p>
+                  <p class="text-xs text-stone-500">Ut labore et dolore</p>
+                </div>
+                <span class="text-xs text-stone-400">6h</span>
+              </div>
+            </div>
+          </article><span class="ds-meta"><b>article.bg-white.rounded-3xl.p-6</b> · h2.text-lg heading + users button · three friend rows</span></div>
+</div>
+</section>
+
+</main>
+</div>
+
+<!-- the page's own libraries (mirrored copies): lucide icons and Chart.js for the weight chart -->
+<script src="assets/overview/assets/unpkg.com/lucide@1.49.0/dist/umd/lucide.min.js"></script>
+<script src="assets/overview/assets/cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script>
+(function () {
+  var COMPONENTS_ENABLED = true;   /* Overview approved (orchestrated run) */
+  var body = document.body, nav = document.getElementById('ds-nav'), frame = document.getElementById('overview-frame');
+  var linkO = document.getElementById('nav-overview'), linkC = document.getElementById('nav-components');
+  var main = document.getElementById('ds-main'), side = document.getElementById('ds-side');
+  var isComp = function (h) { return h === '#components' || h.indexOf('#components-') === 0; };
+  var mode = 'overview', pageY = 0;
+  if (!COMPONENTS_ENABLED) linkC.setAttribute('aria-disabled', 'true');
+
+  function send(m) { try { frame.contentWindow.postMessage(m, '*'); } catch (e) {} }
+  /* the embedded page keeps the bar's height as its top spacer */
+  function setNavH() {
+    var h = nav.offsetHeight;
+    document.documentElement.style.setProperty('--ds-nav-h', h + 'px');
+    send({ ds: 'navh', h: h });
+  }
+  addEventListener('resize', setNavH, { passive: true });
+  setNavH();
+  frame.addEventListener('load', setNavH);
+
+  function route() {
+    var h = location.hash;
+    if (isComp(h) && !COMPONENTS_ENABLED) { history.replaceState(null, '', location.pathname + location.search); h = ''; }
+    mode = isComp(h) ? 'components' : 'overview';
+    body.classList.toggle('is-components', mode === 'components');
+    linkO.classList.toggle('is-active', mode === 'overview');
+    linkC.classList.toggle('is-active', mode === 'components');
+    nav.classList.toggle('is-stuck', mode === 'components' || pageY > 4);
+    if (mode !== 'components') return;
+    if (h === '#components') { main.scrollTop = 0; spy(); return; }
+    var el = document.getElementById(h.slice(1));
+    if (el) main.scrollTop = el.offsetTop - 24;
+    spy();
+  }
+  addEventListener('message', function (e) {
+    if (e.source !== frame.contentWindow || !e.data) return;
+    if (e.data.ds === 'ready') { body.classList.add('ds-overview-ready'); return; }
+    if (e.data.ds === 'scroll') { pageY = e.data.y || 0; if (mode === 'overview') nav.classList.toggle('is-stuck', pageY > 4); }
+  });
+
+  /* sidebar follows the scroll */
+  var groups = [].slice.call(main.querySelectorAll('.ds-group'));
+  var sideLinks = [].slice.call(side.querySelectorAll('a'));
+  function spy() {
+    if (!groups.length) return;
+    var y = main.scrollTop + 160, cur = groups[0];
+    groups.forEach(function (g) { if (g.offsetTop <= y) cur = g; });
+    sideLinks.forEach(function (a) {
+      var on = a.getAttribute('href') === '#' + cur.id;
+      if (on && !a.classList.contains('is-current') && innerWidth < 768) side.scrollLeft = a.offsetLeft - 16;
+      a.classList.toggle('is-current', on);
+    });
+  }
+  main.addEventListener('scroll', spy, { passive: true });
+
+  /* sidebar links scroll the view without leaving a history entry per group */
+  side.addEventListener('click', function (e) {
+    var a = e.target.closest('a[href^="#components-"]');
+    if (!a) return;
+    e.preventDefault();
+    history.replaceState(null, '', a.getAttribute('href'));
+    route();
+  });
+
+  /* specimens stay put: links and form submits never navigate */
+  main.addEventListener('click', function (e) { if (e.target.closest('a')) e.preventDefault(); }, true);
+  main.addEventListener('submit', function (e) { e.preventDefault(); }, true);
+
+  /* icons: the page's own call */
+  if (window.lucide) lucide.createIcons();
+
+  /* live timers: the page's own ticking + pause/play, scoped to each specimen */
+  [].forEach.call(document.querySelectorAll('[data-ds-timer]'), function (card) {
+    var timerEl = card.querySelector('[data-ds-timer-out]');
+    var parts = timerEl.textContent.split(':').map(Number);
+    var elapsed = parts[0]*3600 + parts[1]*60 + parts[2];
+    var running = true;
+    setInterval(function () {
+      if (!running) return;
+      elapsed++;
+      var h = String(Math.floor(elapsed/3600)).padStart(2,'0');
+      var m = String(Math.floor((elapsed%3600)/60)).padStart(2,'0');
+      var s = String(elapsed%60).padStart(2,'0');
+      timerEl.textContent = h + ':' + m + ':' + s;
+    }, 1000);
+    card.querySelector('[data-ds-timer-pause]').addEventListener('click', function () { running = false; });
+    card.querySelector('[data-ds-timer-play]').addEventListener('click', function () { running = true; });
+  });
+
+  /* weight chart: the page's own Chart.js config, drawn (with its 1 s draw-in) when the specimen enters view */
+  function weightChart(ctx) {
+    var dataPoints = [76, 74.5, 73.2, 74.1, 72.8, 73.4];
+    var pointColors = dataPoints.map(function (v, i) { return i === 3 ? '#f59e0b' : '#e5e7eb'; });
+    return new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        datasets: [{
+          label: 'Weight (kg)', data: dataPoints, tension: 0.38,
+          borderColor: '#fef3c7', backgroundColor: 'rgba(251, 191, 36, 0.15)',
+          pointRadius: 4, pointHoverRadius: 6, pointBorderWidth: 2,
+          pointBackgroundColor: pointColors, pointBorderColor: '#f59e0b', fill: true
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        scales: {
+          x: { ticks: { color: '#e7e5e4', font: { weight: '500' } }, grid: { color: 'rgba(231,229,228,0.08)' } },
+          y: { ticks: { color: '#e7e5e4', font: { weight: '500' } }, grid: { color: 'rgba(231,229,228,0.08)' }, suggestedMin: 70, suggestedMax: 78 }
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: { backgroundColor: '#111827', titleColor: '#fff', bodyColor: '#e5e7eb', displayColors: false,
+            callbacks: { label: function (c) { return ' ' + c.parsed.y + ' kg'; } } }
+        }
+      }
+    });
+  }
+  var charts = [].slice.call(document.querySelectorAll('canvas[data-ds-chart]'));
+  if (charts.length && window.Chart) {
+    var cio = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { weightChart(e.target); cio.unobserve(e.target); } });
+    }, { threshold: .3 });
+    charts.forEach(function (c) { cio.observe(c); });
+  }
+
+  addEventListener('hashchange', route);
+  route();
+})();
+</script>
+</body>
+</html>
