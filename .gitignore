@@ -1,0 +1,23 @@
+node_modules/
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+dist/
+.astro/
+.next/
+recordings/
+library/_inbox/**
+!library/_inbox/.gitkeep
+# zoom/strips gerados sob demanda
+library/refs/*/analysis/zoom/
+# ativação local da skill (symlink)
+.claude/skills/flowdesign
+# sites capturados: conteúdo de terceiros, só para estudo local
+captures/
+
+# cópias de sites de terceiros (só estudo local)
+design-systems/*/site/
+
+# estado local do ruflo/claude-flow
+.claude-flow/
