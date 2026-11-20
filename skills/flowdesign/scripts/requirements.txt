@@ -1,0 +1,5 @@
+numpy>=1.26
+opencv-python-headless>=4.9
+pillow>=10.1
+# também precisa de ffmpeg/ffprobe no sistema:  sudo dnf install ffmpeg  (Fedora/RPM Fusion)
+# opcional (melhora a leitura de textos no extract_design.py):  pytesseract  +  sudo dnf install tesseract
