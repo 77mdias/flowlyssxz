@@ -12,7 +12,7 @@ library/_inbox/**
 # zoom/strips gerados sob demanda
 library/refs/*/analysis/zoom/
 # ativação local da skill (symlink)
-.claude/skills/flowdesign
+.claude/skills/flowlyssxz
 # sites capturados: conteúdo de terceiros, só para estudo local
 captures/
 

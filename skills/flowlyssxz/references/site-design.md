@@ -19,10 +19,10 @@ Entrega em `design-systems/<marca>-design-system/`:
 
 ## Passo a passo
 
-1. **Capturar** (se ainda não houver captura): `node skills/flowdesign/scripts/capture_site.mjs URL`
+1. **Capturar** (se ainda não houver captura): `node skills/flowlyssxz/scripts/capture_site.mjs URL`
    → `captures/<domínio>_<página>/`. Sem captura também funciona (`site_design.mjs URL`), mas você perde o
    código-fonte no disco, o `tech.json` e os arquivos de marca. Prefira capturar.
-2. **Medir:** `node skills/flowdesign/scripts/site_design.mjs captures/<pasta>` → `captures/<pasta>/design/`
+2. **Medir:** `node skills/flowlyssxz/scripts/site_design.mjs captures/<pasta>` → `captures/<pasta>/design/`
    - `summary.md` — leia inteiro; é o resumo de tudo
    - `site-raw.json` — dados completos (consulte quando o resumo cortar uma lista)
    - `screens/` — telas desktop distribuídas pela página (com a posição de rolagem), intro/loader, mobile, tema alternativo
@@ -35,7 +35,7 @@ Entrega em `design-systems/<marca>-design-system/`:
    media queries) e os JS próprios (o que dispara cada animação). Ignore bibliotecas de terceiros.
    A sonda mostra *o que aconteceu*; o código mostra *por quê* e os parâmetros que não apareceram na medição.
 5. **Escrever `tokens.json`** (formato em `design-system.md` + extensões abaixo).
-6. **Gerar:** `python3 skills/flowdesign/scripts/ds_build.py design-systems/<marca>-design-system/tokens.json`
+6. **Gerar:** `python3 skills/flowlyssxz/scripts/ds_build.py design-systems/<marca>-design-system/tokens.json`
 7. **Conferir:** abra `preview.html`, tire um print e compare com as telas. Mesmas cores? Mesma proporção
    de título? Botão igual ao recorte? As demonstrações de animação lembram o site? Ajuste e gere de novo.
 8. **Escrever `DESIGN.md`** e copiar para `assets/` só as imagens que o documento cita.

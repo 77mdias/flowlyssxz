@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""flowdesign: reproduz no seu computador um site capturado.
+"""flowlyssxz: reproduz no seu computador um site capturado.
 
 A cópia abre em http://<domínio-original>.localhost:<porta>/ . Nomes terminados em .localhost apontam
 para a sua própria máquina, e o site continua vendo o domínio dele no endereço.
@@ -260,7 +260,7 @@ def main(argv):
 
     address = "http://%s:%d%s%s" % (local_host(entry.get("url", "")), port, entry.get("path") or "/", entry.get("search") or "")
     for line in (
-        "flowdesign: cópia local de %s" % (entry.get("url") or "?"),
+        "flowlyssxz: cópia local de %s" % (entry.get("url") or "?"),
         "Abra: %s" % address,
         "Modo offline: nada é buscado na internet." if Player.offline
         else "O que faltou na captura é buscado na internet (use --offline para impedir).",

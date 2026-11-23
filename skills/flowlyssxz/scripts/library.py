@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-library.py — organiza a biblioteca de referências do flowdesign.
+library.py — organiza a biblioteca de referências do flowlyssxz.
 
 Estrutura:
   library/_inbox/<categoria>/arquivo.mp4     ← você joga os vídeos aqui
@@ -11,12 +11,12 @@ Estrutura:
   library/INDEX.md                           ← índice gerado (tabela pesquisável)
 
 Comandos (rode a partir da raiz do repositório):
-  python3 skills/flowdesign/scripts/library.py ingest [--analyze]
-  python3 skills/flowdesign/scripts/library.py analyze <id|all> [--force]
-  python3 skills/flowdesign/scripts/library.py add-url URL --category web --title "..." --tags a,b
-  python3 skills/flowdesign/scripts/library.py tag <id> --title "..." --tags a,b --status decoded
-  python3 skills/flowdesign/scripts/library.py index
-  python3 skills/flowdesign/scripts/library.py find <termo> [<termo> ...]
+  python3 skills/flowlyssxz/scripts/library.py ingest [--analyze]
+  python3 skills/flowlyssxz/scripts/library.py analyze <id|all> [--force]
+  python3 skills/flowlyssxz/scripts/library.py add-url URL --category web --title "..." --tags a,b
+  python3 skills/flowlyssxz/scripts/library.py tag <id> --title "..." --tags a,b --status decoded
+  python3 skills/flowlyssxz/scripts/library.py index
+  python3 skills/flowlyssxz/scripts/library.py find <termo> [<termo> ...]
 """
 from __future__ import annotations
 
@@ -37,7 +37,7 @@ IMAGE_EXT = {".jpg", ".jpeg", ".png", ".webp", ".avif"}
 def repo_root() -> Path:
     p = Path.cwd()
     for c in [p, *p.parents]:
-        if (c / "library").is_dir() or (c / "skills" / "flowdesign").is_dir():
+        if (c / "library").is_dir() or (c / "skills" / "flowlyssxz").is_dir():
             return c
     return p
 

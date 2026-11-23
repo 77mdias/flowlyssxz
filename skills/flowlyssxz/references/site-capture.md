@@ -48,7 +48,7 @@ cada captura usa uma porta própria para um Service Worker nunca atender outra c
 # uma vez, na raiz do repositório
 npm i -D playwright && npx playwright install chromium     # ou use o Chrome instalado: --channel chrome
 
-node skills/flowdesign/scripts/capture_site.mjs https://exemplo.com/produto
+node skills/flowlyssxz/scripts/capture_site.mjs https://exemplo.com/produto
 cd captures/exemplo.com_produto && ./abrir.sh
 ```
 
@@ -84,7 +84,7 @@ Player: `python3 serve.py --open` · `--offline` (nada vem da internet) · `--po
   `tech.json` já diz a stack e as versões. Marque como "certo (lido no código)".
 - **Vídeo de referência**: `record_page.mjs` na URL local (`Abra: http://…` impresso pelo `serve.py`) gera o vídeo para
   o `analyze_video.py`.
-- **BRAND SYSTEM** (design system + branding medidos): `node skills/flowdesign/scripts/site_design.mjs captures/<pasta>` e siga `site-design.md`.
+- **BRAND SYSTEM** (design system + branding medidos): `node skills/flowlyssxz/scripts/site_design.mjs captures/<pasta>` e siga `site-design.md`.
 - **Biblioteca**: `library.py add-url <URL> --category web --title "…"` e anote o caminho da captura no `meta.json` (`notes`).
 
 ## Limites (diga quando acontecer)

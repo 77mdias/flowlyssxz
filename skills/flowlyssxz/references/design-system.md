@@ -34,12 +34,12 @@ O formato do `tokens.json` é o mesmo daqui, com grupos a mais (`brand`, `theme`
 ## Passo a passo
 
 1. **Pré-requisito:** referência analisada (`analysis/`) e, de preferência, decodificada (`breakdown.md`).
-2. **Medir:** `python3 skills/flowdesign/scripts/extract_design.py library/refs/<id>/source.mp4`
+2. **Medir:** `python3 skills/flowlyssxz/scripts/extract_design.py library/refs/<id>/source.mp4`
    → `design/design-raw.json`, `design/stills/`, `design/stills_sheet.jpg`, `design/palette.png`.
 3. **Olhar** (obrigatório): `stills_sheet.jpg` (caixas rosa = OCR, azul = morfologia, com px estimado), `palette.png`,
    e 2–4 stills em tamanho cheio. Para detalhes (botão, nav, card): `frames.py SOURCE --at T --crop x,y,w,h`.
 4. **Decidir os tokens** (regras abaixo) e escrever `tokens.json`.
-5. **Gerar:** `python3 skills/flowdesign/scripts/ds_build.py library/refs/<id>/design-system/tokens.json`
+5. **Gerar:** `python3 skills/flowlyssxz/scripts/ds_build.py library/refs/<id>/design-system/tokens.json`
    (leia os avisos de contraste).
 6. **Conferir:** abra `preview.html`, tire um print e compare lado a lado com os stills: mesma temperatura de cor?
    mesma proporção título/corpo? mesmo "ar"? Ajuste `tokens.json` e gere de novo.

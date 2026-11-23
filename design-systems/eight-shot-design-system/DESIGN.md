@@ -545,4 +545,4 @@ Copie `tokens.json`, altere `color`, `font` e `brand`, rode `ds_build.py` e pass
   `k = 0.12` a cena chega a 90% do alvo em ≈ 18 quadros (0,3 s a 60 fps).
 - **Sombra somada** (`box-shadow: var(--base), var(--lift)`) mantém o objeto apoiado enquanto sobe: mais convincente do que trocar uma sombra pela outra.
 - Para estudar a fundo: abra a cópia local (`captures/cookedapps.com_eight-shot/abrir.sh`), o `styles.css` (bem comentado
-  pelo autor) e o `duo.js`; depois compare com `skills/flowdesign/references/recipes-scroll.md` (pin com sticky) e `recipes-3d.md`.
+  pelo autor) e o `duo.js`; depois compare com `skills/flowlyssxz/references/recipes-scroll.md` (pin com sticky) e `recipes-3d.md`.

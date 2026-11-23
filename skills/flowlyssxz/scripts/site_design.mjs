@@ -1258,7 +1258,7 @@ if (stat.brand.logo && stat.brand.logo.svg) { fs.writeFileSync(path.join(outDir,
 
 const copyAll = { ...M.copy, nav: (stat.nav && stat.nav.linkTexts) || [], footer: stat.footerText }
 const raw = {
-  tool: `flowdesign-site-design ${VERSION}`, measuredAt: new Date().toISOString(), source: index ? index.entry.url : url, capture: captureDir ? path.relative(outDir, captureDir).split(path.sep).join('/') || '.' : null,
+  tool: `flowlyssxz-site-design ${VERSION}`, measuredAt: new Date().toISOString(), source: index ? index.entry.url : url, capture: captureDir ? path.relative(outDir, captureDir).split(path.sep).join('/') || '.' : null,
   scroll: { pageHeight: D.pageHeight, introMs: D.introMs, introShot: D.introShot, virtual: D.virtual, stoppedAt: D.stoppedAt, wheelSteps: D.steps, readings: D.stops.length, pinnedPx: gsapInfo ? gsapInfo.pinnedPx : 0 },
   brand: { ...stat.brand, files: copied }, copy: copyAll, tech, body: stat.body,
   css: { sheets: css.sheets, counts: css.counts, classRules: css.classRules, vars: css.vars, rootResolved: css.rootResolved, fontFaces: css.fontFaces, fontFaceCount: css.fontFaceCount, keyframes: css.keyframes, animations: css.animations, transitions: css.transitions, states: css.states, features: css.features, media: css.media, reducedMotionRules: css.reducedMotionRules },

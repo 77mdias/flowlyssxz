@@ -1,12 +1,12 @@
-# flowdesign
+# flowlyssxz
 
 Laboratório pessoal de **motion design para web**: uma skill de agente de IA que faz engenharia reversa de vídeos
 de referência (scroll, parallax, 3D, WebGL, hover, transições) e aplica as técnicas em projetos reais adaptados ao nicho,
 sem cara de template, além de uma biblioteca de referências que cresce com o tempo.
 
 ```
-flowdesign/
-├── skills/flowdesign/          ← a skill (instruções + scripts + base de conhecimento)
+flowlyssxz/
+├── skills/flowlyssxz/          ← a skill (instruções + scripts + base de conhecimento)
 │   ├── SKILL.md
 │   ├── scripts/
 │   │   ├── analyze_video.py    vídeo → folhas de contato, timeline, heatmap, eventos, easing, camadas, paleta
@@ -35,17 +35,17 @@ flowdesign/
 ```bash
 # dependências da análise (Fedora)
 sudo dnf install ffmpeg            # RPM Fusion
-pip install -r skills/flowdesign/scripts/requirements.txt
+pip install -r skills/flowlyssxz/scripts/requirements.txt
 
 # ativar a skill neste repositório (Claude Code lê .claude/skills/)
-mkdir -p .claude/skills && ln -s ../../skills/flowdesign .claude/skills/flowdesign
+mkdir -p .claude/skills && ln -s ../../skills/flowlyssxz .claude/skills/flowlyssxz
 
 # ou em todos os seus projetos
-ln -s "$PWD/skills/flowdesign" ~/.claude/skills/flowdesign
+ln -s "$PWD/skills/flowlyssxz" ~/.claude/skills/flowlyssxz
 ```
 
 Depois de publicar no GitHub, dá para instalar como plugin em qualquer máquina:
-`/plugin marketplace add <seu-usuario>/flowdesign` e `/plugin install flowdesign@flowdesign`.
+`/plugin marketplace add <seu-usuario>/flowlyssxz` e `/plugin install flowlyssxz@flowlyssxz`.
 
 ## Fluxo do dia a dia
 
@@ -54,7 +54,7 @@ Depois de publicar no GitHub, dá para instalar como plugin em qualquer máquina
 cp ~/Downloads/*.mp4 library/_inbox/scroll/      # a subpasta vira a categoria
 
 # 2. ingerir + analisar
-python3 skills/flowdesign/scripts/library.py ingest --analyze
+python3 skills/flowlyssxz/scripts/library.py ingest --analyze
 
 # 3. pedir ao agente
 "decodifica a referência scroll-1a2b3c4d"
@@ -66,34 +66,34 @@ python3 skills/flowdesign/scripts/library.py ingest --analyze
 Outros comandos:
 
 ```bash
-python3 skills/flowdesign/scripts/library.py find parallax pin          # busca em metas e breakdowns
-python3 skills/flowdesign/scripts/library.py add-url https://site.com --category web --title "..." --tags a,b
-python3 skills/flowdesign/scripts/analyze_video.py VIDEO --out PASTA --start 2 --end 4 --fps 30
-python3 skills/flowdesign/scripts/frames.py VIDEO --strip 2.0 2.8 --n 12 --out PASTA
+python3 skills/flowlyssxz/scripts/library.py find parallax pin          # busca em metas e breakdowns
+python3 skills/flowlyssxz/scripts/library.py add-url https://site.com --category web --title "..." --tags a,b
+python3 skills/flowlyssxz/scripts/analyze_video.py VIDEO --out PASTA --start 2 --end 4 --fps 30
+python3 skills/flowlyssxz/scripts/frames.py VIDEO --strip 2.0 2.8 --n 12 --out PASTA
 ```
 
 ## Trazer um site inteiro para rodar localmente
 
 ```bash
 npm install && npx playwright install chromium        # uma vez (ou use o Chrome instalado: --channel chrome)
-node skills/flowdesign/scripts/capture_site.mjs https://exemplo.com/pagina
+node skills/flowlyssxz/scripts/capture_site.mjs https://exemplo.com/pagina
 cd captures/exemplo.com_pagina && ./abrir.sh          # Windows: abrir.bat
 ```
 
 O capturador abre o site num Chromium, rola a página inteira, grava todas as respostas de rede (HTML, JS, CSS, imagens,
 fontes, JSON, modelos 3D, vídeos) e monta uma pasta com servidor local e Service Worker que reproduz o site vivo,
 com animações e WebGL. No fim ele confere a cópia em modo offline e lista o que faltou.
-Opções e limites em `skills/flowdesign/references/site-capture.md`. Sites com WebGL pesado: use `--headed`.
+Opções e limites em `skills/flowlyssxz/references/site-capture.md`. Sites com WebGL pesado: use `--headed`.
 
 As capturas contêm conteúdo de terceiros: servem para estudo e ficam fora do git (`captures/` está no `.gitignore`).
 
 ## Design system e branding completos a partir de uma URL
 
 ```bash
-node skills/flowdesign/scripts/capture_site.mjs https://exemplo.com          # traz o site
-node skills/flowdesign/scripts/site_design.mjs captures/exemplo.com_home     # mede → captures/…/design/
+node skills/flowlyssxz/scripts/capture_site.mjs https://exemplo.com          # traz o site
+node skills/flowlyssxz/scripts/site_design.mjs captures/exemplo.com_home     # mede → captures/…/design/
 # o agente lê a medição e o código, escreve design-systems/<marca>-design-system/tokens.json e DESIGN.md, depois:
-python3 skills/flowdesign/scripts/ds_build.py design-systems/<marca>-design-system/tokens.json
+python3 skills/flowlyssxz/scripts/ds_build.py design-systems/<marca>-design-system/tokens.json
 xdg-open design-systems/<marca>-design-system/preview.html
 ```
 
@@ -113,16 +113,16 @@ em cada trecho e registra:
 
 O agente transforma isso num `DESIGN.md` de 14 seções (marca, cor, tipografia, layout, forma, imagem, componentes, motion
 com catálogo e código, stack, acessibilidade, como reconstruir e adaptar) e num `preview.html` com animações clicáveis.
-Exemplo pronto: `design-systems/eight-shot-design-system/`. Guia: `skills/flowdesign/references/site-design.md`.
+Exemplo pronto: `design-systems/eight-shot-design-system/`. Guia: `skills/flowlyssxz/references/site-design.md`.
 
 Em página com WebGL, a medição é lenta sem GPU (minutos); na sua máquina use `--headed`.
 
 ## Design system a partir de um vídeo de referência
 
 ```bash
-python3 skills/flowdesign/scripts/extract_design.py library/refs/<id>/source.mp4     # mede → design/
+python3 skills/flowlyssxz/scripts/extract_design.py library/refs/<id>/source.mp4     # mede → design/
 # o agente olha as telas, decide e escreve design-system/tokens.json, depois:
-python3 skills/flowdesign/scripts/ds_build.py library/refs/<id>/design-system/tokens.json
+python3 skills/flowlyssxz/scripts/ds_build.py library/refs/<id>/design-system/tokens.json
 xdg-open library/refs/<id>/design-system/preview.html
 ```
 

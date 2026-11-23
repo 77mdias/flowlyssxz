@@ -29,7 +29,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 
 const HERE = path.dirname(fileURLToPath(import.meta.url))
 const PLAYER = path.join(HERE, '..', 'assets', 'site-player')
-const TOOL = 'flowdesign-capture 0.1.0'
+const TOOL = 'flowlyssxz-capture 0.1.0'
 
 // ------------------------------------------------------------------ argumentos
 

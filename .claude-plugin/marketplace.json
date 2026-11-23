@@ -1,9 +1,9 @@
 {
-  "name": "flowdesign",
+  "name": "flowlyssxz",
   "owner": { "name": "Jean Dias" },
   "plugins": [
     {
-      "name": "flowdesign",
+      "name": "flowlyssxz",
       "source": "./",
       "description": "Skill de engenharia reversa de motion design web e biblioteca de referências."
     }

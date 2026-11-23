@@ -1,9 +1,9 @@
 ---
-name: flowdesign
+name: flowlyssxz
 description: Engenharia reversa de motion design e de design systems para web, captura de sites inteiros para rodar localmente, e aplicação em projetos reais. Use quando o usuário mandar a URL de um site e quiser baixar/clonar/trazer o site completo com animações para estudar offline, quando o usuário mandar uma URL ou landing page e pedir o design system completo, o DESIGN.md, o branding/identidade visual, o catálogo de animações ou quais bibliotecas e ferramentas o site usa, quando o usuário pedir para extrair/criar um design system (tokens, cores, tipografia, componentes) a partir de um vídeo, imagem ou site de referência, quando o usuário enviar ou citar um vídeo/GIF/site de referência de animação (scroll, parallax, 3D, WebGL, Three.js, transições, hover, cursor, texto animado) e quiser entender como foi feito, quando pedir para criar ou redesenhar um site/app com motion moderno "sem cara de IA", quando quiser adaptar uma referência a um nicho, ou quando perguntar qual ferramenta usar (GSAP, ScrollTrigger, Lenis, Motion, Three.js, R3F, Spline, Rive, CSS scroll-driven, View Transitions). Também cuida da biblioteca de referências em library/.
 ---
 
-# flowdesign — decodificar referências de motion e aplicá-las com intenção
+# flowlyssxz — decodificar referências de motion e aplicá-las com intenção
 
 Você trabalha como **diretor de motion + desenvolvedor creative front-end**. Você não "assiste" vídeos:
 você os converte em imagens e números com os scripts desta skill e raciocina sobre isso.
@@ -56,8 +56,8 @@ Caminhos abaixo são relativos à raiz do repositório. Se a skill estiver insta
 
 ## DECODE — engenharia reversa de uma referência
 
-1. **Ingerir.** Vídeo no inbox → `python3 skills/flowdesign/scripts/library.py ingest --analyze`.
-   Vídeo avulso fora da biblioteca: `python3 skills/flowdesign/scripts/analyze_video.py VIDEO --out PASTA`.
+1. **Ingerir.** Vídeo no inbox → `python3 skills/flowlyssxz/scripts/library.py ingest --analyze`.
+   Vídeo avulso fora da biblioteca: `python3 skills/flowlyssxz/scripts/analyze_video.py VIDEO --out PASTA`.
    URL de site vivo: `library.py add-url URL --category web --title ...`; se puder, grave com `record_page.mjs`
    e analise a gravação; senão, use o navegador/scrape disponível para ver HTML, scripts e bibliotecas carregadas
    (procure `gsap`, `ScrollTrigger`, `lenis`, `three`, `@react-three`, `spline`, `rive`, `lottie`, `barba`, `swup` nos bundles).
@@ -68,7 +68,7 @@ Caminhos abaixo são relativos à raiz do repositório. Se a skill estiver insta
    - `timeline.png` → ritmo: onde há movimento, velocidade, zoom, cortes.
    - `heatmap.png` → onde o movimento acontece.
 4. **Ampliar cada evento relevante** com strips (10–16 frames no trecho do evento, com o recorte da ROI se houver):
-   `python3 skills/flowdesign/scripts/frames.py SOURCE --strip INI FIM --n 12 --crop x,y,w,h --out analysis/zoom`
+   `python3 skills/flowlyssxz/scripts/frames.py SOURCE --strip INI FIM --n 12 --crop x,y,w,h --out analysis/zoom`
    Use `--diff` quando não estiver claro o que se mexe. Leia `references/decode-guide.md` para interpretar.
 5. **Desconfiar dos números.** Easing/duração do script são estimativas: confirme pelo espaçamento dos frames
    no strip. Em gravação de tela, separe *o scroll do usuário* (global, com cauda) da *animação do site* (local).
@@ -112,7 +112,7 @@ Leia `references/adaptation.md` e `references/anti-ai-look.md`. Então:
 
 Quando o usuário mandar uma URL pedindo o site "em mãos". Leia `references/site-capture.md`. Resumo:
 
-1. `node skills/flowdesign/scripts/capture_site.mjs URL` (opções úteis: `--pages N`, `--headed` para WebGL pesado, `--wait MS` para intros).
+1. `node skills/flowlyssxz/scripts/capture_site.mjs URL` (opções úteis: `--pages N`, `--headed` para WebGL pesado, `--wait MS` para intros).
    Precisa de Playwright (`npm i -D playwright && npx playwright install chromium`) e de internet a partir do shell.
    Se o shell não alcança o site, diga isso com clareza e entregue o comando pronto para o usuário rodar.
 2. Leia o relatório final: arquivos, stack detectada, **faltas no replay offline**, erros de JavaScript só na cópia.
@@ -131,7 +131,7 @@ Quando o usuário mandar uma URL (ou apontar uma captura) pedindo o design syste
 as animações ou a stack do site. Leia `references/site-design.md`. Resumo:
 
 1. Sem captura ainda: faça o CAPTURE (acima). Com captura: siga.
-2. `node skills/flowdesign/scripts/site_design.mjs captures/<pasta>` → `captures/<pasta>/design/`
+2. `node skills/flowlyssxz/scripts/site_design.mjs captures/<pasta>` → `captures/<pasta>/design/`
    (`summary.md`, `site-raw.json`, `screens/`, `components/`, `brand/`). O script espera a intro/loader, rola a página
    inteira com a roda (Lenis, pins e reveals disparam de verdade) e lê o que aparece em cada trecho. Leva de 1 a 4 min;
    com WebGL e sem GPU, mais.
@@ -141,7 +141,7 @@ as animações ou a stack do site. Leia `references/site-design.md`. Resumo:
 4. Leia o CSS e os JS próprios listados em "Arquivos para ler": a medição diz o que aconteceu, o código diz por quê.
 5. Escreva `design-systems/<marca>-design-system/tokens.json` com os grupos normais mais `brand`, `theme`, `stack`,
    `animation` (e `breakpoint`, `gradient` se houver). Use os tokens do autor quando existirem e anote a correspondência.
-6. `python3 skills/flowdesign/scripts/ds_build.py design-systems/<marca>-design-system/tokens.json`; abra `preview.html`,
+6. `python3 skills/flowlyssxz/scripts/ds_build.py design-systems/<marca>-design-system/tokens.json`; abra `preview.html`,
    tire um print e compare com as telas e recortes.
 7. Escreva o `DESIGN.md` (14 seções, da ficha ao "medido × lido × interpretado") e copie para `assets/` as imagens citadas.
 8. Entregue: caminho, 5–8 achados principais (stack, sistema de motion, o que é incomum), e o que ficou fora da medição.
@@ -164,12 +164,12 @@ Exemplo completo: `design-systems/eight-shot-design-system/`.
 Leia `references/design-system.md` e siga o passo a passo de lá. Resumo:
 
 1. Garanta `analysis/` e, de preferência, `breakdown.md` (o motion do sistema vem dele).
-2. `python3 skills/flowdesign/scripts/extract_design.py library/refs/<id>/source.mp4` → `design/`.
+2. `python3 skills/flowlyssxz/scripts/extract_design.py library/refs/<id>/source.mp4` → `design/`.
    Se houver URL do site, use o modo BRAND SYSTEM no lugar deste: lá os valores são exatos.
 3. **Olhe** `design/stills_sheet.jpg`, `design/palette.png` e os stills; amplie componentes com `frames.py --crop`.
 4. Escreva `design-system/tokens.json` decidindo papéis de cor, famílias substitutas, escala fluida, espaço, forma, motion e componentes.
    Marque em `meta.confidence` e nas `note` o que foi **medido**, **inferido** e **corrigido** (ex.: contraste).
-5. `python3 skills/flowdesign/scripts/ds_build.py library/refs/<id>/design-system/tokens.json`; resolva os avisos.
+5. `python3 skills/flowlyssxz/scripts/ds_build.py library/refs/<id>/design-system/tokens.json`; resolva os avisos.
 6. Abra `preview.html`, compare com os stills lado a lado e ajuste até a temperatura, a proporção e o "ar" baterem.
 7. Escreva `DESIGN.md`. Exemplo completo: `library/refs/web-animation-8281bd42/design-system/`.
 

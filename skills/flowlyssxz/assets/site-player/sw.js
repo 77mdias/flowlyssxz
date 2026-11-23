@@ -1,4 +1,4 @@
-/* flowdesign: Service Worker que reproduz um site capturado.
+/* flowlyssxz: Service Worker que reproduz um site capturado.
  *
  * Toda requisição da página, para este endereço local ou para qualquer outro domínio, é respondida
  * com a resposta gravada na captura. O índice (site-index.json, nesta mesma pasta) diz qual arquivo

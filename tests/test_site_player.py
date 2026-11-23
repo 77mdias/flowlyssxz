@@ -12,7 +12,7 @@ import sys
 import tempfile
 import zlib
 
-PLAYER = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "skills", "flowdesign", "assets", "site-player")
+PLAYER = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "skills", "flowlyssxz", "assets", "site-player")
 CSS = b"body{color:red}" * 20
 INDEX = {
     "version": 1, "captureId": "abc", "onlineFallback": True, "blocked": [], "volatileParams": ["v"],
