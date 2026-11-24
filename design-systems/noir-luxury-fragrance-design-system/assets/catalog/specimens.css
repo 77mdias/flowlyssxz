@@ -1,0 +1,85 @@
+/* ================================================================ components: formats
+   Presentation only. Every specimen carries the page's own inline-styled markup; these rules only lay the
+   rows out and give boxes the page's grounds. */
+
+/* typography: role | live sample | declared size */
+.ds-type { display: grid; grid-template-columns: 190px minmax(0, 1fr) 176px; gap: 26px; align-items: center; padding: 26px 0;
+  border-top: 1px solid rgba(237,227,209,.1); }
+.ds-type:last-child { border-bottom: 1px solid rgba(237,227,209,.1); }
+.ds-head + .ds-type { border-top: 0; }
+.ds-type .role { font-family: 'Cinzel', serif; font-size: 13px; letter-spacing: .14em; color: #ede3d1; }
+.ds-type .face { margin-top: 6px; font-size: 12px; font-weight: 300; line-height: 1.55; letter-spacing: .02em; color: #cfc4b0; }
+.ds-type .face code { display: block; margin-top: 7px; font: 400 11px/1.5 var(--ds-mono); color: #d6cab4; overflow-wrap: anywhere; }
+.ds-type .sample { min-width: 0; overflow: hidden; }
+.ds-type .sizes { text-align: right; font: 500 11.5px/1.6 var(--ds-mono); color: #ede3d1; overflow-wrap: anywhere; }
+.ds-type .sizes i { display: block; margin-top: 4px; font-style: normal; font-size: 10.5px; color: #b9ab92; }
+
+/* colors: live chip on its surface + label, value, token, use */
+.ds-fam { margin-bottom: 38px; }
+.ds-fam > strong { display: block; margin-bottom: 16px; font-family: 'Cinzel', serif; font-weight: 400; font-size: 14px; letter-spacing: .16em; color: #ede3d1; }
+.ds-colors { display: grid; grid-template-columns: repeat(auto-fill, minmax(268px, 1fr)); gap: 24px 30px; }
+.ds-sw { display: grid; grid-template-columns: 84px minmax(0, 1fr); gap: 14px; align-items: start; }
+.ds-chip { position: relative; height: 84px; overflow: hidden; display: grid; place-items: center; background: #040302; }
+.ds-chip::after { content: ""; position: absolute; inset: 0; pointer-events: none; box-shadow: inset 0 0 0 1px rgba(237,227,209,.1); }
+.ds-chip .aa { position: relative; font-family: 'Cinzel', serif; font-size: 30px; line-height: 1; }
+.ds-chip .fill { position: absolute; inset: 0; }
+.ds-chip .bar { position: absolute; left: 12px; right: 12px; top: 50%; height: 0; border-top: 1px solid; }
+.ds-chip .still { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .75; }
+.ds-sw strong { display: block; font-size: 13px; font-weight: 400; letter-spacing: .06em; color: #ede3d1; }
+.ds-sw code { display: block; margin-top: 4px; font: 400 11px/1.45 var(--ds-mono); color: #e2d6bf; overflow-wrap: anywhere; }
+.ds-sw code.tok { color: #b9ab92; }
+.ds-sw p { margin: 5px 0 0; font-size: 12px; font-weight: 300; line-height: 1.5; color: #cfc4b0; }
+.ds-states { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px; }
+.ds-state { display: flex; flex-direction: column; gap: 7px; min-width: 0; }
+.ds-state code { font: 400 11px/1.45 var(--ds-mono); color: #e2d6bf; overflow-wrap: anywhere; }
+.ds-state .ds-chip { height: 70px; }
+
+/* backgrounds: a window onto the parked live stage, and boxed live grounds */
+.ds-window { position: relative; z-index: -1; height: min(62vh, 540px); box-shadow: inset 0 0 0 1px rgba(232,178,90,.25); }
+.ds-window .ds-flag, .ds-box .ds-flag { position: absolute; left: 16px; bottom: 14px; z-index: 3; font-size: 9.5px; letter-spacing: .36em;
+  text-transform: uppercase; color: #ede3d1; background: rgba(4,3,2,.72); padding: 6px 10px; }
+.ds-box { position: relative; height: min(52vh, 440px); overflow: hidden; box-shadow: inset 0 0 0 1px rgba(237,227,209,.1); }
+.ds-onstage { position: relative; overflow: hidden; padding: 44px 40px; background: #040302; }
+.ds-onstage > .ds-still { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .75; pointer-events: none; }
+.ds-onstage > .ds-vig { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse 80% 70% at 50% 45%, rgba(4,3,2,0) 55%, rgba(4,3,2,.75) 100%); }
+.ds-onstage > .ds-on { position: relative; z-index: 1; }
+
+/* icons: five per row, identifier under each */
+.ds-icons { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 34px 20px; }
+.ds-ico { display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; min-width: 0; }
+.ds-ico .g { position: relative; height: 64px; display: grid; place-items: center; color: #ede3d1; }
+.ds-ico code { font: 400 10.5px/1.45 var(--ds-mono); color: #d6cab4; overflow-wrap: anywhere; }
+
+/* specimens that keep a page box: the folio, the drawer, plates */
+.ds-folio-wrap { position: relative; display: flex; justify-content: center; padding: 40px 0 56px; perspective: 2400px; perspective-origin: 50% 35%; }
+.ds-drawer-box { position: relative; width: min(100%, 520px); height: 660px; perspective: 1600px; }
+.ds-plates { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
+.ds-plate { position: relative; aspect-ratio: 4 / 5; overflow: hidden; container-type: inline-size; background: #050403; }
+.ds-cta-box { position: relative; width: 240px; height: 115px; }
+.ds-scene-copy { position: relative; overflow: hidden; }
+
+/* mobile: sidebar becomes a strip, rows stack */
+@media (max-width: 1100px) {
+  .ds-type { grid-template-columns: 160px minmax(0, 1fr); }
+  .ds-type .sizes { grid-column: 2; text-align: left; }
+}
+@media (max-width: 760px) {
+  #view-components { padding: 0; }
+  body.is-components #view-components { display: flex; flex-direction: column; }
+  #ds-side { align-self: stretch; flex: 0 0 auto; flex-direction: row; overflow-x: auto; overflow-y: hidden; max-height: none; margin: 0 12px 10px; padding: 8px; gap: 2px; }
+  #ds-side .ds-lbl { display: none; }
+  #ds-side a { padding: 8px 10px; }
+  #ds-side a.is-current::before { left: 10px; right: 10px; top: auto; bottom: 3px; width: auto; height: 1px; }
+  #ds-main { flex: 1 1 auto; min-height: 0; padding: 6px 16px 120px; }
+  .ds-type { grid-template-columns: minmax(0, 1fr); gap: 14px; padding: 22px 0; }
+  .ds-type .sizes { grid-column: auto; text-align: left; }
+  .ds-2, .ds-3, .ds-plates { grid-template-columns: minmax(0, 1fr); }
+  .ds-icons { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .ds-colors { grid-template-columns: minmax(0, 1fr); }
+  .ds-ground.pad, .ds-onstage { padding: 26px 18px; }
+  .ds-window { height: 56vh; }
+  .ds-drawer-box { height: 620px; }
+}
+
+/* the page hides its header links at ≤ 1180px (navDisplay); the header specimen follows the same rule */
+@media (max-width: 1180px) { [data-ds-hdr-nav] { display: none !important; } }

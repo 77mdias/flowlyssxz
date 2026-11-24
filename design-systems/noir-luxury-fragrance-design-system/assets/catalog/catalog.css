@@ -1,0 +1,105 @@
+/* ================================================================ catalog shell
+   Routing and layout only. The navbar is the Overview's own glass <header> (markup and inline styles copied
+   from the page); its links become the catalog views. Overview is the live page in a borderless frame under
+   that header. Components parks the frame on its WebGL stage (bottle, eclipse, smoke, vignette) as the live
+   background and lays the specimens over a dark scrim. Specimens keep the page's inline-styled markup. */
+:root {
+  --ds-ink: #040302; --ds-bone: #ede3d1; --ds-sand: #cfc4b0; --ds-muted: #a8916a; --ds-gold: #e8b25a;
+  --ds-hair: rgba(237,227,209,.12); --ds-hair2: rgba(237,227,209,.2);
+  --ds-navb: 92px; --ds-inset: clamp(12px,2.4vw,40px);
+  --ds-scrim: rgba(4,3,2,.84);
+  --ds-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --ds-ease: cubic-bezier(.2,.7,.2,1);
+}
+html, body { height: 100%; }
+body { overflow: hidden; font-family: 'Jost', sans-serif; }
+#overview-frame { position: fixed; inset: 0; width: 100%; height: 100%; border: 0; display: block; z-index: 0; background: #040302; }
+
+/* ------------------------------------------------------------ navbar (the page's header) */
+#ds-nav { transition: opacity .6s ease; }
+#ds-nav .ds-intro { animation: ds-intro 1.6s cubic-bezier(.33,1,.68,1) 1.2s both; }
+#ds-nav .ds-intro + .ds-intro { animation-delay: 1.28s; }
+#ds-nav .ds-intro + .ds-intro + .ds-intro { animation-delay: 1.36s; }
+@keyframes ds-intro { from { opacity: 0; } to { opacity: 1; } }
+#ds-home:hover { letter-spacing: .64em !important; color: #ede3d1 !important; }
+#ds-nav .ds-link:hover, #ds-nav .ds-link.is-active { color: #ede3d1 !important; }
+#ds-nav .ds-link:hover .ds-ul, #ds-nav .ds-link.is-active .ds-ul { transform: scaleX(1) !important; }
+#ds-nav .ds-link[aria-disabled="true"] { opacity: .4; pointer-events: none; }
+#ds-bag:hover { color: #e8b25a !important; }
+/* the page's own drawer covers its header; across documents the catalog header steps aside instead */
+body.ds-bag-open #ds-nav { opacity: 0; pointer-events: none; }
+body.is-components #ds-bag { visibility: hidden; }
+@media (max-width: 640px) {
+  /* the page drops its links under 1180px; the catalog keeps both views, so the bar re-flows to two columns */
+  #ds-nav { grid-template-columns: auto auto !important; justify-content: space-between !important; gap: 16px !important; }
+  #ds-nav .ds-links { gap: 18px !important; }
+  #ds-nav .ds-link { letter-spacing: .2em !important; min-height: 0 !important; }
+  #ds-bag { display: none !important; }
+  #ds-home { letter-spacing: .42em !important; }
+}
+
+/* ------------------------------------------------------------ components view */
+#view-components { position: fixed; top: var(--ds-navb); left: 0; right: 0; bottom: 0; z-index: 10; display: none;
+  padding: 0 0 0 var(--ds-inset); }
+body.is-components #view-components { display: grid; grid-template-columns: 236px minmax(0, 1fr); gap: 0; }
+body.is-components #overview-frame { pointer-events: none; }   /* the live stage, parked behind */
+/* one dark scrim (the page's own #040302) holds the specimens off the live stage; it lifts while Backgrounds is
+   in view, where window specimens look straight through to the stage */
+#ds-scrim { position: fixed; inset: 0; z-index: 5; pointer-events: none; display: none; background: var(--ds-scrim);
+  transition: opacity .6s ease; }
+body.is-components #ds-scrim { display: block; }
+body.ds-scene-clear #ds-scrim { opacity: 0; }
+body.ds-scene-clear .ds-window { box-shadow: 0 0 0 200vmax var(--ds-scrim); }
+/* over the live stage the header gets a dense dark backing so it stays legible (Components only) */
+body.is-components #ds-nav { background: linear-gradient(180deg, rgba(18,15,12,.92), rgba(8,7,5,.94)) !important; }
+
+/* sidebar: its own dark glass (the header's recipe, denser), legible over any stage */
+#ds-side { align-self: start; max-height: calc(100% - 24px); overflow-y: auto; margin-top: 2px; padding: 22px 10px 22px 12px;
+  display: flex; flex-direction: column; gap: 1px; border-radius: 10px;
+  background: linear-gradient(180deg, rgba(18,15,12,.94), rgba(8,7,5,.95));
+  -webkit-backdrop-filter: blur(22px) saturate(150%); backdrop-filter: blur(22px) saturate(150%);
+  border: 1px solid rgba(237,227,209,.12); box-shadow: inset 0 1px 0 rgba(255,244,222,.08), 0 20px 50px -30px rgba(0,0,0,.8);
+  scrollbar-width: thin; scrollbar-color: rgba(237,227,209,.2) transparent; }
+#ds-side .ds-lbl { margin: 0 0 14px 12px; font-size: 10px; letter-spacing: .4em; color: #a8916a; }
+#ds-side a { position: relative; display: flex; align-items: baseline; gap: 14px; padding: 9px 12px; border-radius: 6px;
+  font-size: 11px; letter-spacing: .24em; text-transform: uppercase; color: #cfc4b0; white-space: nowrap;
+  transition: background .3s ease, color .3s ease; }
+#ds-side a b { min-width: 18px; font-family: 'Cinzel', serif; font-weight: 400; font-size: 10px; letter-spacing: .12em; color: #a8916a; }
+#ds-side a:hover { color: #ede3d1; background: rgba(237,227,209,.05); }
+#ds-side a.is-current { color: #ede3d1; background: rgba(232,178,90,.08); }
+#ds-side a.is-current::before { content: ""; position: absolute; left: 0; top: 9px; bottom: 9px; width: 1px; background: #e8b25a; }
+#ds-side a.is-current b { color: #e8b25a; }
+
+#ds-main { position: relative; overflow-y: auto; overflow-x: hidden; isolation: isolate;
+  padding: 6px clamp(20px, 4vw, 64px) 160px; color: #ede3d1; scrollbar-width: thin; scrollbar-color: rgba(237,227,209,.22) transparent; }
+#ds-main > * { max-width: 1240px; }
+.ds-group { padding-bottom: 120px; scroll-margin-top: 8px; }
+.ds-head { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 10px 24px;
+  border-bottom: 1px solid rgba(237,227,209,.14); padding-bottom: 20px; margin-bottom: 40px; }
+.ds-head .ds-eyebrow { display: block; margin-bottom: 14px; font-size: 10px; letter-spacing: .4em; color: #a8916a; }
+.ds-head h2 { margin: 0; font-family: 'Cinzel', serif; font-weight: 400; font-size: clamp(30px, 3.4vw, 54px); line-height: .94; letter-spacing: .04em; color: #ede3d1; }
+.ds-head .ds-hint { max-width: 520px; font-size: 13px; font-weight: 300; line-height: 1.7; letter-spacing: .03em; color: #cfc4b0; }
+.ds-sub { display: block; margin: 54px 0 20px; font-size: 10px; letter-spacing: .4em; text-transform: uppercase; color: #a8916a; }
+.ds-head + .ds-sub { margin-top: 0; }
+.ds-spec { margin: 0 0 60px; position: relative; }
+.ds-spec:last-child { margin-bottom: 0; }
+.ds-spec > h3 { margin: 0 0 16px; font-family: 'Cinzel', serif; font-weight: 400; font-size: 17px; letter-spacing: .14em; color: #ede3d1; }
+.ds-meta { display: block; margin-top: 14px; font: 400 11.5px/1.65 var(--ds-mono); color: #d6cab4; overflow-wrap: anywhere; }
+.ds-meta b { font-weight: 600; color: #ede3d1; }
+.ds-note { margin-top: 8px; max-width: 82ch; font-size: 13px; font-weight: 300; line-height: 1.7; letter-spacing: .02em; color: #cfc4b0; }
+.ds-note code, .ds-meta code { font: 400 11.5px/1.6 var(--ds-mono); color: #e9dcc4; }
+.ds-row { display: flex; flex-wrap: wrap; align-items: center; gap: 24px 36px; }
+.ds-cell { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; min-width: 0; }
+.ds-cell > small, .ds-state > small { font-size: 9.5px; letter-spacing: .32em; text-transform: uppercase; color: #a8916a; }
+.ds-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; }
+.ds-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; }
+.ds-btn { font-family: 'Jost', sans-serif; font-size: 10px; letter-spacing: .3em; text-transform: uppercase; padding: 9px 14px;
+  border: 1px solid rgba(237,227,209,.2); color: #cfc4b0; background: rgba(4,3,2,.6); cursor: pointer; transition: .3s ease; }
+.ds-btn:hover { color: #ede3d1; border-color: #e8b25a; }
+.ds-btn.is-on { color: #e8b25a; border-color: rgba(232,178,90,.6); background: rgba(232,178,90,.08); }
+.ds-ctrl { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+/* a specimen's own ground: the page's #040302 / #060504 boxes with a hairline edge */
+.ds-ground { position: relative; background: #040302; box-shadow: inset 0 0 0 1px rgba(237,227,209,.08); }
+.ds-ground.c { background: #060504; }
+.ds-ground.pad { padding: 36px 40px; }
+.ds-ground.clip { overflow: hidden; }

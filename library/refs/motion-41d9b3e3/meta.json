@@ -1,0 +1,31 @@
+{
+  "id": "motion-41d9b3e3",
+  "category": "motion",
+  "kind": "video",
+  "file": "source.mp4",
+  "original_name": "ed74dc9567dc457850864c50c0b9936b_720w.mp4",
+  "source_url": null,
+  "title": "Tênis com estética de visão computacional (glitch, pixel sort, nuvem de pontos)",
+  "tags": [
+    "3d-render",
+    "glitch",
+    "hud",
+    "moda",
+    "tech"
+  ],
+  "niche_fit": [
+    "ia",
+    "moda",
+    "tecnologia"
+  ],
+  "techniques": [
+    "nuvem-de-pontos",
+    "overlay-hud",
+    "pixelizacao",
+    "reveal-por-janelas",
+    "shader"
+  ],
+  "status": "decoded",
+  "added": "2026-11-18",
+  "notes": ""
+}

@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ateliê Noturno — design system</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Hanken+Grotesk:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* Ateliê Noturno — gerado por ds_build.py a partir de tokens.json. Não edite à mão. */
+:root {
+  --color-bg: #110d11;
+  --color-surface: #3c3638;
+  --color-text: #e1dee4;
+  --color-text-muted: #8a878b;
+  --color-border: #595458;
+  --color-accent: #ed1b29;
+  --color-accent-deep: #9d1b24;
+  --color-sand: #b29784;
+  --font-display: 'Instrument Serif', 'Times New Roman', serif;
+  --font-body: 'Hanken Grotesk', system-ui, sans-serif;
+  --text-hero-size: clamp(4rem, 12.4vw, 11.5rem);
+  --text-hero-line: 0.92;
+  --text-hero-tracking: -0.015em;
+  --text-hero-weight: 400;
+  --text-display-size: clamp(3.25rem, 7.5vw, 7.5rem);
+  --text-display-line: 0.98;
+  --text-display-tracking: -0.01em;
+  --text-display-weight: 400;
+  --text-statement-size: clamp(2.5rem, 6.2vw, 6rem);
+  --text-statement-line: 1.02;
+  --text-statement-tracking: -0.01em;
+  --text-statement-weight: 400;
+  --text-body-size: clamp(0.9375rem, 1.18vw, 1.125rem);
+  --text-body-line: 1.45;
+  --text-body-tracking: 0;
+  --text-body-weight: 300;
+  --text-label-size: 0.625rem;
+  --text-label-line: 1;
+  --text-label-tracking: 0.24em;
+  --text-label-weight: 500;
+  --text-counter-size: 1.375rem;
+  --text-counter-line: 1;
+  --text-counter-tracking: 0.02em;
+  --text-counter-weight: 400;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 72px;
+  --space-9: 112px;
+  --radius-none: 0;
+  --radius-dot: 999px;
+  --border-hairline: 1px solid var(--color-border);
+  --layout-margin: 8vw;
+  --layout-columns: 12;
+  --layout-gutter: 24px;
+  --layout-text-measure: 30vw;
+  --layout-split: 50% / 50%;
+  --layout-section-y: 100vh;
+  --dur-xs: 0.15s;
+  --dur-s: 0.3s;
+  --dur-m: 0.6s;
+  --dur-l: 0.9s;
+  --dur-xl: 1.4s;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.76, 0, 0.24, 1);
+  --ease-scrub: linear;
+  --stagger-char: 0.03s;
+  --stagger-line: 0.09s;
+}
+
+.ds-text-hero { font-family: var(--font-display); font-size: var(--text-hero-size); line-height: var(--text-hero-line); letter-spacing: var(--text-hero-tracking); font-weight: var(--text-hero-weight); }
+.ds-text-display { font-family: var(--font-display); font-size: var(--text-display-size); line-height: var(--text-display-line); letter-spacing: var(--text-display-tracking); font-weight: var(--text-display-weight); }
+.ds-text-statement { font-family: var(--font-display); font-size: var(--text-statement-size); line-height: var(--text-statement-line); letter-spacing: var(--text-statement-tracking); font-weight: var(--text-statement-weight); }
+.ds-text-body { font-family: var(--font-body); font-size: var(--text-body-size); line-height: var(--text-body-line); letter-spacing: var(--text-body-tracking); font-weight: var(--text-body-weight); }
+.ds-text-label { font-family: var(--font-body); font-size: var(--text-label-size); line-height: var(--text-label-line); letter-spacing: var(--text-label-tracking); font-weight: var(--text-label-weight); text-transform: uppercase; }
+.ds-text-counter { font-family: var(--font-display); font-size: var(--text-counter-size); line-height: var(--text-counter-line); letter-spacing: var(--text-counter-tracking); font-weight: var(--text-counter-weight); }
+
+.ds-nav { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: var(--space-5) var(--space-6); font-family: var(--font-body); font-size: var(--text-label-size); line-height: var(--text-label-line); letter-spacing: var(--text-label-tracking); font-weight: var(--text-label-weight); text-transform: uppercase; color: var(--color-text); }
+.ds-nav .ds-nav__mark { font-family: var(--font-display); font-size: 1.25rem; letter-spacing: 0; text-transform: none; }
+.ds-eyebrow { font-family: var(--font-body); font-size: var(--text-label-size); line-height: var(--text-label-line); letter-spacing: var(--text-label-tracking); font-weight: var(--text-label-weight); text-transform: uppercase; color: var(--color-text-muted); display: block; margin-bottom: var(--space-5); }
+.ds-cta { font-family: var(--font-body); font-size: var(--text-label-size); line-height: var(--text-label-line); letter-spacing: var(--text-label-tracking); font-weight: var(--text-label-weight); text-transform: uppercase; color: var(--color-text); display: inline-block; position: relative; padding: var(--space-4) 0; text-decoration: none; transition: letter-spacing var(--dur-m) var(--ease-out); }
+.ds-cta::before { content: ''; position: absolute; top: 0; left: 0; width: 28px; height: 1px; background: var(--color-border); transition: width var(--dur-m) var(--ease-out); }
+.ds-cta::after { content: ''; position: absolute; bottom: 0; right: 0; width: 28px; height: 1px; background: var(--color-border); transition: width var(--dur-m) var(--ease-out); }
+.ds-cta:hover { letter-spacing: 0.3em; }
+.ds-cta:hover::before { width: 100%; }
+.ds-cta:hover::after { width: 100%; }
+.ds-cta:focus-visible { outline: 1px solid var(--color-text); outline-offset: var(--space-2); }
+.ds-media { display: block; width: min(320px, 100%); aspect-ratio: 1 / 1; overflow: hidden; border-radius: var(--radius-none); background: linear-gradient(160deg, var(--color-sand), var(--color-accent-deep) 55%, var(--color-bg)); }
+.ds-progress { position: relative; width: min(420px, 100%); height: 1px; background: var(--color-border); }
+.ds-progress::after { content: ''; position: absolute; inset: 0 60% 0 0; background: var(--color-text); }
+.ds-counter { font-family: var(--font-display); font-size: var(--text-counter-size); line-height: var(--text-counter-line); letter-spacing: var(--text-counter-tracking); font-weight: var(--text-counter-weight); color: var(--color-text-muted); }
+.ds-counter .is-current { color: var(--color-text); }
+.ds-service { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-7); align-items: center; width: 100%; }
+.ds-service p { max-width: 34ch; color: var(--color-text-muted); margin: var(--space-5) 0 var(--space-6); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+}
+
+/* ---- página-espécime (não faz parte do sistema) ---- */
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--color-bg); color: var(--color-text); font-family: var(--font-body, system-ui); }
+main { padding: 48px 5vw 96px; max-width: 1500px; margin: 0 auto; }
+section { padding: 56px 0; border-top: 1px solid color-mix(in srgb, currentColor 16%, transparent); }
+h2.k { font: 500 11px/1 var(--font-mono, ui-monospace, monospace); letter-spacing: .14em; text-transform: uppercase; opacity: .6; margin: 0 0 28px; }
+code { font: 12px/1.5 var(--font-mono, ui-monospace, monospace); opacity: .7; }
+em { font-style: normal; font-size: 12px; opacity: .55; display: block; }
+figure { margin: 0; } ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 20px; }
+.sw .chip { height: 96px; border-radius: 6px; border: 1px solid color-mix(in srgb, currentColor 18%, transparent); }
+.sw figcaption, figcaption { display: grid; gap: 2px; margin-top: 8px; font-size: 13px; } .sw span { font-size: 11px; opacity: .6; }
+.ty { display: grid; grid-template-columns: minmax(180px, 260px) 1fr; gap: 24px; align-items: baseline; padding: 22px 0; border-bottom: 1px dashed color-mix(in srgb, currentColor 12%, transparent); overflow: hidden; }
+.lab { display: grid; gap: 4px; font-size: 13px; align-content: start; }
+.row { display: grid; grid-template-columns: 160px 1fr; align-items: center; gap: 16px; padding: 5px 0; } .row i { display: block; height: 12px; background: var(--color-accent, currentColor); min-width: 1px; }
+.rbox { width: 100%; aspect-ratio: 3/2; border: 1px solid currentColor; background: color-mix(in srgb, currentColor 8%, transparent); }
+.sbox { width: 100%; aspect-ratio: 3/2; background: var(--color-surface, var(--color-bg)); border-radius: var(--radius-m, 8px); }
+.track { padding: 10px 0; cursor: pointer; } .rail { height: 28px; margin-top: 6px; position: relative; border-bottom: 1px solid color-mix(in srgb, currentColor 25%, transparent); }
+.rail i { position: absolute; left: 0; bottom: 4px; width: 20px; height: 20px; border-radius: 50%; background: var(--color-accent, currentColor); transition: left var(--dur-l); }
+.go .rail i { left: calc(100% - 20px); }
+.comp { display: grid; grid-template-columns: minmax(180px, 260px) 1fr; gap: 24px; padding: 28px 0; border-bottom: 1px dashed color-mix(in srgb, currentColor 12%, transparent); }
+.stage { display: flex; flex-wrap: wrap; gap: 20px; align-items: center; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 5vw; } @media (max-width: 800px) { .two, .ty, .comp { grid-template-columns: 1fr; } }
+header p { max-width: 70ch; opacity: .75; line-height: 1.6; }
+.logo { display: inline-flex; padding: 28px 36px; border: 1px solid color-mix(in srgb, currentColor 16%, transparent); border-radius: 8px; } .logo img { height: 64px; width: auto; max-width: 100%; display: block; }
+.tag { font-size: 1.25rem; max-width: 46ch; } .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 32px; margin-top: 28px; } .cols li { font-size: 14px; line-height: 1.5; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; } th, td { text-align: left; padding: 10px 14px 10px 0; border-bottom: 1px solid color-mix(in srgb, currentColor 12%, transparent); vertical-align: top; } th { font: 500 11px/1 var(--font-mono, ui-monospace, monospace); letter-spacing: .12em; text-transform: uppercase; opacity: .6; }
+.an { display: grid; grid-template-columns: minmax(260px, 1fr) minmax(260px, 1.2fr); gap: 32px; padding: 26px 0; border-bottom: 1px dashed color-mix(in srgb, currentColor 12%, transparent); } .an p { margin: 8px 0 12px; font-size: 14px; line-height: 1.55; opacity: .85; } .an li { font-size: 13px; }
+.demo { height: 150px; display: grid; place-items: center; border: 1px solid color-mix(in srgb, currentColor 14%, transparent); border-radius: 8px; cursor: pointer; overflow: hidden; margin-bottom: 12px; }
+.demo i { width: 72px; height: 72px; border-radius: var(--radius-m, var(--radius-md, 10px)); background: var(--color-accent, currentColor); display: block; }
+pre { margin: 0; padding: 14px; font: 12px/1.55 var(--font-mono, ui-monospace, monospace); background: color-mix(in srgb, currentColor 7%, transparent); border-radius: 8px; overflow: auto; white-space: pre-wrap; }
+.tg { font: 500 12px/1 var(--font-mono, ui-monospace, monospace); padding: 9px 12px; border: 1px solid currentColor; background: none; color: inherit; border-radius: 6px; cursor: pointer; margin: 0 8px 8px 0; }
+@media (max-width: 800px) { .an { grid-template-columns: 1fr; } }
+</style></head><body><main>
+<header><h2 class="k">Design system reconstruído · library/refs/web-animation-8281bd42</h2>
+<div class="ds-text-hero">Ateliê Noturno</div>
+<p>Sistema editorial escuro reconstruído a partir do vídeo da oficina de carros de luxo: preto quente, serifa fina enorme, texto pequeno e discreto, fotos como única fonte de cor, cantos retos e nenhuma sombra.</p>
+<div class="two"><div><h2 class="k">Princípios</h2><ul><li>A cor vem das fotos; a interface é só preto quente, cinzas e off-white.</li><li>Um título serifado gigante por tela; todo o resto é pequeno e quieto.</li><li>Cantos retos, linhas de 1px, zero sombra: a profundidade vem de foto desfocada ao fundo.</li><li>Rótulos minúsculos em caixa alta com tracking aberto fazem o papel de botões.</li><li>Movimento lento e atrelado ao scroll; nada salta.</li></ul></div><div><h2 class="k">Grau de confiança</h2><ul><li><b>cor</b> alta: fundo, texto e cinzas medidos em 7 telas</li><li><b>tamanhos de título</b> boa: 105–110px a 1440 (7.5vw), medido em 6 linhas</li><li><b>corpo</b> boa: ≈17px com entrelinha ≈25px (passo entre linhas medido em 4 blocos)</li><li><b>famílias</b> substitutas: as fontes originais não são identificáveis por vídeo</li><li><b>rótulos e ícones</b> baixa: abaixo da resolução do vídeo, estimados a olho</li><li><b>motion</b> média: vem do breakdown (scrub + smooth scroll)</li></ul><ul style="margin-top:14px"><li>text-muted corrigido: no vídeo o parágrafo é ≈ #4c494d (2.1:1 sobre o fundo), ilegível; o token usa um cinza medido mais claro.</li><li>Estados de hover/foco não aparecem no vídeo: foram projetados por coerência.</li><li>accent não existe na interface original; foi tirado do vermelho das fotos para indicadores.</li></ul></div></div></header>
+
+<section><h2 class="k">Cor</h2><div class="grid"><figure class="sw"><div class="chip" style="background:#110d11"></div><figcaption><b>bg</b><code>#110d11</code><em>preto quente, 76% da área</em></figcaption></figure><figure class="sw"><div class="chip" style="background:#3c3638"></div><figcaption><b>surface</b><code>#3c3638</code><span>1.63:1 s/ fundo</span><em>tom médio das seções com foto desfocada ao fundo</em></figcaption></figure><figure class="sw"><div class="chip" style="background:#e1dee4"></div><figcaption><b>text</b><code>#e1dee4</code><span>14.47:1 s/ fundo</span><em>títulos e nav</em></figcaption></figure><figure class="sw"><div class="chip" style="background:#8a878b"></div><figcaption><b>text-muted</b><code>#8a878b</code><span>5.43:1 s/ fundo</span><em>parágrafos; original ≈ #4c494d, corrigido p/ contraste</em></figcaption></figure><figure class="sw"><div class="chip" style="background:#595458"></div><figcaption><b>border</b><code>#595458</code><span>2.6:1 s/ fundo</span><em>linhas de 1px e barra de progresso</em></figcaption></figure><figure class="sw"><div class="chip" style="background:#ed1b29"></div><figcaption><b>accent</b><code>#ed1b29</code><span>4.4:1 s/ fundo</span><em>vermelho das fotos; só em indicadores, nunca em texto longo</em></figcaption></figure><figure class="sw"><div class="chip" style="background:#9d1b24"></div><figcaption><b>accent-deep</b><code>#9d1b24</code><span>2.4:1 s/ fundo</span><em>variação escura do vermelho (fundos de imagem)</em></figcaption></figure><figure class="sw"><div class="chip" style="background:#b29784"></div><figcaption><b>sand</b><code>#b29784</code><span>7.02:1 s/ fundo</span><em>tom quente que aparece nas fotos claras; opcional para imagens-placeholder</em></figcaption></figure></div><p style="margin-top:24px"></p></section>
+<section><h2 class="k">Tipografia</h2><ul style="margin-bottom:24px"><li><b>display</b> <code>&#x27;Instrument Serif&#x27;, &#x27;Times New Roman&#x27;, serif</code> <em>substituta de serifa fina de alto contraste, levemente condensada</em></li><li><b>body</b> <code>&#x27;Hanken Grotesk&#x27;, system-ui, sans-serif</code> <em>substituta de grotesca neutra leve</em></li></ul><div class="ty"><div class="lab"><b>hero</b><code>clamp(4rem, 12.4vw, 11.5rem) · lh 0.92 · ls -0.015em · 400 · display</code><em>fecho/hero: 177px a 1440</em></div><div class="ds-text-hero">Feito à mão</div></div><div class="ty"><div class="lab"><b>display</b><code>clamp(3.25rem, 7.5vw, 7.5rem) · lh 0.98 · ls -0.01em · 400 · display</code><em>título de seção: 108px a 1440</em></div><div class="ds-text-display">Identidade</div></div><div class="ty"><div class="lab"><b>statement</b><code>clamp(2.5rem, 6.2vw, 6rem) · lh 1.02 · ls -0.01em · 400 · display</code><em>manifesto: 90px a 1440</em></div><div class="ds-text-statement">Não adaptamos. Construímos para você.</div></div><div class="ty"><div class="lab"><b>body</b><code>clamp(0.9375rem, 1.18vw, 1.125rem) · lh 1.45 · ls 0 · 300 · body</code><em>17px / 25px</em></div><div class="ds-text-body">Cada detalhe é intencional, do primeiro esboço ao acabamento.</div></div><div class="ty"><div class="lab"><b>label</b><code>0.625rem · lh 1 · ls 0.24em · 500 · body</code><em>estimado a olho (≈10px)</em></div><div class="ds-text-label">Iniciar projeto</div></div><div class="ty"><div class="lab"><b>counter</b><code>1.375rem · lh 1 · ls 0.02em · 400 · display</code><em>paginação &#x27;02 / 03&#x27;</em></div><div class="ds-text-counter">02 / 03</div></div></section>
+<section class="two"><div><h2 class="k">Espaço</h2><div class="row"><code>1 · 4px</code><i style="width:var(--space-1)"></i></div><div class="row"><code>2 · 8px</code><i style="width:var(--space-2)"></i></div><div class="row"><code>3 · 12px</code><i style="width:var(--space-3)"></i></div><div class="row"><code>4 · 16px</code><i style="width:var(--space-4)"></i></div><div class="row"><code>5 · 24px</code><i style="width:var(--space-5)"></i></div><div class="row"><code>6 · 32px</code><i style="width:var(--space-6)"></i></div><div class="row"><code>7 · 48px</code><i style="width:var(--space-7)"></i></div><div class="row"><code>8 · 72px</code><i style="width:var(--space-8)"></i></div><div class="row"><code>9 · 112px</code><i style="width:var(--space-9)"></i></div></div><div><h2 class="k">Layout</h2><ul><li><b>margin</b> <code>8vw</code> <em>guia esquerda medida em 8.3% (6 linhas)</em></li><li><b>columns</b> <code>12</code></li><li><b>gutter</b> <code>24px</code></li><li><b>text-measure</b> <code>30vw</code> <em>largura dos parágrafos (≈30% da tela)</em></li><li><b>split</b> <code>50% / 50%</code> <em>módulo de serviço: texto de um lado, foto sangrando do outro</em></li><li><b>section-y</b> <code>100vh</code></li></ul></div></section>
+<section class="two"><div><h2 class="k">Raio</h2><div class="grid"><figure><div class="rbox" style="border-radius:var(--radius-none)"></div><figcaption><b>none</b><code>0</code></figcaption></figure><figure><div class="rbox" style="border-radius:var(--radius-dot)"></div><figcaption><b>dot</b><code>999px</code></figcaption></figure></div></div><div><h2 class="k">Sombra / elevação</h2><div class="grid"><em>sem sombras: o sistema é plano</em></div></div></section>
+<section><h2 class="k">Motion — clique numa curva para repetir</h2><div class="two"><div id="mo"><div class="track"><code>out · cubic-bezier(0.22, 1, 0.36, 1) · gsap power4.out</code><div class="rail"><i style="transition-timing-function:var(--ease-out)"></i></div></div><div class="track"><code>in-out · cubic-bezier(0.76, 0, 0.24, 1) · gsap power3.inOut</code><div class="rail"><i style="transition-timing-function:var(--ease-in-out)"></i></div></div><div class="track"><code>scrub · linear · gsap none</code><div class="rail"><i style="transition-timing-function:var(--ease-scrub)"></i></div></div></div><div><ul><li><b>xs</b> <code>0.15s</code></li><li><b>s</b> <code>0.3s</code></li><li><b>m</b> <code>0.6s</code></li><li><b>l</b> <code>0.9s</code></li><li><b>xl</b> <code>1.4s</code></li><li><b>stagger char</b> <code>0.03s</code></li><li><b>stagger line</b> <code>0.09s</code></li></ul>
+<p><code>scroll: {&quot;smooth&quot;: true, &quot;lerp&quot;: 0.09, &quot;pattern&quot;: &quot;seção pinada + cortina + clip vertical da imagem + título acendendo por letra&quot;}</code></p></div></div></section>
+
+<section><h2 class="k">Componentes</h2><div class="comp"><div class="lab"><b>nav</b><em>redes à esquerda, marca ao centro, menu à direita</em></div><div class="stage"><nav class="ds-nav"><span>in &nbsp; ig &nbsp; fb</span><span class="ds-nav__mark">◢◣</span><span>Navegar &nbsp;≡</span></nav></div></div><div class="comp"><div class="lab"><b>eyebrow</b></div><div class="stage"><span class="ds-eyebrow">Serviço</span></div></div><div class="comp"><div class="lab"><b>cta</b><em>duas linhas curtas em diagonal (medido); hover e foco inferidos</em></div><div class="stage"><a class="ds-cta" href="#">Iniciar projeto</a></div></div><div class="comp"><div class="lab"><b>media</b><em>foto sempre de canto reto; atrás dela, a mesma foto ampliada e desfocada</em></div><div class="stage"><div class="ds-media" role="img" aria-label="exemplo de moldura de imagem"></div></div></div><div class="comp"><div class="lab"><b>progress</b><em>barra de progresso do scroll no rodapé da janela</em></div><div class="stage"><div class="ds-progress" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div></div></div><div class="comp"><div class="lab"><b>counter</b></div><div class="stage"><span class="ds-counter"><span class="is-current">02</span> / 03</span></div></div><div class="comp"><div class="lab"><b>service</b><em>o módulo que se repete: rótulo, título, parágrafo curto, CTA + foto</em></div><div class="stage"><article class="ds-service"><div><span class="ds-eyebrow">Serviço</span><div class="ds-text-display">Acabamento</div><p class="ds-text-body">Do desenho ao último detalhe, cada peça é pensada para mudar a presença sem perder o caráter original.</p><a class="ds-cta" href="#">Iniciar projeto</a></div><div class="ds-media" style="width:100%;aspect-ratio:4/3"></div></article></div></div></section>
+
+
+</main><script>
+const mo = document.getElementById('mo'); const play = () => { mo.classList.remove('go'); void mo.offsetWidth; mo.classList.add('go') };
+mo.addEventListener('click', play); setTimeout(play, 400);
+for (const d of document.querySelectorAll('.demo')) { const run = () => { const i = d.firstElementChild; i.style.animation = 'none'; void i.offsetWidth; i.style.animation = d.dataset.anim }; d.addEventListener('click', run); setTimeout(run, 600) }
+for (const b of document.querySelectorAll('.tg')) b.addEventListener('click', () => { const r = document.documentElement; if (b.dataset.kind === 'class') r.classList.toggle(b.dataset.a); else if (r.getAttribute(b.dataset.a) === b.dataset.b) r.removeAttribute(b.dataset.a); else r.setAttribute(b.dataset.a, b.dataset.b) });
+</script></body></html>

@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="pt-BR" data-fd="loading">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>__TITLE__ — cópia local</title>
+<style>
+  html { background: #0e0f12; color: #e8e6e1; font: 16px/1.55 system-ui, sans-serif; }
+  body { margin: 0; }
+  main, #falha { display: none; max-width: 46rem; margin: 0 auto; padding: 2.5rem 1.25rem; }
+  [data-fd="file"] main, [data-fd="error"] #falha { display: block; }
+  h1 { font-size: 1.5rem; line-height: 1.25; margin: 0 0 .5rem; }
+  .origem { color: #9a978f; overflow-wrap: anywhere; }
+  code { display: block; margin: .35rem 0 1rem; padding: .6rem .8rem; border-radius: .4rem; background: #1b1d22; font: .92rem ui-monospace, monospace; }
+  img { display: block; width: 100%; margin-top: 2rem; border-radius: .5rem; }
+</style>
+</head>
+<body>
+<main>
+  <h1>__TITLE__</h1>
+  <p class="origem">Cópia local de __ENTRY_URL__ · capturada em __CAPTURED_AT__</p>
+  <p>Aberto direto do disco, este arquivo só mostra uma foto do site. Para ver a cópia funcionando, com animações e vídeos, rode na pasta dela:</p>
+  <code>python3 serve.py --open</code>
+  <p>No Windows, dê dois cliques em <strong>abrir.bat</strong> ou rode:</p>
+  <code>py serve.py --open</code>
+  <p>No Linux e no Mac também serve:</p>
+  <code>./abrir.sh</code>
+  <img src="site/_fd/snapshot.jpg" alt="Foto do site no momento da captura" onerror="this.remove()">
+</main>
+<p id="falha"></p>
+<script>
+(async () => {
+  const root = document.documentElement;
+  if (location.protocol === 'file:') { root.dataset.fd = 'file'; return; }
+
+  const capture = __CONFIG__;
+  const giveUp = (reason) => {
+    root.dataset.fd = 'error';
+    document.getElementById('falha').textContent = 'Não foi possível iniciar a cópia local: ' + reason;
+  };
+  if (!('serviceWorker' in navigator)) {
+    return giveUp('este navegador não tem Service Worker aqui. Use Chrome, Edge ou Firefox fora do modo privado.');
+  }
+
+  // Em localhost puro o site não veria o domínio dele: prefere <domínio>.localhost quando o sistema resolve esse nome.
+  const plain = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+  if (plain && capture.localHost && capture.localHost !== 'localhost') {
+    const named = location.protocol + '//' + capture.localHost + (location.port ? ':' + location.port : '');
+    const reached = await Promise.race([
+      fetch(named + '/site/_fd/runtime.json', { mode: 'no-cors', cache: 'no-store' }).then(() => true, () => false),
+      new Promise((resolve) => setTimeout(resolve, 1500, false)),
+    ]);
+    if (reached) return location.replace(named + capture.entryPath);
+  }
+
+  try {
+    await navigator.serviceWorker.register('/site/_fd/sw.js', { scope: '/' });
+    await navigator.serviceWorker.ready;
+  } catch (error) {
+    return giveUp(error && error.message ? error.message : String(error));
+  }
+  if (!navigator.serviceWorker.controller) {
+    await new Promise((resolve) => navigator.serviceWorker.addEventListener('controllerchange', resolve, { once: true }));
+  }
+
+  // Agora o Service Worker responde por este endereço. Um endereço profundo ganha uma única recarga;
+  // se esta página aparecer de novo nele, não foi capturado e a cópia abre do início.
+  const here = location.pathname + location.search;
+  const remembered = (value) => {
+    try {
+      if (value === undefined) return sessionStorage.getItem('fd:recarregado');
+      sessionStorage.setItem('fd:recarregado', value);
+    } catch (_) { /* armazenamento bloqueado: segue sem memória */ }
+    return null;
+  };
+  if (location.pathname === '/' || location.pathname === '/index.html') return location.replace(capture.entryPath);
+  if (here === capture.entryPath || remembered() !== here) {
+    remembered(here);
+    return location.reload();
+  }
+  location.replace(capture.entryPath);
+})();
+</script>
+</body>
+</html>

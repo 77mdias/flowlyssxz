@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Glass Green Design System</title>
+<!-- preview capture: the Overview frame reports once its intro has settled (header fade-in, cards
+     scale-in, hero title / lead / tag row slide up by ~1.4 s; hero photo loaded) -->
+<meta name="preview-ready-selector" content="body.ds-overview-ready">
+<meta name="preview-ready-after-ms" content="300">
+<!-- the Overview's own runtime and stylesheet: the Tailwind CSS runtime (utility classes of every
+     specimen and of the navbar), Lucide and effects.css (glows, hovers, keyframes, ambient lights) -->
+<script src="assets/overview/assets/resource_3fa48481346f.js"></script>
+<!-- Lucide icons runtime (renders the <i data-lucide> glyphs; interactions.js calls createIcons) -->
+<script src="https://unpkg.com/lucide@0.260.0/dist/umd/lucide.min.js"></script>
+<link rel="stylesheet" href="assets/overview/assets/css/effects.css">
+<style>
+/* ================================================================ catalog shell
+   Routing and layout only. The navbar is the Overview's own <header> markup (logo lockup, pill
+   badge type), fixed above the frame; the page drops its own header while embedded. */
+html, body { height: 100%; }
+body { overflow: hidden; }
+#ds-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 30; transition: background-color .3s ease; }
+#ds-nav .ds-link.is-on { background-color: rgb(13 148 136 / .2); color: rgb(94 234 212); border-color: rgb(20 184 166 / .4); }
+#ds-nav [aria-disabled="true"] { opacity: .35; pointer-events: none; }
+#overview-frame { position: fixed; top: var(--ds-navh, 96px); left: 0; width: 100%; height: calc(100% - var(--ds-navh, 96px));
+  border: 0; display: block; z-index: 0; background: #0b1620; }
+/* the page's snake cursor also runs in the catalog; it steps aside while the pointer is in the frame */
+body.ds-in-frame #cursor-ring, body.ds-in-frame #cursor-dot, body.ds-in-frame > div.fixed.pointer-events-none { opacity: 0 !important; }
+@media (max-width: 639px) {
+  #ds-nav .ds-lockup { display: none; }
+  #ds-nav header { padding-top: 1rem; padding-bottom: 1rem; }
+}
+
+/* ------------------------------------------------------------ components view
+   Scoped to the Components view; the Overview frame is untouched (parked, hidden, behind it).
+   Live ground: the page's own animated background — the navy body gradient with the two drifting
+   ambient lights (.ambient-light / .ambient-light-2) — behind the whole view. */
+#view-components { position: fixed; inset: 0; z-index: 10; display: none; }
+body.is-components #view-components { display: block; }
+body.is-components #overview-frame { visibility: hidden; }
+/* a dark glass strip under the navbar keeps it legible over the catalog */
+body.is-components #ds-nav { background: rgba(11, 22, 32, .78); -webkit-backdrop-filter: blur(20px) saturate(180%); backdrop-filter: blur(20px) saturate(180%);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .1); }
+#ds-shell { position: absolute; top: var(--ds-navh, 96px); left: 0; right: 0; bottom: 0; z-index: 1; display: grid; grid-template-columns: 248px minmax(0, 1fr); }
+
+/* sidebar: its own dark glass (backdrop-glow on the page's deepest navy) so labels stay legible */
+#ds-side { position: relative; z-index: 3; min-height: 0; overflow-y: auto; padding: 32px 18px 40px 28px; display: flex; flex-direction: column; gap: 2px;
+  background: rgba(11, 22, 32, .88); -webkit-backdrop-filter: blur(20px) saturate(180%); backdrop-filter: blur(20px) saturate(180%);
+  border-right: 1px solid rgba(255, 255, 255, .1); scrollbar-width: none; }
+#ds-side::-webkit-scrollbar { display: none; }
+#ds-side .ds-cap { margin: 18px 0 8px; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: rgb(148 163 184); }
+#ds-side .ds-cap:first-child { margin-top: 0; }
+#ds-side a { display: flex; align-items: baseline; gap: 12px; padding: 7px 0; font-size: 14px; line-height: 1.35; color: rgb(203 213 225); transition: color .3s cubic-bezier(.4, 0, .2, 1), text-shadow .3s; }
+#ds-side a b { font-weight: 400; font-size: 12px; color: rgb(100 116 139); font-variant-numeric: tabular-nums; }
+#ds-side a:hover, #ds-side a.is-current { color: rgb(153 246 228); }
+#ds-side a.is-current { font-weight: 600; text-shadow: 0 0 20px rgba(20, 184, 166, .5); }
+#ds-side a.is-current b { color: rgb(94 234 212); }
+
+#ds-main { position: relative; min-width: 0; min-height: 0; overflow-y: auto; overflow-x: hidden; padding: 48px clamp(20px, 3.6vw, 52px) 160px; }
+#ds-main > .ds-group { max-width: 1232px; }
+.ds-group { padding-bottom: 112px; scroll-margin-top: 24px; }
+.ds-head { margin-bottom: 40px; padding-bottom: 24px; border-bottom: 1px solid rgba(255, 255, 255, .1); }
+.ds-head .ds-eyebrow { display: inline-block; margin-bottom: 14px; }
+.ds-head h2 { margin: 0; font-size: 1.875rem; line-height: 2.25rem; font-weight: 600; letter-spacing: -.025em; color: rgb(241 245 249); }
+.ds-sub { margin: 52px 0 18px; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: rgb(148 163 184); }
+.ds-head + .ds-sub { margin-top: 0; }
+.ds-spec { margin: 0 0 56px; }
+.ds-spec:last-child { margin-bottom: 0; }
+.ds-spec > h3 { margin: 0 0 16px; font-size: 1.125rem; line-height: 1.75rem; font-weight: 600; letter-spacing: -.025em; color: rgb(241 245 249); }
+.ds-meta { display: block; margin-top: 12px; font: 400 11.5px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace; color: rgb(148 163 184); overflow-wrap: anywhere; }
+.ds-meta b { font-weight: 500; color: rgb(203 213 225); }
+.ds-note { margin-top: 8px; max-width: 80ch; font-size: 13px; line-height: 1.65; color: rgb(148 163 184); }
+.ds-note code { font: 11.5px ui-monospace, SFMono-Regular, Menlo, monospace; color: rgb(203 213 225); }
+.ds-row { display: flex; flex-wrap: wrap; align-items: center; gap: 24px 32px; }
+.ds-row.ds-top { align-items: flex-start; }
+.ds-cell { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; min-width: 0; }
+.ds-cell > small { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: rgb(148 163 184); }
+.ds-w-xs { width: 100%; max-width: 320px; }
+.ds-w-sm { width: 100%; max-width: 420px; }
+.ds-w-md { width: 100%; max-width: 604px; }
+.ds-replay { margin-top: 22px; }
+.ds-still, .ds-still * { opacity: 1 !important; animation: none !important; }
+.ds-flow { position: relative !important; inset: auto !important; }
+</style>
+<style>
+/* typography: role | live sample | declared size */
+.ds-type { display: grid; grid-template-columns: 210px minmax(0, 1fr) 200px; gap: 28px; align-items: center; padding: 24px 0; border-top: 1px solid rgba(255, 255, 255, .1); }
+.ds-type:first-child { border-top: 0; padding-top: 0; }
+.ds-type:last-child { border-bottom: 1px solid rgba(255, 255, 255, .1); }
+.ds-type .role { font-size: 13px; font-weight: 600; color: rgb(241 245 249); }
+.ds-type .face { margin-top: 4px; font-size: 12.5px; line-height: 1.45; color: rgb(148 163 184); }
+.ds-type .ds-meta { margin-top: 6px; font-size: 10.5px; }
+.ds-type .sample { min-width: 0; overflow-wrap: anywhere; }
+.ds-type .sample > * { margin: 0 !important; }
+.ds-type .sizes { text-align: right; font: 400 11.5px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace; color: rgb(203 213 225); }
+
+/* colors: live chip on its surface + label, value, token, use */
+.ds-colors { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 22px 28px; }
+.ds-sw { display: grid; grid-template-columns: 76px minmax(0, 1fr); gap: 14px; align-items: start; }
+.ds-chip { position: relative; height: 76px; overflow: hidden; display: grid; place-items: center; border-radius: 1rem; background: #0e1a2a; }
+.ds-chip::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .08); pointer-events: none; }
+.ds-chip .fill { position: absolute; inset: 0; }
+.ds-chip .edge { position: absolute; inset: 16px; border-radius: .75rem; }
+.ds-chip img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.ds-chip .aa { position: relative; font-size: 30px; line-height: 1; font-weight: 600; letter-spacing: -.025em; }
+.ds-sw strong, .ds-fam > strong { display: block; font-size: 13px; font-weight: 600; color: rgb(241 245 249); }
+.ds-sw code { display: block; margin-top: 3px; font: 11px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; color: rgb(203 213 225); overflow-wrap: anywhere; }
+.ds-sw code.tok { color: rgb(94 234 212); }
+.ds-sw p { margin-top: 4px; font-size: 12px; line-height: 1.5; color: rgb(148 163 184); }
+.ds-fam { margin-bottom: 30px; }
+.ds-fam > strong { margin-bottom: 12px; }
+.ds-states { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 16px; }
+.ds-state { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.ds-state small { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: rgb(148 163 184); }
+.ds-state code { font: 11px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; color: rgb(203 213 225); overflow-wrap: anywhere; }
+.ds-state .ds-chip { height: 84px; }
+
+/* backgrounds: the page's fixed layers placed inside their specimen box */
+.ds-bgspec { position: relative; height: 420px; overflow: hidden; border-radius: 1.5rem; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .08); isolation: isolate; }
+.ds-bgspec.ds-short { height: 260px; }
+#ds-main .ds-bgspec .ambient-light, #ds-main .ds-bgspec .ambient-light-2 { position: absolute; }
+.ds-bgspec .ds-bglabel { position: absolute; left: 20px; bottom: 16px; z-index: 2; }
+.ds-bggrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; margin-top: 20px; }
+
+/* icons: five to a row, identifier under each, source size and colour */
+.ds-icons { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 36px 18px; }
+.ds-icon { display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; min-width: 0; }
+.ds-icon .stage-i { height: 48px; min-width: 20px; display: grid; place-items: center; }
+.ds-icon code { font: 11px/1.45 ui-monospace, SFMono-Regular, Menlo, monospace; color: rgb(203 213 225); overflow-wrap: anywhere; }
+.ds-icon code i { display: block; margin-top: 2px; font-style: normal; color: rgb(148 163 184); }
+
+/* motion */
+.ds-ease { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 32px; }
+.ds-ease > div { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 18px; align-items: center; padding: 18px 0; border-top: 1px solid rgba(255, 255, 255, .1); }
+.ds-ease svg { width: 64px; height: 64px; overflow: visible; }
+.ds-ease strong { display: block; font-size: 13px; font-weight: 600; color: rgb(241 245 249); }
+.ds-ease code { display: block; margin-top: 3px; font: 11px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; color: rgb(94 234 212); overflow-wrap: anywhere; }
+.ds-ease p { margin-top: 4px; font-size: 12px; line-height: 1.5; color: rgb(148 163 184); }
+.ds-motion { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.ds-motion > div { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; min-width: 0; }
+.ds-cursorstage { position: relative; display: flex; flex-wrap: wrap; align-items: center; gap: 28px 40px; padding: 28px; border-radius: 1.5rem; background: #0e1a2a; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .06); }
+.ds-cursorstage .ds-curs { position: relative !important; display: block !important; left: auto !important; top: auto !important; transform: none !important; opacity: .9 !important; }
+.ds-trail { display: flex; align-items: center; gap: 3px; }
+.ds-trail span { display: block; border-radius: 9999px; background: rgba(94, 234, 212, .9); box-shadow: 0 0 0 2px rgba(13, 148, 136, .08), 0 0 18px rgba(20, 184, 166, .25), inset 0 0 6px rgba(255, 255, 255, .06); }
+
+/* forced states: the source's own :hover declarations (effects.css + Tailwind hover: utilities), pinned */
+#ds-main .ds-hover.glow-teal-intense { box-shadow: 0 0 40px rgba(20, 184, 166, .6), 0 0 80px rgba(20, 184, 166, .3), inset 0 1px 0 rgba(255, 255, 255, .2); transform: translateY(-2px) scale(1.05); }
+#ds-main .ds-hover.button-hover { transform: translateY(-2px) scale(1.05); }
+#ds-main .ds-hover.hover\:bg-teal-600 { background-color: rgb(13 148 136); }
+#ds-main .ds-hover.hover\:bg-teal-500 { background-color: rgb(20 184 166); }
+#ds-main .ds-hover.hover\:bg-slate-800\/60 { background-color: rgb(30 41 59 / .6); }
+#ds-main .ds-hover.glow-border { border-color: rgba(20, 184, 166, .6); box-shadow: 0 0 20px rgba(20, 184, 166, .3); }
+#ds-main .ds-hover.glow-border::before { opacity: 1; }
+#ds-main .ds-hover.tag-hover { background: linear-gradient(135deg, rgba(20, 184, 166, .2), rgba(6, 182, 212, .1)); border-color: rgba(20, 184, 166, .6); transform: translateY(-2px) scale(1.05); box-shadow: 0 8px 25px rgba(20, 184, 166, .2); }
+#ds-main .ds-hover.hover-float { transform: translateY(-6px); filter: drop-shadow(0 10px 30px rgba(20, 184, 166, .2)); }
+#ds-main .ds-hover.hover-lift { transform: translateY(-4px) scale(1.02); }
+#ds-main .ds-hover.glow-card { transform: translateY(-8px) rotateX(2deg) rotateY(-2deg); box-shadow: 0 25px 80px rgba(0, 0, 0, .4), 0 0 0 1px rgba(255, 255, 255, .1), 0 0 60px rgba(20, 184, 166, .2); }
+#ds-main .ds-hover.glow-card .card-content { transform: translateZ(20px); }
+#ds-main .ds-hover.hover-glow { text-shadow: 0 0 25px rgba(20, 184, 166, .6), 0 0 50px rgba(20, 184, 166, .3); color: rgb(153, 246, 228); }
+#ds-main .ds-hover.interactive-text { background: linear-gradient(135deg, #14b8a6, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; transform: scale(1.02); }
+#ds-main .ds-hover.logo-hover { transform: rotate(-5deg) scale(1.1); }
+#ds-main .ds-hover.floating-stats-hover { -webkit-backdrop-filter: blur(30px) saturate(200%); backdrop-filter: blur(30px) saturate(200%); background: rgba(255, 255, 255, .15); transform: translateY(-3px); }
+#ds-main .ds-hover.card-image-hover img { transform: scale(1.1) rotate(1deg); filter: brightness(1.1) contrast(1.1); }
+#ds-main .ds-hover.hover-bg-shift { background-position: 100% 50%; }
+
+/* specimen contexts */
+.ds-photo { position: relative; overflow: hidden; border-radius: 1.5rem; }
+.ds-photo > img.ds-ground { display: block; width: 100%; height: 100%; object-fit: cover; }
+.ds-cards3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+.ds-cards2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+/* full-width sections keep the page's 1232px content width, zoomed to the column by script (md and up) */
+@media (min-width: 768px) { .ds-fit { width: 1232px; } }
+/* small responsive fix (as in Overview under 768px): the stats bar wraps instead of clipping its
+   last stat and button against the card edge */
+@media (max-width: 767px) {
+  #ds-main .floating-stats-hover { flex-wrap: wrap; }
+  #ds-main .floating-stats-hover > .animate-float { flex-wrap: wrap; row-gap: .75rem; }
+}
+
+@media (max-width: 1100px) {
+  .ds-type { grid-template-columns: 170px minmax(0, 1fr); }
+  .ds-type .sizes { grid-column: 2; text-align: left; }
+  .ds-cards3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 767px) {
+  #ds-shell { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); }
+  #ds-side { flex-direction: row; align-items: center; gap: 20px; overflow-x: auto; overflow-y: hidden; padding: 12px 16px;
+    border-right: 0; border-bottom: 1px solid rgba(255, 255, 255, .1); }
+  #ds-side .ds-cap { display: none; }
+  #ds-side a { flex: 0 0 auto; padding: 2px 0; white-space: nowrap; }
+  #ds-main { padding: 32px 16px 120px; }
+  .ds-group { padding-bottom: 84px; }
+  .ds-head h2 { font-size: 1.5rem; line-height: 2rem; }
+  .ds-type { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .ds-type .sizes { grid-column: auto; }
+  .ds-colors { grid-template-columns: minmax(0, 1fr); }
+  .ds-icons { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .ds-ease, .ds-motion, .ds-bggrid, .ds-cards3, .ds-cards2 { grid-template-columns: minmax(0, 1fr); }
+  .ds-bgspec { height: 300px; }
+}
+</style>
+</head>
+<body class="antialiased relative overflow-x-hidden text-slate-100 bg-gradient-to-br from-[#0b1620] to-[#0a1a2b] md:cursor-none">
+
+<!-- custom-cursor: the page's own ring + dot (interactions.js adds the 18 trailing segments) -->
+<div class="pointer-events-none fixed top-0 left-0 z-50 hidden md:block" id="cursor-ring" style="width:28px;height:28px;border:1.5px solid rgba(45,212,191,0.85);border-radius:9999px;transform:translate(-50%,-50%) scale(1);box-shadow:rgba(13,148,136,0.15) 0 0 0 2px,rgba(20,184,166,0.25) 0 0 30px;transition:width .2s,height .2s,border-color .2s,box-shadow .2s,transform .06s,opacity .2s;backdrop-filter:blur(1px);opacity:.9;"></div>
+<div class="pointer-events-none fixed top-0 left-0 z-50 hidden md:block" id="cursor-dot" style="width:6px;height:6px;background:rgba(94,234,212,0.95);border-radius:9999px;transform:translate(-50%,-50%);transition:transform .06s,opacity .2s;box-shadow:rgba(94,234,212,0.6) 0 0 10px;opacity:.9;"></div>
+
+<!-- navigation: the Overview's own <header> (logo lockup + pill row); its pills route the two views -->
+<div id="ds-nav">
+<header class="max-w-7xl mx-auto px-6 py-6 flex items-center justify-between relative z-10 animate-fade-in">
+<a class="flex items-center space-x-4 min-w-0" href="#overview" data-ds-home="">
+<div class="rounded-xl bg-gradient-to-br from-teal-500/90 to-cyan-400/90 p-1.5 glow-teal animate-glow logo-hover cursor-glow shrink-0">
+<div class="rounded-xl bg-[#0b1a28] w-9 h-9 flex items-center justify-center logo-icon">
+<img src="assets/overview/assets/images/svg/logo-server.svg" width="20" height="20" alt="Logotipo servidor"/>
+</div>
+</div>
+<div class="ds-lockup animate-fade-in delay-100 hover-lift cursor-glow min-w-0">
+<div class="text-sm text-slate-300 hover-glow transition-all duration-300">Hospedagem Global</div>
+<div class="text-lg font-semibold tracking-tight text-glow hover-glow interactive-text cursor-pointer transition-all duration-300">Lorem ipsum dolor sit amet adipiscing</div>
+</div>
+</a>
+<nav class="flex items-center space-x-3 animate-fade-in delay-200 shrink-0">
+<a class="ds-link px-3 py-1 rounded-full text-sm border border-slate-500/50 text-slate-200 glow-border backdrop-glow tag-hover cursor-glow" id="nav-overview" href="#overview">Overview</a>
+<a class="ds-link px-3 py-1 rounded-full text-sm border border-slate-500/50 text-slate-200 glow-border backdrop-glow tag-hover cursor-glow" id="nav-components" href="#components">Components</a>
+</nav>
+</header>
+</div>
+
+<iframe id="overview-frame" title="Overview" src="assets/overview/design-system.html"></iframe>
+
+<div id="view-components">
+<!-- live ground: the page's ambient lights over the body gradient (effects.css, position: fixed) -->
+<div class="ambient-light"></div>
+<div class="ambient-light-2"></div>
+<div id="ds-shell">
+<aside id="ds-side">
+<p class="ds-cap">Foundations</p>
+<a href="#components-typography"><b>01</b>Typography</a>
+<a href="#components-colors"><b>02</b>Colors</a>
+<a href="#components-backgrounds"><b>03</b>Backgrounds</a>
+<a href="#components-surfaces"><b>04</b>Surfaces</a>
+<a href="#components-icons"><b>05</b>Icons</a>
+<a href="#components-motion"><b>06</b>Motion</a>
+<p class="ds-cap">Components</p>
+<a href="#components-actions"><b>07</b>Actions</a>
+<a href="#components-navigation"><b>08</b>Navigation</a>
+<a href="#components-tags"><b>09</b>Tags and badges</a>
+<a href="#components-cards"><b>10</b>Cards</a>
+<a href="#components-data"><b>11</b>Data display</a>
+<a href="#components-media"><b>12</b>Media</a>
+<a href="#components-sections"><b>13</b>Content groups</a>
+</aside>
+<main id="ds-main">
+
+<!-- ============================================================ 01 typography -->
+<section class="ds-group" id="components-typography">
+<div class="ds-head"><span class="ds-eyebrow px-3 py-1 rounded-full border border-slate-500/50 text-slate-200 text-xs glow-border backdrop-glow">Foundations · 01</span><h2 class="text-glow">Typography</h2></div>
+<p class="ds-note" style="margin:-16px 0 28px">No web font is loaded: every style is Tailwind's <code>font-sans</code> stack — <code>ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji"</code> — with <code>tracking-tight</code> (-0.025em) on headings and <code>.text-glow</code> (text-shadow 0 0 20px rgba(20,184,166,.5)).</p>
+<div class="ds-types">
+<div class="ds-type"><div><div class="role">Heading 1</div><div class="face">font-sans · 600</div><code class="ds-meta">h1 · .leading-tight .tracking-tight .text-glow .interactive-text</code></div><div class="sample"><h1 class="text-3xl md:text-4xl lg:text-5xl font-semibold tracking-tight mb-4 leading-tight text-glow hover-glow interactive-text cursor-glow transition-all duration-500">Glass Green Design System</h1></div><div class="sizes">3rem | 2.25rem | 1.875rem</div></div>
+<div class="ds-type"><div><div class="role">Heading 2</div><div class="face">font-sans · 600</div><code class="ds-meta">h4 (CTA band) · .text-2xl.md:text-3xl .text-glow</code></div><div class="sample"><h4 class="text-2xl md:text-3xl font-semibold tracking-tight text-glow">Lorem ipsum dolor sit amet nisi?</h4></div><div class="sizes">1.875rem | 1.5rem</div></div>
+<div class="ds-type"><div><div class="role">Heading 3</div><div class="face">font-sans · 600</div><code class="ds-meta">h3 (image cards) · .text-xl .text-glow .interactive-text</code></div><div class="sample"><h3 class="mt-3 text-xl font-semibold tracking-tight text-glow hover-glow interactive-text cursor-glow transition-all duration-300">Lorem ipsum dolor</h3></div><div class="sizes">1.25rem</div></div>
+<div class="ds-type"><div><div class="role">Heading 4</div><div class="face">font-sans · 600</div><code class="ds-meta">h3 (feature cards) · header lockup · .text-lg .text-glow</code></div><div class="sample"><h3 class="text-lg font-semibold tracking-tight text-glow">Quis autem vel eum iure</h3></div><div class="sizes">1.125rem</div></div>
+<div class="ds-type"><div><div class="role">Lead</div><div class="face">font-sans · 400</div><code class="ds-meta">aside p · .text-slate-300 .leading-relaxed (CTA band p: same sizes, default leading)</code></div><div class="sample"><p class="text-slate-300 leading-relaxed text-sm md:text-base hover-glow cursor-glow transition-all duration-300">Translucent teal glass, soft cyan glows and deep navy cards that float, tilt in 3D and light up under a glowing snake-trail cursor.</p></div><div class="sizes">1rem | 0.875rem</div></div>
+<div class="ds-type"><div><div class="role">Button</div><div class="face">font-sans · 600</div><code class="ds-meta">button · .font-semibold .text-white</code></div><div class="sample"><div><button class="px-5 py-3 rounded-full bg-teal-500 hover:bg-teal-600 text-white font-semibold glow-teal-intense button-hover cursor-pointer">Lorem ipsum</button></div></div><div class="sizes">1rem</div></div>
+<div class="ds-type"><div><div class="role">Text 1</div><div class="face">font-sans · 400</div><code class="ds-meta">card p · .text-sm .text-slate-300</code></div><div class="sample"><p class="text-slate-300 text-sm mt-2 hover-glow cursor-glow transition-all duration-300">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua, ut enim ad minim.</p></div><div class="sizes">0.875rem</div></div>
+<div class="ds-type"><div><div class="role">Stat value</div><div class="face">font-sans · 600</div><code class="ds-meta">.font-semibold .text-glow .interactive-text</code></div><div class="sample"><span class="text-sm font-semibold text-glow hover-glow interactive-text cursor-pointer transition-all duration-300">244.000+ pes</span></div><div class="sizes">0.875rem</div></div>
+<div class="ds-type"><div><div class="role">Label</div><div class="face">font-sans · 400</div><code class="ds-meta">header lockup · stat labels · .text-sm .text-slate-300 / .text-white/80</code></div><div class="sample"><div class="text-sm text-slate-300 hover-glow transition-all duration-300">Hospedagem Global</div></div><div class="sizes">0.875rem</div></div>
+<div class="ds-type"><div><div class="role">Footnote</div><div class="face">font-sans · 400</div><code class="ds-meta">footer p · .text-sm .text-slate-400</code></div><div class="sample"><p class="text-sm text-slate-400 hover-glow cursor-glow transition-all duration-300">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim.</p></div><div class="sizes">0.875rem</div></div>
+<div class="ds-type"><div><div class="role">Tag</div><div class="face">font-sans · 400</div><code class="ds-meta">.text-xs .text-slate-200 (pill tags)</code></div><div class="sample"><span class="text-xs text-slate-200">Lorem</span></div><div class="sizes">0.75rem</div></div>
+<div class="ds-type"><div><div class="role">Meta</div><div class="face">font-sans · 400</div><code class="ds-meta">card meta · .text-xs .text-slate-300 .text-glow</code></div><div class="sample"><span class="text-xs text-slate-300 text-glow hover-glow interactive-text cursor-pointer transition-all duration-300">Dui</span></div><div class="sizes">0.75rem</div></div>
+</div>
+</section>
+
+<!-- ============================================================ 02 colors -->
+<section class="ds-group" id="components-colors">
+<div class="ds-head"><span class="ds-eyebrow px-3 py-1 rounded-full border border-slate-500/50 text-slate-200 text-xs glow-border backdrop-glow">Foundations · 02</span><h2 class="text-glow">Colors</h2></div>
+<p class="ds-note" style="margin:-16px 0 28px">The page defines no custom properties: colours are Tailwind palette utilities (named below as their utility), arbitrary values <code>[#…]</code> and raw <code>rgba()</code> in effects.css.</p>
+
+<h3 class="ds-sub">Brand and Accent</h3>
+<div class="ds-colors">
+<div class="ds-sw"><div class="ds-chip"><span class="fill" style="background:#14b8a6"></span></div><div><strong>Primary accent</strong><code>#14b8a6 · rgba(20,184,166,…)</code><code class="tok">teal-500</code><p>Primary pill buttons; the base of every glow and glow border.</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="fill" style="background:#0d9488"></span></div><div><strong>Deep accent</strong><code>#0d9488</code><code class="tok">teal-600</code><p>Header button fill; primary button hover.</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="aa" style="color:#5eead4">Aa</span></div><div><strong>Accent tint</strong><code>#5eead4 · cursor dot rgba(94,234,212,.95)</code><code class="tok">teal-300</code><p>Icon glyphs, status badge text, cursor dot.</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="fill bg-gradient-to-br from-teal-500/90 to-cyan-400/90"></span></div><div><strong>Logo gradient</strong><code>#14b8a6 90% → #22d3ee 90%</code><code class="tok">from-teal-500/90 to-cyan-400/90</code><p>The logo tile frame, pulsing with .animate-glow.</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="fill" style="background:#06b6d4"></span></div><div><strong>Cyan partner</strong><code>rgba(6,182,212,…) · #06b6d4</code><code class="tok">cyan-500</code><p>Second stop of glow borders, card glows, CTA band and gradient text.</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="aa" style="color:rgb(153,246,228);text-shadow:0 0 25px rgba(20,184,166,.6),0 0 50px rgba(20,184,166,.3)">Aa</span></div><div><strong>Hover glow text</strong><code>rgb(153, 246, 228)</code><p>Text colour of .hover-glow:hover.</p></div></div>
+</div>
+
+<h3 class="ds-sub">Surfaces</h3>
+<div class="ds-colors">
+<div class="ds-sw"><div class="ds-chip"><span class="fill bg-gradient-to-br from-[#0b1620] to-[#0a1a2b]"></span></div><div><strong>Page ground</strong><code>#0b1620 → #0a1a2b (to bottom right)</code><code class="tok">from-[#0b1620] to-[#0a1a2b]</code><p>Body background under the ambient lights.</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="fill" style="background:#0e1a2a"></span></div><div><strong>Card surface</strong><code>#0e1a2a</code><code class="tok">bg-[#0e1a2a]</code><p>Image cards, feature cards, hero media card.</p></div></div>
+<div class="ds-sw"><div class="ds-chip" style="background:#0b1620"><span class="fill" style="background:linear-gradient(135deg,rgba(20,184,166,0.1),rgba(6,182,212,0.05),rgba(20,184,166,0.08))"></span></div><div><strong>Glow panel</strong><code>linear-gradient(135deg, rgba(20,184,166,.1), rgba(6,182,212,.05), rgba(20,184,166,.08))</code><code class="tok">inline style over bg-[#142033]</code><p>Hero intro panel; the inline gradient replaces its #142033 fill.</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="fill bg-gradient-glow"></span></div><div><strong>Card glow tint</strong><code>linear-gradient(135deg, rgba(20,184,166,.1), rgba(6,182,212,.05))</code><code class="tok">.bg-gradient-glow</code><p>Body of the first image card.</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="fill" style="background:#0b1a28"></span></div><div><strong>Logo well</strong><code>#0b1a28</code><code class="tok">bg-[#0b1a28]</code><p>Inner square of the logo tile.</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><img src="assets/overview/assets/photo-1658243762592-d3ff6f8a9a_5c9037f90edf.jpg" alt=""><span class="fill bg-neutral-50/10 backdrop-glow"></span></div><div><strong>Frosted bar</strong><code>rgb(250 250 250 / .1) · blur(20px) saturate(180%)</code><code class="tok">bg-neutral-50/10 .backdrop-glow</code><p>Stats bar laid over the hero photo.</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="edge bg-slate-800/60"></span></div><div><strong>Glass chip</strong><code>rgb(30 41 59 / .6)</code><code class="tok">slate-800/60</code><p>Tags and card tags.</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="edge bg-teal-600/20"></span></div><div><strong>Accent tint surface</strong><code>rgb(13 148 136 / .2) · stat chip / .3</code><code class="tok">teal-600/20 · teal-600/30</code><p>Icon tiles, status badge, stat chip.</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="edge bg-gradient-to-r from-teal-600/20 to-cyan-500/20"></span></div><div><strong>CTA band</strong><code>rgb(13 148 136 / .2) → rgb(6 182 212 / .2)</code><code class="tok">from-teal-600/20 to-cyan-500/20</code><p>Closing call-to-action band.</p></div></div>
+</div>
+
+<h3 class="ds-sub">Text and Icons</h3>
+<div class="ds-colors">
+<div class="ds-sw"><div class="ds-chip"><span class="aa" style="color:#f1f5f9">Aa</span></div><div><strong>Primary text</strong><code>#f1f5f9</code><code class="tok">slate-100</code><p>Body colour: headings, stat values.</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="aa" style="color:#fff">Aa</span></div><div><strong>On accent</strong><code>#ffffff</code><code class="tok">white</code><p>Labels on teal buttons; logo glyph stroke.</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="aa" style="color:#e2e8f0">Aa</span></div><div><strong>Tag text</strong><code>#e2e8f0</code><code class="tok">slate-200</code><p>Pill tags, ghost button label.</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="aa" style="color:#cbd5e1">Aa</span></div><div><strong>Secondary text</strong><code>#cbd5e1</code><code class="tok">slate-300</code><p>Paragraphs, labels, card meta.</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="aa" style="color:rgb(255 255 255 / .8)">Aa</span></div><div><strong>Stat label</strong><code>rgb(255 255 255 / .8)</code><code class="tok">white/80</code><p>Labels in the frosted stats bar.</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="aa" style="color:#94a3b8">Aa</span></div><div><strong>Muted text</strong><code>#94a3b8</code><code class="tok">slate-400</code><p>Footer note.</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="aa" style="color:#5eead4">Aa</span></div><div><strong>Icon</strong><code>#5eead4</code><code class="tok">teal-300</code><p>Icon glyphs (currentColor) and status badge.</p></div></div>
+</div>
+
+<h3 class="ds-sub">Borders</h3>
+<div class="ds-colors">
+<div class="ds-sw"><div class="ds-chip"><span class="fill" style="top:37px;bottom:auto;height:1px;background:rgb(255 255 255 / .1)"></span></div><div><strong>Divider</strong><code>rgb(255 255 255 / .1)</code><code class="tok">bg-white/10 (h-px)</code><p>Rule between the card grid and features.</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="edge" style="box-shadow:0 0 0 1px rgba(255,255,255,.05)"></span></div><div><strong>Card ring</strong><code>0 0 0 1px rgba(255,255,255,.05)</code><code class="tok">.glow-card</code><p>Hairline around every card (hover .1).</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="edge" style="border:1px solid rgba(20,184,166,.3)"></span></div><div><strong>Glow border</strong><code>rgba(20,184,166,.3)</code><code class="tok">.glow-border</code><p>Tags, chips, badges, icon tiles.</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="edge" style="border:1px solid rgb(20 184 166 / .4)"></span></div><div><strong>Accent border</strong><code>rgb(20 184 166 / .4)</code><code class="tok">teal-500/40</code><p>Status badge, icon tiles, CTA band.</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="edge" style="border:1px solid rgb(45 212 191 / .5)"></span></div><div><strong>Stat chip border</strong><code>rgb(45 212 191 / .5)</code><code class="tok">teal-400/50</code><p>Stat chip in the stats bar.</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="edge" style="border:1px solid rgb(100 116 139 / .5)"></span></div><div><strong>Outline tag</strong><code>rgb(100 116 139 / .5)</code><code class="tok">slate-500/50</code><p>Hero outline tags.</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="edge" style="border:1px solid rgb(51 65 85 / .5)"></span></div><div><strong>Card tag</strong><code>rgb(51 65 85 / .5)</code><code class="tok">slate-700/50</code><p>Tags in the image-card bodies.</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="edge" style="border:1px solid rgb(71 85 105 / .6)"></span></div><div><strong>Ghost button</strong><code>rgb(71 85 105 / .6)</code><code class="tok">slate-600/60</code><p>Secondary call to action.</p></div></div>
+</div>
+
+<h3 class="ds-sub">Interactive States</h3>
+<div class="ds-fam"><strong>Primary button · fill</strong><div class="ds-states">
+<div class="ds-state"><div class="ds-chip"><span class="edge" style="background:#14b8a6;box-shadow:0 0 30px rgba(20,184,166,.4),0 0 60px rgba(20,184,166,.2)"></span></div><small>Default</small><code>teal-500 · #14b8a6</code></div>
+<div class="ds-state"><div class="ds-chip"><span class="edge" style="background:#0d9488;box-shadow:0 0 40px rgba(20,184,166,.6),0 0 80px rgba(20,184,166,.3)"></span></div><small>Hover</small><code>hover:bg-teal-600 · #0d9488</code></div>
+</div></div>
+<div class="ds-fam"><strong>Header button · fill</strong><div class="ds-states">
+<div class="ds-state"><div class="ds-chip"><span class="edge" style="background:#0d9488"></span></div><small>Default</small><code>teal-600 · #0d9488</code></div>
+<div class="ds-state"><div class="ds-chip"><span class="edge" style="background:#14b8a6"></span></div><small>Hover</small><code>hover:bg-teal-500 · #14b8a6</code></div>
+</div></div>
+<div class="ds-fam"><strong>Ghost button · fill</strong><div class="ds-states">
+<div class="ds-state"><div class="ds-chip"><span class="edge" style="border:1px solid rgb(71 85 105 / .6)"></span></div><small>Default</small><code>transparent</code></div>
+<div class="ds-state"><div class="ds-chip"><span class="edge" style="background:rgb(30 41 59 / .6);border:1px solid rgba(20,184,166,.6)"></span></div><small>Hover</small><code>hover:bg-slate-800/60</code></div>
+</div></div>
+<div class="ds-fam"><strong>Glow border · tag</strong><div class="ds-states">
+<div class="ds-state"><div class="ds-chip"><span class="edge" style="border:1px solid rgba(20,184,166,.3)"></span></div><small>Default</small><code>rgba(20,184,166,.3)</code></div>
+<div class="ds-state"><div class="ds-chip"><span class="edge" style="border:1px solid rgba(20,184,166,.6);box-shadow:0 0 20px rgba(20,184,166,.3);background:linear-gradient(135deg,rgba(20,184,166,.2),rgba(6,182,212,.1))"></span></div><small>Hover</small><code>rgba(20,184,166,.6) · tag fill gradient(135deg, rgba(20,184,166,.2), rgba(6,182,212,.1))</code></div>
+</div></div>
+<div class="ds-fam"><strong>Text</strong><div class="ds-states">
+<div class="ds-state"><div class="ds-chip"><span class="aa" style="color:#f1f5f9;text-shadow:0 0 20px rgba(20,184,166,.5)">Aa</span></div><small>Default</small><code>slate-100 · .text-glow</code></div>
+<div class="ds-state"><div class="ds-chip"><span class="aa" style="color:rgb(153,246,228);text-shadow:0 0 25px rgba(20,184,166,.6),0 0 50px rgba(20,184,166,.3)">Aa</span></div><small>Hover</small><code>.hover-glow · rgb(153,246,228)</code></div>
+<div class="ds-state"><div class="ds-chip"><span class="aa" style="background:linear-gradient(135deg,#14b8a6,#06b6d4);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">Aa</span></div><small>Hover</small><code>.interactive-text · #14b8a6 → #06b6d4</code></div>
+</div></div>
+<div class="ds-fam"><strong>Cursor ring</strong><div class="ds-states">
+<div class="ds-state"><div class="ds-chip"><span style="position:relative;width:28px;height:28px;border:1.5px solid rgba(45,212,191,.85);border-radius:9999px;box-shadow:0 0 0 2px rgba(13,148,136,.15),0 0 30px rgba(20,184,166,.25)"></span></div><small>Default</small><code>rgba(45,212,191,.85) · 28px</code></div>
+<div class="ds-state"><div class="ds-chip"><span style="position:relative;width:44px;height:44px;border:1.5px solid rgba(94,234,212,1);border-radius:9999px;box-shadow:0 0 0 3px rgba(94,234,212,.15),0 0 60px rgba(20,184,166,.35)"></span></div><small>Hover</small><code>rgba(94,234,212,1) · 44px</code></div>
+</div></div>
+
+<h3 class="ds-sub">Overlays</h3>
+<div class="ds-colors">
+<div class="ds-sw"><div class="ds-chip"><img src="assets/overview/assets/photo-1669062897193-f8a4215c20_340863947964.jpg" alt=""><span class="fill bg-gradient-to-t from-[#0e1a2a]/60 to-transparent"></span></div><div><strong>Image scrim</strong><code>rgb(14 26 42 / .6) → transparent (to top) · hover /.4</code><code class="tok">from-[#0e1a2a]/60 hover:from-[#0e1a2a]/40</code><p>Over each image-card photo.</p></div></div>
+<div class="ds-sw"><div class="ds-chip" style="background:#0b1620"><span class="fill" style="background:radial-gradient(circle,rgba(20,184,166,.1) 0%,transparent 70%)"></span></div><div><strong>Ambient light</strong><code>radial-gradient(circle, rgba(20,184,166,.1) 0%, transparent 70%) · blur(40px)</code><code class="tok">.ambient-light</code><p>Drifting teal light, top-left of the page.</p></div></div>
+<div class="ds-sw"><div class="ds-chip" style="background:#0b1620"><span class="fill" style="background:radial-gradient(circle,rgba(6,182,212,.08) 0%,transparent 70%)"></span></div><div><strong>Ambient light 2</strong><code>radial-gradient(circle, rgba(6,182,212,.08) 0%, transparent 70%) · blur(60px)</code><code class="tok">.ambient-light-2</code><p>Drifting cyan light, bottom-right.</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="edge" style="background:#14b8a6"></span><span class="fill" style="inset:16px;border-radius:.75rem;background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent)"></span></div><div><strong>Button sheen</strong><code>linear-gradient(90deg, transparent, rgba(255,255,255,.2), transparent)</code><code class="tok">.button-hover::before</code><p>Sweeps across a button on hover (left −100% → 100%, .5s).</p></div></div>
+</div>
+</section>
+
+<!-- ============================================================ 03 backgrounds -->
+<section class="ds-group" id="components-backgrounds">
+<div class="ds-head"><span class="ds-eyebrow px-3 py-1 rounded-full border border-slate-500/50 text-slate-200 text-xs glow-border backdrop-glow">Foundations · 03</span><h2 class="text-glow">Backgrounds</h2></div>
+<article class="ds-spec">
+<h3>Page ground · navy gradient + ambient lights</h3>
+<div class="ds-bgspec bg-gradient-to-br from-[#0b1620] to-[#0a1a2b]"><div class="ambient-light"></div><div class="ambient-light-2"></div></div>
+<code class="ds-meta"><b>body</b> bg-gradient-to-br from-[#0b1620] to-[#0a1a2b] · <b>.ambient-light</b> 300px, top 20% / left 10%, blur 40px, ambientMove 8s ease-in-out infinite alternate · <b>.ambient-light-2</b> 400px, bottom 20% / right 10%, blur 60px, ambientMove2 10s — both position: fixed, z-index 0 (placed in the box here)</code>
+<p class="ds-note">The page's only background, and the live ground of this whole view: two blurred radial lights drift over the gradient on their own keyframes (translate 100px / −50px and scale 1.1; translate −80px / 60px and scale .9).</p>
+<div class="ds-bggrid">
+<div><div class="ds-bgspec ds-short bg-gradient-to-br from-[#0b1620] to-[#0a1a2b]"><div class="ambient-light"></div></div><code class="ds-meta"><b>Layer</b> .ambient-light · rgba(20,184,166,.1)</code></div>
+<div><div class="ds-bgspec ds-short bg-gradient-to-br from-[#0b1620] to-[#0a1a2b]"><div class="ambient-light-2"></div></div><code class="ds-meta"><b>Layer</b> .ambient-light-2 · rgba(6,182,212,.08)</code></div>
+</div>
+</article>
+</section>
+
+<!-- ============================================================ 04 surfaces -->
+<section class="ds-group" id="components-surfaces">
+<div class="ds-head"><span class="ds-eyebrow px-3 py-1 rounded-full border border-slate-500/50 text-slate-200 text-xs glow-border backdrop-glow">Foundations · 04</span><h2 class="text-glow">Surfaces</h2></div>
+<article class="ds-spec">
+<h3>Card</h3>
+<div class="ds-row ds-top">
+<div class="ds-cell ds-w-xs"><small>Default</small><div class="w-full rounded-2xl bg-[#0e1a2a] p-6 glow-card hover-lift cursor-glow" style="height:150px"></div></div>
+<div class="ds-cell ds-w-xs"><small>Hover</small><div class="w-full rounded-2xl bg-[#0e1a2a] p-6 glow-card hover-lift cursor-glow ds-hover" style="height:150px"></div></div>
+<div class="ds-cell ds-w-xs"><small>Hero · rounded-3xl</small><div class="w-full rounded-3xl bg-[#0e1a2a] glow-card cursor-glow" style="height:150px"></div></div>
+</div>
+<code class="ds-meta"><b>.glow-card</b> bg-[#0e1a2a] rounded-2xl / rounded-3xl · shadow 0 8px 32px rgba(0,0,0,.3) + 1px ring · hover: translateY(-8px) rotateX(2deg) rotateY(-2deg), glow 0 0 60px rgba(20,184,166,.2), .card-content translateZ(20px)</code>
+</article>
+<article class="ds-spec">
+<h3>Glow panel</h3>
+<div class="ds-row ds-top">
+<div class="ds-cell ds-w-sm"><small>Default</small><div class="w-full rounded-3xl bg-[#142033] p-8 glow-card bg-gradient-glow hover-bg-shift cursor-glow" style="background:linear-gradient(135deg,rgba(20,184,166,0.1),rgba(6,182,212,0.05),rgba(20,184,166,0.08));height:180px"></div></div>
+<div class="ds-cell ds-w-sm"><small>Hover</small><div class="w-full rounded-3xl bg-[#142033] p-8 glow-card bg-gradient-glow hover-bg-shift cursor-glow ds-hover" style="background:linear-gradient(135deg,rgba(20,184,166,0.1),rgba(6,182,212,0.05),rgba(20,184,166,0.08));height:180px"></div></div>
+</div>
+<code class="ds-meta"><b>aside</b> rounded-3xl p-8 .glow-card .bg-gradient-glow .hover-bg-shift + inline linear-gradient(135deg, rgba(20,184,166,.1), rgba(6,182,212,.05), rgba(20,184,166,.08))</code>
+</article>
+<article class="ds-spec">
+<h3>Frosted bar</h3>
+<div class="ds-row ds-top">
+<div class="ds-cell ds-w-sm"><small>Default</small><div class="ds-photo w-full" style="height:200px"><img class="ds-ground" src="assets/overview/assets/photo-1658243762592-d3ff6f8a9a_5c9037f90edf.jpg" alt="Renderizacao 3D de data center"><div class="absolute bottom-0 left-0 w-full backdrop-glow bg-neutral-50/10 floating-stats-hover" style="height:76px"></div></div></div>
+<div class="ds-cell ds-w-sm"><small>Hover</small><div class="ds-photo w-full" style="height:200px"><img class="ds-ground" src="assets/overview/assets/photo-1658243762592-d3ff6f8a9a_5c9037f90edf.jpg" alt="Renderizacao 3D de data center"><div class="absolute bottom-0 left-0 w-full backdrop-glow bg-neutral-50/10 floating-stats-hover ds-hover" style="height:76px"></div></div></div>
+</div>
+<code class="ds-meta"><b>.backdrop-glow</b> blur(20px) saturate(180%) · bg-neutral-50/10 · <b>.floating-stats-hover</b> hover: blur(30px) saturate(200%), rgba(255,255,255,.15), translateY(-3px)</code>
+</article>
+<article class="ds-spec">
+<h3>Accent band</h3>
+<div class="rounded-3xl border border-teal-500/40 bg-gradient-to-r from-teal-600/20 to-cyan-500/20 p-6 md:p-8 glow-border backdrop-glow hover-float cursor-glow" style="height:120px"></div>
+<code class="ds-meta"><b>CTA band</b> rounded-3xl border-teal-500/40 from-teal-600/20 to-cyan-500/20 .glow-border .backdrop-glow .hover-float (translateY(-6px) + drop-shadow 0 10px 30px rgba(20,184,166,.2))</code>
+</article>
+<article class="ds-spec">
+<h3>Glows</h3>
+<div class="ds-row">
+<div class="ds-cell"><small>.glow-teal</small><div class="rounded-xl bg-gradient-to-br from-teal-500/90 to-cyan-400/90 p-1.5 glow-teal"><div class="rounded-xl bg-[#0b1a28] w-9 h-9"></div></div></div>
+<div class="ds-cell"><small>.animate-glow</small><div class="rounded-xl bg-gradient-to-br from-teal-500/90 to-cyan-400/90 p-1.5 glow-teal animate-glow"><div class="rounded-xl bg-[#0b1a28] w-9 h-9"></div></div></div>
+<div class="ds-cell"><small>.glow-teal-intense</small><div class="rounded-full bg-teal-500 glow-teal-intense" style="width:120px;height:48px"></div></div>
+<div class="ds-cell"><small>.text-glow</small><span class="text-xl font-semibold tracking-tight text-glow">Lorem ipsum</span></div>
+</div>
+<code class="ds-meta"><b>.glow-teal</b> 0 0 20px rgba(20,184,166,.3), 0 0 40px .1 · <b>.animate-glow</b> 2s ease-in-out infinite alternate → 30px .5 / 60px .2 · <b>.glow-teal-intense</b> 0 0 30px .4, 0 0 60px .2, inset 0 1px 0 rgba(255,255,255,.1) · <b>.text-glow</b> 0 0 20px rgba(20,184,166,.5)</code>
+</article>
+</section>
+
+<!-- ============================================================ 05 icons -->
+<section class="ds-group" id="components-icons">
+<div class="ds-head"><span class="ds-eyebrow px-3 py-1 rounded-full border border-slate-500/50 text-slate-200 text-xs glow-border backdrop-glow">Foundations · 05</span><h2 class="text-glow">Icons</h2></div>
+<div class="ds-icons">
+<div class="ds-icon"><div class="stage-i"><img src="assets/overview/assets/images/svg/logo-server.svg" width="20" height="20" alt="Logotipo servidor"></div><code>logo-server.svg<i>logo tile · 20px · stroke white</i></code></div>
+<div class="ds-icon"><div class="stage-i"><svg aria-hidden="true" class="text-teal-300" fill="none" height="20" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="20"><path d="M3 3h18v18H3z"/><path d="M7 15h3"/><path d="M8 12h2"/></svg></div><code>inline svg · grid<i>stat chip · 20px · teal-300</i></code></div>
+<div class="ds-icon"><div class="stage-i"><i class="text-teal-300" data-lucide="shield-check" style="width:20px;height:20px;"></i></div><code>data-lucide="shield-check"<i>icon tile · 20px · teal-300</i></code></div>
+<div class="ds-icon"><div class="stage-i"><i class="text-teal-300" data-lucide="wand-2" style="width:20px;height:20px;"></i></div><code>data-lucide="wand-2"<i>icon tile · 20px · teal-300</i></code></div>
+<div class="ds-icon"><div class="stage-i"><i class="text-teal-300" data-lucide="terminal" style="width:20px;height:20px;"></i></div><code>data-lucide="terminal"<i>icon tile · 20px · teal-300</i></code></div>
+<div class="ds-icon"><div class="stage-i"><i class="text-teal-300" data-lucide="rocket" style="width:20px;height:20px;"></i></div><code>data-lucide="rocket"<i>icon tile · 20px · teal-300</i></code></div>
+<div class="ds-icon"><div class="stage-i"><i class="text-teal-300" data-lucide="globe-2" style="width:20px;height:20px;"></i></div><code>data-lucide="globe-2"<i>icon tile · 20px · teal-300</i></code></div>
+</div>
+<p class="ds-note" style="margin-top:28px">Lucide 0.260.0 (<code>dist/umd/lucide.min.js</code>) swaps each <code>&lt;i data-lucide&gt;</code> for an inline SVG; interactions.js calls <code>lucide.createIcons({ attrs: { 'stroke-width': 1.5 } })</code>.</p>
+</section>
+
+<!-- ============================================================ 06 motion -->
+<section class="ds-group" id="components-motion">
+<div class="ds-head"><span class="ds-eyebrow px-3 py-1 rounded-full border border-slate-500/50 text-slate-200 text-xs glow-border backdrop-glow">Foundations · 06</span><h2 class="text-glow">Motion</h2></div>
+<h3 class="ds-sub">Easing</h3>
+<div class="ds-ease">
+<div><svg viewBox="0 0 64 64"><path d="M0 64H64M0 64V0" stroke="rgba(255,255,255,.1)" fill="none"/><path d="M0 64C25.6 64 12.8 0 64 0" stroke="#14b8a6" stroke-width="2" fill="none"/></svg><div><strong>Standard</strong><code>cubic-bezier(0.4, 0, 0.2, 1)</code><p>Every hover (.3s text, buttons, tags, borders · .4s cards, float, logo, bar · .6s image zoom) and the entrances (fadeIn 1s, slideUp .8s, scaleIn .6s).</p></div></div>
+<div><svg viewBox="0 0 64 64"><path d="M0 64H64M0 64V0" stroke="rgba(255,255,255,.1)" fill="none"/><path d="M0 64C26.9 64 37.1 0 64 0" stroke="#14b8a6" stroke-width="2" fill="none"/></svg><div><strong>Loop</strong><code>ease-in-out</code><p>float 6s infinite · glow 2s alternate · ambientMove 8s / ambientMove2 10s alternate · pulse .6s.</p></div></div>
+<div><svg viewBox="0 0 64 64"><path d="M0 64H64M0 64V0" stroke="rgba(255,255,255,.1)" fill="none"/><path d="M0 64C16 57.6 16 0 64 0" stroke="#14b8a6" stroke-width="2" fill="none"/></svg><div><strong>Default</strong><code>ease</code><p>Button sheen (left .5s), glow-border ::before opacity .3s, cursor size / colour .2s.</p></div></div>
+<div><svg viewBox="0 0 64 64"><path d="M0 64H64M0 64V0" stroke="rgba(255,255,255,.1)" fill="none"/><path d="M0 64L6 45L12 32L18 23L24 16L30 11L36 8L42 5L48 3L56 1L64 0" stroke="#14b8a6" stroke-width="2" fill="none"/></svg><div><strong>Cursor follow</strong><code>lerp 0.22 (ring) · 0.28 (segments) per frame</code><p>interactions.js requestAnimationFrame loop; the dot snaps to the pointer.</p></div></div>
+</div>
+
+<h3 class="ds-sub">Entrances</h3>
+<div class="ds-motion" id="ds-entrances">
+<div><div class="w-full rounded-2xl bg-[#0e1a2a] glow-card animate-fade-in" style="height:110px"></div><code class="ds-meta"><b>.animate-fade-in</b> fadeIn 1s · translateY(20px) → 0, opacity 0 → 1</code></div>
+<div><div class="w-full rounded-2xl bg-[#0e1a2a] glow-card animate-slide-up" style="height:110px"></div><code class="ds-meta"><b>.animate-slide-up</b> slideUp .8s · translateY(30px) → 0</code></div>
+<div><div class="w-full rounded-2xl bg-[#0e1a2a] glow-card animate-scale-in" style="height:110px"></div><code class="ds-meta"><b>.animate-scale-in</b> scaleIn .6s · scale(.95) → 1</code></div>
+</div>
+<p class="ds-note">Staggered with <code>.delay-100</code> … <code>.delay-600</code> (animation-delay .1s steps: header, hero tags, title, lead, tag row, cards). The markup's <code>.delay-700</code> / <code>.delay-800</code> are Tailwind transition-delay utilities, so those pieces enter without an animation delay.</p>
+<button class="ds-replay px-3 py-1 rounded-full border border-slate-500/50 text-slate-200 text-xs glow-border backdrop-glow tag-hover" data-ds-replay="entrances" type="button">Replay</button>
+
+<h3 class="ds-sub">Loops</h3>
+<div class="ds-row">
+<div class="ds-cell"><small>.animate-float · 6s</small><button class="px-5 py-3 rounded-full bg-teal-500 hover:bg-teal-600 text-white font-semibold glow-teal-intense button-hover animate-float cursor-pointer" style="animation-delay:.5s;">Lorem ipsum dolor</button></div>
+<div class="ds-cell"><small>.animate-glow · 2s alternate</small><div class="rounded-xl bg-gradient-to-br from-teal-500/90 to-cyan-400/90 p-1.5 glow-teal animate-glow logo-hover cursor-glow"><div class="rounded-xl bg-[#0b1a28] w-9 h-9 flex items-center justify-center logo-icon"><img src="assets/overview/assets/images/svg/logo-server.svg" width="20" height="20" alt="Logotipo servidor"/></div></div></div>
+<div class="ds-cell"><small>.logo-hover · pulse .6s on hover</small><div class="rounded-xl bg-gradient-to-br from-teal-500/90 to-cyan-400/90 p-1.5 glow-teal animate-glow logo-hover cursor-glow ds-hover"><div class="rounded-xl bg-[#0b1a28] w-9 h-9 flex items-center justify-center logo-icon"><img src="assets/overview/assets/images/svg/logo-server.svg" width="20" height="20" alt="Logotipo servidor"/></div></div></div>
+</div>
+<code class="ds-meta"><b>float</b> translateY(0 → -8px → 0) · <b>glow</b> box-shadow 20px/40px → 30px/60px · <b>.logo-hover:hover</b> rotate(-5deg) scale(1.1), .logo-icon pulse scale(1.1) · ambient drift: see Backgrounds</code>
+
+<h3 class="ds-sub">Snake cursor</h3>
+<div class="ds-cursorstage">
+<div class="ds-cell"><small>Ring</small><div class="ds-curs" style="width:28px;height:28px;border:1.5px solid rgba(45,212,191,0.85);border-radius:9999px;box-shadow:rgba(13,148,136,0.15) 0 0 0 2px,rgba(20,184,166,0.25) 0 0 30px;backdrop-filter:blur(1px);"></div></div>
+<div class="ds-cell"><small>Ring · on target</small><div class="ds-curs" style="width:44px;height:44px;border:1.5px solid rgba(94,234,212,1);border-radius:9999px;box-shadow:0 0 0 3px rgba(94,234,212,0.15),0 0 60px rgba(20,184,166,0.35);backdrop-filter:blur(1px);"></div></div>
+<div class="ds-cell"><small>Dot</small><div class="ds-curs" style="width:6px;height:6px;background:rgba(94,234,212,0.95);border-radius:9999px;box-shadow:rgba(94,234,212,0.6) 0 0 10px;"></div></div>
+<div class="ds-cell"><small>Trail · 18 segments</small><div class="ds-trail" id="ds-trail"></div></div>
+</div>
+<code class="ds-meta"><b>#cursor-ring</b> 28px → 44px on a, button, .cursor-glow, .tag-hover, .glow-border, .hover-lift … · mousedown scale(.88) · <b>#cursor-dot</b> 6px · <b>segments</b> max(4, 12 − i·.5)px, opacity max(.15, .9 − i·.04), z 40 · md and up, system cursor hidden (md:cursor-none)</code>
+<p class="ds-note">Live: the page's own cursor (interactions.js) runs across this whole view — move the pointer over any specimen.</p>
+</section>
+
+<!-- ============================================================ 07 actions -->
+<section class="ds-group" id="components-actions">
+<div class="ds-head"><span class="ds-eyebrow px-3 py-1 rounded-full border border-slate-500/50 text-slate-200 text-xs glow-border backdrop-glow">Components · 07</span><h2 class="text-glow">Actions</h2></div>
+<article class="ds-spec">
+<h3>Primary button</h3>
+<div class="ds-row">
+<div class="ds-cell"><small>Default</small><button class="px-5 py-3 rounded-full bg-teal-500 hover:bg-teal-600 text-white font-semibold glow-teal-intense button-hover cursor-pointer" type="button">Lorem ipsum</button></div>
+<div class="ds-cell"><small>Hover</small><button class="px-5 py-3 rounded-full bg-teal-500 hover:bg-teal-600 text-white font-semibold glow-teal-intense button-hover cursor-pointer ds-hover" type="button">Lorem ipsum</button></div>
+<div class="ds-cell"><small>Floating · hero card</small><button class="px-5 py-3 rounded-full bg-teal-500 hover:bg-teal-600 text-white font-semibold glow-teal-intense button-hover animate-float cursor-pointer" style="animation-delay:.5s;" type="button">Lorem ipsum dolor</button></div>
+</div>
+<code class="ds-meta"><b>button</b> px-5 py-3 rounded-full bg-teal-500 hover:bg-teal-600 font-semibold .glow-teal-intense .button-hover (sheen ::before + translateY(-2px) scale(1.05)) · floating variant adds .animate-float, delay .5s</code>
+</article>
+<article class="ds-spec">
+<h3>Compact button</h3>
+<div class="ds-row">
+<div class="ds-cell"><small>Default</small><button class="px-4 py-2 rounded-full bg-teal-600 hover:bg-teal-500 text-white text-sm shadow-lg hover:shadow-xl glow-teal-intense button-hover cursor-pointer" type="button">Baixar HTML</button></div>
+<div class="ds-cell"><small>Hover</small><button class="px-4 py-2 rounded-full bg-teal-600 hover:bg-teal-500 text-white text-sm shadow-lg hover:shadow-xl glow-teal-intense button-hover cursor-pointer ds-hover" type="button">Baixar HTML</button></div>
+</div>
+<code class="ds-meta"><b>header button</b> px-4 py-2 text-sm bg-teal-600 hover:bg-teal-500 shadow-lg hover:shadow-xl .glow-teal-intense .button-hover · onclick="downloadPage()" in the page (saves the page's HTML; detached here)</code>
+</article>
+<article class="ds-spec">
+<h3>Ghost button</h3>
+<div class="ds-row">
+<div class="ds-cell"><small>Default</small><a class="px-5 py-3 rounded-full border border-slate-600/60 text-slate-200 hover:bg-slate-800/60 font-semibold glow-border button-hover cursor-pointer" href="#">Dolor sit</a></div>
+<div class="ds-cell"><small>Hover</small><a class="px-5 py-3 rounded-full border border-slate-600/60 text-slate-200 hover:bg-slate-800/60 font-semibold glow-border button-hover cursor-pointer ds-hover" href="#">Dolor sit</a></div>
+</div>
+<code class="ds-meta"><b>a</b> px-5 py-3 rounded-full border-slate-600/60 text-slate-200 hover:bg-slate-800/60 .glow-border (gradient ring ::before on hover) .button-hover</code>
+</article>
+<article class="ds-spec">
+<h3>Action pair</h3>
+<div class="flex items-center gap-3">
+<button class="px-5 py-3 rounded-full bg-teal-500 hover:bg-teal-600 text-white font-semibold glow-teal-intense button-hover cursor-pointer" type="button">Lorem ipsum</button>
+<a class="px-5 py-3 rounded-full border border-slate-600/60 text-slate-200 hover:bg-slate-800/60 font-semibold glow-border button-hover cursor-pointer" href="#">Dolor sit</a>
+</div>
+<code class="ds-meta"><b>CTA band actions</b> flex items-center gap-3 · primary + ghost</code>
+</article>
+</section>
+
+<!-- ============================================================ 08 navigation -->
+<section class="ds-group" id="components-navigation">
+<div class="ds-head"><span class="ds-eyebrow px-3 py-1 rounded-full border border-slate-500/50 text-slate-200 text-xs glow-border backdrop-glow">Components · 08</span><h2 class="text-glow">Navigation</h2></div>
+<article class="ds-spec">
+<h3>Header</h3>
+<header class="max-w-7xl mx-auto px-6 py-6 flex items-center justify-between relative z-10 animate-fade-in" style="margin-left:0;margin-right:0;padding-left:0;padding-right:0">
+<div class="flex items-center space-x-4">
+<div class="rounded-xl bg-gradient-to-br from-teal-500/90 to-cyan-400/90 p-1.5 glow-teal animate-glow logo-hover cursor-glow">
+<div class="rounded-xl bg-[#0b1a28] w-9 h-9 flex items-center justify-center logo-icon">
+<img src="assets/overview/assets/images/svg/logo-server.svg" width="20" height="20" alt="Logotipo servidor"/>
+</div>
+</div>
+<div class="animate-fade-in delay-100 hover-lift cursor-glow">
+<div class="text-sm text-slate-300 hover-glow transition-all duration-300">Hospedagem Global</div>
+<div class="text-lg font-semibold tracking-tight text-glow hover-glow interactive-text cursor-pointer transition-all duration-300">Lorem ipsum dolor sit amet adipiscing</div>
+</div>
+</div>
+<div class="flex items-center space-x-3 animate-fade-in delay-200">
+<span class="px-3 py-1 rounded-full text-sm bg-teal-600/20 text-teal-300 border border-teal-500/40 glow-border backdrop-glow hover-float cursor-glow">Lorem ipsum: 100%</span>
+<button class="px-4 py-2 rounded-full bg-teal-600 hover:bg-teal-500 text-white text-sm shadow-lg hover:shadow-xl glow-teal-intense button-hover cursor-pointer" type="button">Baixar HTML</button>
+</div>
+</header>
+<code class="ds-meta"><b>header</b> max-w-7xl mx-auto px-6 py-6 flex justify-between .animate-fade-in (children delay-100 / delay-200) · static, scrolls with the page · shown here without its px-6 gutter</code>
+</article>
+<article class="ds-spec">
+<h3>Brand lockup</h3>
+<div class="ds-row">
+<div class="ds-cell"><small>Default</small><div class="flex items-center space-x-4"><div class="rounded-xl bg-gradient-to-br from-teal-500/90 to-cyan-400/90 p-1.5 glow-teal animate-glow logo-hover cursor-glow"><div class="rounded-xl bg-[#0b1a28] w-9 h-9 flex items-center justify-center logo-icon"><img src="assets/overview/assets/images/svg/logo-server.svg" width="20" height="20" alt="Logotipo servidor"/></div></div><div class="hover-lift cursor-glow"><div class="text-sm text-slate-300 hover-glow transition-all duration-300">Hospedagem Global</div><div class="text-lg font-semibold tracking-tight text-glow hover-glow interactive-text cursor-pointer transition-all duration-300">Lorem ipsum dolor sit amet adipiscing</div></div></div></div>
+<div class="ds-cell"><small>Hover</small><div class="flex items-center space-x-4"><div class="rounded-xl bg-gradient-to-br from-teal-500/90 to-cyan-400/90 p-1.5 glow-teal animate-glow logo-hover cursor-glow ds-hover"><div class="rounded-xl bg-[#0b1a28] w-9 h-9 flex items-center justify-center logo-icon"><img src="assets/overview/assets/images/svg/logo-server.svg" width="20" height="20" alt="Logotipo servidor"/></div></div><div class="hover-lift cursor-glow ds-hover"><div class="text-sm text-slate-300 hover-glow transition-all duration-300 ds-hover">Hospedagem Global</div><div class="text-lg font-semibold tracking-tight text-glow hover-glow interactive-text cursor-pointer transition-all duration-300 ds-hover">Lorem ipsum dolor sit amet adipiscing</div></div></div></div>
+</div>
+<code class="ds-meta"><b>.logo-hover</b> tile p-1.5 from-teal-500/90 to-cyan-400/90 .glow-teal .animate-glow · well bg-[#0b1a28] w-9 h-9 · <b>lockup</b> .hover-lift, lines .hover-glow / .interactive-text</code>
+</article>
+</section>
+
+<!-- ============================================================ 09 tags and badges -->
+<section class="ds-group" id="components-tags">
+<div class="ds-head"><span class="ds-eyebrow px-3 py-1 rounded-full border border-slate-500/50 text-slate-200 text-xs glow-border backdrop-glow">Components · 09</span><h2 class="text-glow">Tags and badges</h2></div>
+<article class="ds-spec">
+<h3>Status badge</h3>
+<div class="ds-row">
+<div class="ds-cell"><small>Default</small><span class="px-3 py-1 rounded-full text-sm bg-teal-600/20 text-teal-300 border border-teal-500/40 glow-border backdrop-glow hover-float cursor-glow">Lorem ipsum: 100%</span></div>
+<div class="ds-cell"><small>Hover</small><span class="px-3 py-1 rounded-full text-sm bg-teal-600/20 text-teal-300 border border-teal-500/40 glow-border backdrop-glow hover-float cursor-glow ds-hover">Lorem ipsum: 100%</span></div>
+</div>
+<code class="ds-meta"><b>span</b> px-3 py-1 text-sm bg-teal-600/20 text-teal-300 border-teal-500/40 .glow-border .backdrop-glow .hover-float</code>
+</article>
+<article class="ds-spec">
+<h3>Outline tag</h3>
+<div class="ds-row">
+<div class="ds-cell"><small>Default</small><div class="inline-flex items-center gap-3"><span class="px-3 py-1 rounded-full border border-slate-500/50 text-slate-200 text-xs glow-border backdrop-glow tag-hover">Lorem</span><span class="px-3 py-1 rounded-full border border-slate-500/50 text-slate-200 text-xs glow-border backdrop-glow tag-hover">Ipsum</span></div></div>
+<div class="ds-cell"><small>Hover</small><span class="px-3 py-1 rounded-full border border-slate-500/50 text-slate-200 text-xs glow-border backdrop-glow tag-hover ds-hover">Lorem</span></div>
+</div>
+<code class="ds-meta"><b>hero eyebrow tags</b> px-3 py-1 text-xs border-slate-500/50 text-slate-200 .glow-border .tag-hover (gradient fill, teal border, translateY(-2px) scale(1.05))</code>
+</article>
+<article class="ds-spec">
+<h3>Chip tag</h3>
+<div class="ds-row">
+<div class="ds-cell"><small>Default</small><div class="flex flex-wrap gap-3"><span aria-label="Tag de recurso" class="px-3 py-2 rounded-full bg-slate-800/60 text-sm glow-border backdrop-glow tag-hover">Aliquam</span><span aria-label="Tag de recurso" class="px-3 py-2 rounded-full bg-slate-800/60 text-sm glow-border backdrop-glow tag-hover">Sed tempor</span><span aria-label="Tag de recurso" class="px-3 py-2 rounded-full bg-slate-800/60 text-sm glow-border backdrop-glow tag-hover">Lorem ipsum dolor</span></div></div>
+<div class="ds-cell"><small>Hover</small><span aria-label="Tag de recurso" class="px-3 py-2 rounded-full bg-slate-800/60 text-sm glow-border backdrop-glow tag-hover ds-hover">Aliquam</span></div>
+</div>
+<code class="ds-meta"><b>hero tag row</b> flex flex-wrap gap-3 · px-3 py-2 text-sm bg-slate-800/60 .glow-border .backdrop-glow .tag-hover</code>
+</article>
+<article class="ds-spec">
+<h3>Card tag + meta</h3>
+<div class="ds-row">
+<div class="ds-cell ds-w-xs"><small>Default</small><div class="w-full flex items-center justify-between"><span class="inline-flex items-center px-3 py-1 rounded-full text-xs bg-slate-800/60 border border-slate-700/50 glow-border backdrop-glow tag-hover">Vestibulum</span><span class="text-xs text-slate-300 text-glow hover-glow interactive-text cursor-pointer transition-all duration-300">Dui</span></div></div>
+<div class="ds-cell ds-w-xs"><small>Hover</small><div class="w-full flex items-center justify-between"><span class="inline-flex items-center px-3 py-1 rounded-full text-xs bg-slate-800/60 border border-slate-700/50 glow-border backdrop-glow tag-hover ds-hover">Vestibulum</span><span class="text-xs text-slate-300 text-glow hover-glow interactive-text cursor-pointer transition-all duration-300 ds-hover">Dui</span></div></div>
+</div>
+<code class="ds-meta"><b>card head</b> flex justify-between · tag text-xs bg-slate-800/60 border-slate-700/50 · meta text-xs text-slate-300 .text-glow .interactive-text</code>
+</article>
+<article class="ds-spec">
+<h3>Icon tile</h3>
+<div class="ds-row">
+<div class="ds-cell"><small>Default</small><div class="w-10 h-10 rounded-xl bg-teal-600/20 border border-teal-500/40 flex items-center justify-center glow-border backdrop-glow"><i class="text-teal-300" data-lucide="shield-check" style="width:20px;height:20px;"></i></div></div>
+<div class="ds-cell"><small>Hover</small><div class="w-10 h-10 rounded-xl bg-teal-600/20 border border-teal-500/40 flex items-center justify-center glow-border backdrop-glow ds-hover"><i class="text-teal-300" data-lucide="shield-check" style="width:20px;height:20px;"></i></div></div>
+</div>
+<code class="ds-meta"><b>div</b> w-10 h-10 rounded-xl bg-teal-600/20 border-teal-500/40 .glow-border · holds a 20px Lucide glyph (shield-check, wand-2, terminal, rocket, globe-2), stroke-width 1.5</code>
+</article>
+</section>
+
+<!-- ============================================================ 10 cards -->
+<section class="ds-group" id="components-cards">
+<div class="ds-head"><span class="ds-eyebrow px-3 py-1 rounded-full border border-slate-500/50 text-slate-200 text-xs glow-border backdrop-glow">Components · 10</span><h2 class="text-glow">Cards</h2></div>
+<article class="ds-spec">
+<h3>Hero media card</h3>
+<div class="ds-w-md" id="ds-src-media">
+<article class="relative rounded-3xl overflow-hidden bg-[#0e1a2a] glow-card animate-scale-in cursor-glow">
+<div class="card-content">
+<div class="card-image-hover">
+<img alt="Renderizacao 3D de data center" class="w-full h-96 object-cover md:h-full" src="assets/overview/assets/photo-1658243762592-d3ff6f8a9a_5c9037f90edf.jpg"/>
+</div>
+<div class="absolute bottom-0 left-0 w-full flex gap-4 backdrop-glow bg-neutral-50/10 pt-5 pr-5 pb-5 pl-5 items-center justify-between floating-stats-hover">
+<div class="flex items-center gap-5 animate-float">
+<div class="flex items-center space-x-2 bg-teal-600/30 border border-teal-400/50 px-3 py-2 rounded-xl backdrop-glow glow-border hover-lift cursor-glow">
+<svg aria-hidden="true" class="text-teal-300 hover-glow transition-all duration-300" fill="none" height="20" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="20"><path d="M3 3h18v18H3z"/><path d="M7 15h3"/><path d="M8 12h2"/></svg>
+<span class="text-sm font-semibold hover-glow transition-all duration-300">Lorem Ipsum</span>
+<span class="text-sm font-semibold ml-1 text-glow hover-glow interactive-text cursor-pointer transition-all duration-300">188.8</span>
+</div>
+<div class="text-white/80 text-sm tracking-tight hover-lift cursor-glow">
+<span class="block hover-glow transition-all duration-300">Dolor sit:</span>
+<span class="font-semibold text-glow hover-glow interactive-text cursor-pointer transition-all duration-300">244.000+ pes</span>
+</div>
+<div class="text-white/80 text-sm tracking-tight hover-lift cursor-glow">
+<span class="block hover-glow transition-all duration-300">Consectetur elit:</span>
+<span class="font-semibold text-glow hover-glow interactive-text cursor-pointer transition-all duration-300">300+</span>
+</div>
+</div>
+<button class="px-5 py-3 rounded-full bg-teal-500 hover:bg-teal-600 text-white font-semibold glow-teal-intense button-hover animate-float cursor-pointer" style="animation-delay:.5s;" type="button">Lorem ipsum dolor</button>
+</div>
+</div>
+</article>
+</div>
+<code class="ds-meta"><b>article</b> rounded-3xl overflow-hidden bg-[#0e1a2a] .glow-card .animate-scale-in · <b>.card-image-hover</b> photo · <b>stats bar</b> absolute bottom-0 .backdrop-glow bg-neutral-50/10 p-5 .floating-stats-hover, stats group and button .animate-float</code>
+</article>
+<article class="ds-spec">
+<h3>Intro panel</h3>
+<div class="ds-w-md" id="ds-src-intro">
+<aside class="rounded-3xl bg-[#142033] p-8 flex flex-col justify-center glow-card animate-scale-in delay-200 bg-gradient-glow hover-bg-shift cursor-glow" style="background:linear-gradient(135deg,rgba(20,184,166,0.1),rgba(6,182,212,0.05),rgba(20,184,166,0.08));">
+<div class="card-content">
+<div class="inline-flex items-center mb-4 gap-3 animate-fade-in delay-300">
+<span class="px-3 py-1 rounded-full border border-slate-500/50 text-slate-200 text-xs glow-border backdrop-glow tag-hover">Lorem</span>
+<span class="px-3 py-1 rounded-full border border-slate-500/50 text-slate-200 text-xs glow-border backdrop-glow tag-hover">Ipsum</span>
+</div>
+<h1 class="text-3xl md:text-4xl lg:text-5xl font-semibold tracking-tight mb-4 leading-tight text-glow animate-slide-up delay-400 hover-glow interactive-text cursor-glow transition-all duration-500">Glass Green Design System</h1>
+<p class="text-slate-300 leading-relaxed text-sm md:text-base animate-slide-up delay-500 hover-glow cursor-glow transition-all duration-300">Translucent teal glass, soft cyan glows and deep navy cards that float, tilt in 3D and light up under a glowing snake-trail cursor.</p>
+<div class="mt-6 flex flex-wrap gap-3 animate-slide-up delay-600">
+<span aria-label="Tag de recurso" class="px-3 py-2 rounded-full bg-slate-800/60 text-sm glow-border backdrop-glow tag-hover">Aliquam</span>
+<span aria-label="Tag de recurso" class="px-3 py-2 rounded-full bg-slate-800/60 text-sm glow-border backdrop-glow tag-hover">Sed tempor</span>
+<span aria-label="Tag de recurso" class="px-3 py-2 rounded-full bg-slate-800/60 text-sm glow-border backdrop-glow tag-hover">Lorem ipsum dolor</span>
+</div>
+</div>
+</aside>
+</div>
+<code class="ds-meta"><b>aside</b> rounded-3xl p-8 flex-col justify-center .glow-card .hover-bg-shift + inline glow gradient · eyebrow tags → h1 → lead → chip tags (staggered .delay-300 … .delay-600)</code>
+</article>
+<article class="ds-spec">
+<h3>Image card</h3>
+<div class="ds-cards3">
+<article class="rounded-2xl bg-[#0e1a2a] overflow-hidden glow-card animate-scale-in delay-300 cursor-glow">
+<div class="card-content">
+<div class="relative h-72 bg-center bg-cover card-image-hover">
+<img alt="Visualizacao de seguranca" class="w-full h-full object-cover" src="assets/overview/assets/photo-1669062897193-f8a4215c20_340863947964.jpg"/>
+<div class="absolute inset-0 bg-gradient-to-t from-[#0e1a2a]/60 to-transparent hover:from-[#0e1a2a]/40 transition-all duration-500"></div>
+</div>
+<div class="p-5 bg-gradient-glow">
+<div class="flex items-center justify-between animate-fade-in delay-400">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-xs bg-slate-800/60 border border-slate-700/50 glow-border backdrop-glow tag-hover">Vestibulum</span>
+<span class="text-xs text-slate-300 text-glow hover-glow interactive-text cursor-pointer transition-all duration-300">Dui</span>
+</div>
+<h3 class="mt-3 text-xl font-semibold tracking-tight text-glow animate-slide-up delay-500 hover-glow interactive-text cursor-glow transition-all duration-300">Lorem ipsum dolor</h3>
+<p class="text-slate-300 text-sm mt-2 animate-slide-up delay-600 hover-glow cursor-glow transition-all duration-300">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua, ut enim ad minim.</p>
+<div class="mt-4 flex justify-end">
+<div class="w-10 h-10 rounded-xl bg-teal-600/20 border border-teal-500/40 flex items-center justify-center glow-border backdrop-glow">
+<i class="text-teal-300" data-lucide="shield-check" style="width:20px;height:20px;"></i>
+</div>
+</div>
+</div>
+</div>
+</article>
+<article class="rounded-2xl bg-[#0e1a2a] overflow-hidden glow-card animate-scale-in delay-400 cursor-glow">
+<div class="card-content">
+<div class="relative h-72 bg-center bg-cover card-image-hover">
+<img alt="Otimizacao para WordPress" class="w-full h-full object-cover" src="assets/overview/assets/photo-1644329770639-1a20809b82_d528bf5936f1.jpg"/>
+<div class="absolute inset-0 bg-gradient-to-t from-[#0e1a2a]/60 to-transparent hover:from-[#0e1a2a]/40 transition-all duration-500"></div>
+</div>
+<div class="pt-5 pr-5 pb-5 pl-5">
+<div class="flex items-center justify-between animate-fade-in delay-500">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-xs bg-slate-800/60 border border-slate-700/50 glow-border backdrop-glow tag-hover">Curabitur</span>
+<span class="text-xs text-slate-300 text-glow hover-glow interactive-text cursor-pointer transition-all duration-300">Nam elit</span>
+</div>
+<h3 class="mt-3 text-xl font-semibold tracking-tight text-glow animate-slide-up delay-600 hover-glow interactive-text cursor-glow transition-all duration-300">Sed ut perspiciatis unde</h3>
+<p class="text-slate-300 text-sm mt-2 animate-slide-up delay-700 hover-glow cursor-glow transition-all duration-300">Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit.</p>
+<div class="mt-4 flex justify-end">
+<div class="w-10 h-10 rounded-xl bg-teal-600/20 border border-teal-500/40 flex items-center justify-center glow-border backdrop-glow">
+<i class="text-teal-300" data-lucide="wand-2" style="width:20px;height:20px;"></i>
+</div>
+</div>
+</div>
+</div>
+</article>
+<article class="rounded-2xl bg-[#0e1a2a] overflow-hidden glow-card animate-scale-in delay-500 cursor-glow ds-hover">
+<div class="card-content">
+<div class="relative h-72 bg-center bg-cover card-image-hover">
+<img alt="Interface de controle do servidor" class="w-full h-full object-cover" src="assets/overview/assets/photo-1737505599162-d9932323a8_6b96c0b064bc.jpg"/>
+<div class="absolute inset-0 hover:from-[#0e1a2a]/40 transition-all duration-500 bg-gradient-to-t from-[#0e1a2a]/60 to-transparent"></div>
+</div>
+<div class="pt-5 pr-5 pb-5 pl-5">
+<div class="flex items-center justify-between animate-fade-in delay-600">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-xs bg-slate-800/60 border border-slate-700/50 glow-border backdrop-glow tag-hover">Leo</span>
+<span class="text-xs text-slate-300 text-glow hover-glow interactive-text cursor-pointer transition-all duration-300">Morbi</span>
+</div>
+<h3 class="mt-3 text-xl font-semibold tracking-tight text-glow animate-slide-up delay-700 hover-glow interactive-text cursor-glow transition-all duration-300">Nemo enim ipsam</h3>
+<p class="text-slate-300 text-sm mt-2 animate-slide-up delay-800 hover-glow cursor-glow transition-all duration-300">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla.</p>
+<div class="mt-4 flex justify-end">
+<div class="w-10 h-10 rounded-xl bg-teal-600/20 border border-teal-500/40 flex items-center justify-center glow-border backdrop-glow">
+<i class="text-teal-300" data-lucide="terminal" style="width:20px;height:20px;"></i>
+</div>
+</div>
+</div>
+</div>
+</article>
+</div>
+<code class="ds-meta"><b>article</b> rounded-2xl bg-[#0e1a2a] .glow-card · photo h-72 + scrim · body p-5 (first card .bg-gradient-glow) · card head → h3 → p → icon tile · third card pinned in its <b>hover</b> state (3D lift)</code>
+<p class="ds-note">In the source each photo box also sets a <code>background-image</code> (two Unsplash URLs that 404 and one relative .avif path that does not resolve); the &lt;img&gt; covers it, so it is left out of these specimens.</p>
+</article>
+<article class="ds-spec">
+<h3>Feature card</h3>
+<div class="ds-cards3">
+<div class="ds-cell"><small>Default</small><article class="w-full rounded-2xl bg-[#0e1a2a] p-6 glow-card hover-lift cursor-glow">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-teal-600/20 border border-teal-500/40 flex items-center justify-center glow-border backdrop-glow">
+<i class="text-teal-300" data-lucide="rocket" style="width:20px;height:20px;"></i>
+</div>
+<h3 class="text-lg font-semibold tracking-tight text-glow">Quis autem vel eum iure</h3>
+</div>
+<p class="mt-3 text-sm text-slate-300">Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est.</p>
+</article></div>
+<div class="ds-cell"><small>Hover</small><article class="w-full rounded-2xl bg-[#0e1a2a] p-6 glow-card hover-lift cursor-glow ds-hover">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-teal-600/20 border border-teal-500/40 flex items-center justify-center glow-border backdrop-glow">
+<i class="text-teal-300" data-lucide="shield-check" style="width:20px;height:20px;"></i>
+</div>
+<h3 class="text-lg font-semibold tracking-tight text-glow">Neque porro quisquam</h3>
+</div>
+<p class="mt-3 text-sm text-slate-300">Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur.</p>
+</article></div>
+</div>
+<code class="ds-meta"><b>article</b> rounded-2xl bg-[#0e1a2a] p-6 .glow-card .hover-lift · icon tile + h3 (text-lg) · p text-sm text-slate-300 · three in the page (rocket, shield-check, globe-2)</code>
+</article>
+<article class="ds-spec">
+<h3>CTA band</h3>
+<div class="rounded-3xl border border-teal-500/40 bg-gradient-to-r from-teal-600/20 to-cyan-500/20 p-6 md:p-8 glow-border backdrop-glow hover-float cursor-glow">
+<div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+<div>
+<h4 class="text-2xl md:text-3xl font-semibold tracking-tight text-glow">Lorem ipsum dolor sit amet nisi?</h4>
+<p class="text-slate-300 text-sm md:text-base mt-1">Sed ut perspiciatis unde omnis iste natus error sit voluptatem.</p>
+</div>
+<div class="flex items-center gap-3">
+<button class="px-5 py-3 rounded-full bg-teal-500 hover:bg-teal-600 text-white font-semibold glow-teal-intense button-hover cursor-pointer" type="button">Lorem ipsum</button>
+<a class="px-5 py-3 rounded-full border border-slate-600/60 text-slate-200 hover:bg-slate-800/60 font-semibold glow-border button-hover cursor-pointer" href="#">Dolor sit</a>
+</div>
+</div>
+</div>
+<code class="ds-meta"><b>div</b> rounded-3xl border-teal-500/40 from-teal-600/20 to-cyan-500/20 p-6 md:p-8 .glow-border .backdrop-glow .hover-float · stacks under md</code>
+</article>
+</section>
+
+<!-- ============================================================ 11 data display -->
+<section class="ds-group" id="components-data">
+<div class="ds-head"><span class="ds-eyebrow px-3 py-1 rounded-full border border-slate-500/50 text-slate-200 text-xs glow-border backdrop-glow">Components · 11</span><h2 class="text-glow">Data display</h2></div>
+<article class="ds-spec">
+<h3>Stat chip</h3>
+<div class="ds-row">
+<div class="ds-cell"><small>Default</small><div class="flex items-center space-x-2 bg-teal-600/30 border border-teal-400/50 px-3 py-2 rounded-xl backdrop-glow glow-border hover-lift cursor-glow"><svg aria-hidden="true" class="text-teal-300 hover-glow transition-all duration-300" fill="none" height="20" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="20"><path d="M3 3h18v18H3z"/><path d="M7 15h3"/><path d="M8 12h2"/></svg><span class="text-sm font-semibold hover-glow transition-all duration-300">Lorem Ipsum</span><span class="text-sm font-semibold ml-1 text-glow hover-glow interactive-text cursor-pointer transition-all duration-300">188.8</span></div></div>
+<div class="ds-cell"><small>Hover</small><div class="flex items-center space-x-2 bg-teal-600/30 border border-teal-400/50 px-3 py-2 rounded-xl backdrop-glow glow-border hover-lift cursor-glow ds-hover"><svg aria-hidden="true" class="text-teal-300 hover-glow transition-all duration-300" fill="none" height="20" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="20"><path d="M3 3h18v18H3z"/><path d="M7 15h3"/><path d="M8 12h2"/></svg><span class="text-sm font-semibold hover-glow transition-all duration-300">Lorem Ipsum</span><span class="text-sm font-semibold ml-1 text-glow hover-glow interactive-text cursor-pointer transition-all duration-300">188.8</span></div></div>
+</div>
+<code class="ds-meta"><b>div</b> bg-teal-600/30 border-teal-400/50 px-3 py-2 rounded-xl .glow-border .hover-lift · 20px grid glyph + label + value (.interactive-text)</code>
+</article>
+<article class="ds-spec">
+<h3>Stat pair</h3>
+<div class="ds-row">
+<div class="text-white/80 text-sm tracking-tight hover-lift cursor-glow"><span class="block hover-glow transition-all duration-300">Dolor sit:</span><span class="font-semibold text-glow hover-glow interactive-text cursor-pointer transition-all duration-300">244.000+ pes</span></div>
+<div class="text-white/80 text-sm tracking-tight hover-lift cursor-glow"><span class="block hover-glow transition-all duration-300">Consectetur elit:</span><span class="font-semibold text-glow hover-glow interactive-text cursor-pointer transition-all duration-300">300+</span></div>
+</div>
+<code class="ds-meta"><b>div</b> text-white/80 text-sm tracking-tight .hover-lift · label block + value font-semibold .text-glow</code>
+</article>
+<article class="ds-spec">
+<h3>Stats bar</h3>
+<div class="ds-photo" style="height:260px"><img class="ds-ground" src="assets/overview/assets/photo-1658243762592-d3ff6f8a9a_5c9037f90edf.jpg" alt="Renderizacao 3D de data center">
+<div class="absolute bottom-0 left-0 w-full flex gap-4 backdrop-glow bg-neutral-50/10 pt-5 pr-5 pb-5 pl-5 items-center justify-between floating-stats-hover">
+<div class="flex items-center gap-5 animate-float">
+<div class="flex items-center space-x-2 bg-teal-600/30 border border-teal-400/50 px-3 py-2 rounded-xl backdrop-glow glow-border hover-lift cursor-glow"><svg aria-hidden="true" class="text-teal-300 hover-glow transition-all duration-300" fill="none" height="20" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="20"><path d="M3 3h18v18H3z"/><path d="M7 15h3"/><path d="M8 12h2"/></svg><span class="text-sm font-semibold hover-glow transition-all duration-300">Lorem Ipsum</span><span class="text-sm font-semibold ml-1 text-glow hover-glow interactive-text cursor-pointer transition-all duration-300">188.8</span></div>
+<div class="text-white/80 text-sm tracking-tight hover-lift cursor-glow"><span class="block hover-glow transition-all duration-300">Dolor sit:</span><span class="font-semibold text-glow hover-glow interactive-text cursor-pointer transition-all duration-300">244.000+ pes</span></div>
+<div class="text-white/80 text-sm tracking-tight hover-lift cursor-glow"><span class="block hover-glow transition-all duration-300">Consectetur elit:</span><span class="font-semibold text-glow hover-glow interactive-text cursor-pointer transition-all duration-300">300+</span></div>
+</div>
+<button class="px-5 py-3 rounded-full bg-teal-500 hover:bg-teal-600 text-white font-semibold glow-teal-intense button-hover animate-float cursor-pointer" style="animation-delay:.5s;" type="button">Lorem ipsum dolor</button>
+</div>
+</div>
+<code class="ds-meta"><b>.floating-stats-hover</b> absolute bottom-0 w-full flex gap-4 justify-between p-5 .backdrop-glow bg-neutral-50/10 · stat group gap-5 .animate-float · button .animate-float delay .5s</code>
+</article>
+</section>
+
+<!-- ============================================================ 12 media -->
+<section class="ds-group" id="components-media">
+<div class="ds-head"><span class="ds-eyebrow px-3 py-1 rounded-full border border-slate-500/50 text-slate-200 text-xs glow-border backdrop-glow">Components · 12</span><h2 class="text-glow">Media</h2></div>
+<article class="ds-spec">
+<h3>Card photo</h3>
+<div class="ds-cards2">
+<div class="ds-cell"><small>Default</small><div class="w-full rounded-2xl overflow-hidden bg-[#0e1a2a]"><div class="relative h-72 bg-center bg-cover card-image-hover"><img alt="Visualizacao de seguranca" class="w-full h-full object-cover" src="assets/overview/assets/photo-1669062897193-f8a4215c20_340863947964.jpg"/><div class="absolute inset-0 bg-gradient-to-t from-[#0e1a2a]/60 to-transparent hover:from-[#0e1a2a]/40 transition-all duration-500"></div></div></div></div>
+<div class="ds-cell"><small>Hover</small><div class="w-full rounded-2xl overflow-hidden bg-[#0e1a2a]"><div class="relative h-72 bg-center bg-cover card-image-hover ds-hover"><img alt="Visualizacao de seguranca" class="w-full h-full object-cover" src="assets/overview/assets/photo-1669062897193-f8a4215c20_340863947964.jpg"/><div class="absolute inset-0 bg-gradient-to-t from-[#0e1a2a]/40 to-transparent transition-all duration-500"></div></div></div></div>
+</div>
+<code class="ds-meta"><b>.card-image-hover</b> h-72 · img object-cover, hover scale(1.1) rotate(1deg) brightness(1.1) contrast(1.1) over .6s · scrim from-[#0e1a2a]/60 → /40 on hover</code>
+</article>
+</section>
+
+<!-- ============================================================ 13 content groups -->
+<section class="ds-group" id="components-sections">
+<div class="ds-head"><span class="ds-eyebrow px-3 py-1 rounded-full border border-slate-500/50 text-slate-200 text-xs glow-border backdrop-glow">Components · 13</span><h2 class="text-glow">Content groups</h2></div>
+<article class="ds-spec">
+<h3>Hero grid</h3>
+<div class="ds-fitbox"><div class="ds-fit">
+<section class="grid md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-6" id="ds-hero-grid"></section>
+</div></div>
+<code class="ds-meta"><b>section</b> grid md:grid-cols-2 gap-6 · hero media card + intro panel (row height from the taller panel; photo md:h-full) · shown at the page's 1232px content width, scaled to this column</code>
+</article>
+<article class="ds-spec">
+<h3>Divider and footnote</h3>
+<div class="h-px bg-white/10"></div>
+<p class="mt-8 text-sm text-slate-400 hover-glow cursor-glow transition-all duration-300">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim.</p>
+<code class="ds-meta"><b>.h-px bg-white/10</b> section rule · <b>footer p</b> text-sm text-slate-400 (page: mt-12, pb-8)</code>
+</article>
+</section>
+
+</main>
+</div>
+</div>
+
+<script>
+/* components view, built before the page's own interactions.js binds its cursor hover targets:
+   the hero grid reuses the two hero specimens, the trail repeats interactions.js's segment formula */
+(function () {
+  var grid = document.getElementById('ds-hero-grid');
+  ['ds-src-media', 'ds-src-intro'].forEach(function (id) {
+    var src = document.getElementById(id);
+    if (src && src.firstElementChild) grid.appendChild(src.firstElementChild.cloneNode(true));
+  });
+  var trail = document.getElementById('ds-trail'), SEGMENTS = 18;
+  for (var i = 0; i < SEGMENTS; i++) {
+    var s = document.createElement('span'), size = Math.max(4, 12 - i * 0.5);
+    s.style.width = size + 'px'; s.style.height = size + 'px';
+    s.style.opacity = Math.max(0.15, 0.9 - i * 0.04);
+    s.style.background = 'rgba(94,234,212,' + Math.min(0.95, 0.65 + (0.02 * (SEGMENTS - i))) + ')';
+    trail.appendChild(s);
+  }
+})();
+</script>
+<!-- the page's own behaviours: snake cursor (ring, dot, 18 segments) and cursor hover targets -->
+<script src="assets/overview/assets/js/interactions.js"></script>
+<script>
+(function () {
+  var COMPONENTS_ENABLED = true;           /* Overview approved (orchestrated run) */
+  var body = document.body, nav = document.getElementById('ds-nav'), frame = document.getElementById('overview-frame');
+  var linkO = document.getElementById('nav-overview'), linkC = document.getElementById('nav-components');
+  var isComp = function (h) { return h === '#components' || h.indexOf('#components-') === 0; };
+  var comp = false, onShell = false, frameTold = null;
+  if (!COMPONENTS_ENABLED) linkC.setAttribute('aria-disabled', 'true');
+
+  /* the frame and the Components view start under the navbar */
+  function navH() { document.documentElement.style.setProperty('--ds-navh', nav.offsetHeight + 'px'); }
+  if (window.ResizeObserver) new ResizeObserver(navH).observe(nav);
+  addEventListener('resize', navH);
+  navH();
+
+  /* one snake cursor at a time: the catalog's over the navbar / Components, the page's inside the frame */
+  function tell(inside) {
+    if (frameTold === inside) return;
+    frameTold = inside;
+    try { frame.contentWindow.postMessage({ ds: 'pointer', inside: inside }, '*'); } catch (e) {}
+  }
+  function place() { body.classList.toggle('ds-in-frame', !comp && !onShell); }
+  addEventListener('mousemove', function () { if (!onShell) { onShell = true; place(); } tell(false); }, { passive: true });
+  frame.addEventListener('mouseenter', function () { onShell = false; place(); tell(true); });
+
+  function route() {
+    var h = location.hash;
+    if (isComp(h) && !COMPONENTS_ENABLED) { history.replaceState(null, '', location.pathname + location.search); h = ''; }
+    comp = isComp(h);
+    body.classList.toggle('is-components', comp);
+    linkO.classList.toggle('is-on', !comp);
+    linkC.classList.toggle('is-on', comp);
+    place();
+    if (window.dsComponents) window.dsComponents(h);
+  }
+
+  addEventListener('message', function (e) {
+    if (e.source !== frame.contentWindow || !e.data) return;
+    if (e.data.ds === 'ready') body.classList.add('ds-overview-ready');
+  });
+  frame.addEventListener('load', function () { frameTold = null; });
+
+  addEventListener('hashchange', route);
+  window.dsRoute = route;
+  route();
+})();
+</script>
+<script>
+/* components view: sidebar spy, specimen isolation, entrance replays and full-width fitting */
+(function () {
+  var main = document.getElementById('ds-main'), side = document.getElementById('ds-side');
+  var groups = [].slice.call(main.querySelectorAll('.ds-group'));
+  var sideLinks = [].slice.call(side.querySelectorAll('a'));
+  var visible = false;
+
+  function fit() {
+    main.querySelectorAll('.ds-fit').forEach(function (f) {
+      var w = f.parentElement.clientWidth;
+      f.style.zoom = (innerWidth >= 768 && w) ? Math.min(1, w / 1232) : '';
+    });
+  }
+
+  function spy() {
+    var y = main.scrollTop + 160, cur = groups[0];
+    groups.forEach(function (g) { if (g.offsetTop <= y) cur = g; });
+    sideLinks.forEach(function (a) {
+      var on = a.getAttribute('href') === '#' + cur.id;
+      if (on && !a.classList.contains('is-current') && innerWidth < 768) side.scrollLeft = a.offsetLeft - 16;
+      a.classList.toggle('is-current', on);
+    });
+  }
+  var queued = false;
+  main.addEventListener('scroll', function () {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(function () { queued = false; if (visible) spy(); });
+  }, { passive: true });
+  addEventListener('resize', function () { if (visible) { fit(); spy(); } });
+
+  /* specimens stay put: links and form submits never navigate */
+  main.addEventListener('click', function (e) { if (e.target.closest('a')) e.preventDefault(); });
+  main.addEventListener('submit', function (e) { e.preventDefault(); }, true);
+
+  /* replay: re-insert the entrance specimens so the page's keyframes run again */
+  main.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-ds-replay]');
+    if (!b) return;
+    document.querySelectorAll('#ds-entrances > div > div').forEach(function (el) {
+      var c = el.cloneNode(true);
+      el.replaceWith(c);
+    });
+  });
+
+  window.dsComponents = function (h) {
+    visible = h === '#components' || h.indexOf('#components-') === 0;
+    if (!visible) return;
+    fit();
+    if (h === '#components') main.scrollTop = 0;
+    else { var el = document.getElementById(h.slice(1)); if (el) main.scrollTop = el.offsetTop - 24; }
+    spy();
+  };
+  if (window.dsRoute) window.dsRoute();
+})();
+</script>
+</body>
+</html>

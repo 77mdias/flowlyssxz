@@ -1,0 +1,13 @@
+{
+  "name": "flowlyssxz",
+  "private": true,
+  "description": "Laboratório de motion design web: skill, biblioteca de referências e captura de sites.",
+  "scripts": {
+    "capture": "node skills/flowlyssxz/scripts/capture_site.mjs",
+    "design": "node skills/flowlyssxz/scripts/site_design.mjs",
+    "record": "node skills/flowlyssxz/scripts/record_page.mjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.50.0"
+  }
+}

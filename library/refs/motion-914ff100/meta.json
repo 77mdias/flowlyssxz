@@ -1,0 +1,31 @@
+{
+  "id": "motion-914ff100",
+  "category": "motion",
+  "kind": "video",
+  "file": "source.mp4",
+  "original_name": "7667f0bcb9922110d614b726a53a55ca_720w.mp4",
+  "source_url": null,
+  "title": "App de moda com cards saindo da tela do celular",
+  "tags": [
+    "3d-render",
+    "app",
+    "bege",
+    "claro",
+    "moda"
+  ],
+  "niche_fit": [
+    "app-landing",
+    "e-commerce",
+    "moda"
+  ],
+  "techniques": [
+    "blur-por-profundidade",
+    "css-3d",
+    "float",
+    "mouse-parallax",
+    "ui-explodida"
+  ],
+  "status": "decoded",
+  "added": "2026-11-18",
+  "notes": ""
+}

@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aurora Garden Design System</title>
+<!-- preview capture: the Overview frame reports once its Unicorn Studio light-rays canvas has
+     painted; the extra wait lets the shader passes settle (the page has no other intro) -->
+<meta name="preview-ready-selector" content="body.ds-overview-ready">
+<meta name="preview-ready-after-ms" content="1500">
+<link rel="icon" href="assets/overview/assets/aurora-garden.aura.build/favicon.ico">
+<link rel="stylesheet" href="assets/overview/assets/aurora-garden.aura.build/aurora.css">
+<script src="assets/overview/assets/cdn.tailwindcss.com/3.4.17.js"></script>
+<style>
+/* ================================================================ catalog shell
+   Routing and layout only. The page ships no navbar (its "Top Bar" slot is empty), so the bar
+   below is derived from its own pieces: the icon tile, the neutral-800 pill buttons and the
+   cyan-500 lead-card fill. Every specimen keeps the Overview's Tailwind classes + aurora.css
+   ([style*="--border-gradient"]::before hairline). */
+:root { --ds-nav-h: 68px; }
+html, body { height: 100%; }
+body { overflow: hidden; }
+#overview-frame { position: fixed; inset: 0; width: 100%; height: 100%; border: 0; display: block; z-index: 0; background: #0a0a0a; }
+
+#ds-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 40; border-bottom: 1px solid transparent;
+  transition: background-color .35s, border-color .35s; }
+/* once the page moves (and always in Components) the bar keeps a dark glass backing */
+#ds-nav.is-stuck { background: rgba(10,10,10,.72); -webkit-backdrop-filter: blur(16px) saturate(1.2); backdrop-filter: blur(16px) saturate(1.2);
+  border-bottom-color: rgba(255,255,255,.08); }
+#ds-nav .ds-links a.is-active { background-color: #06b6d4; border-color: rgba(255,255,255,.3); color: #fff; }
+#ds-nav .ds-links a[aria-disabled="true"] { opacity: .38; pointer-events: none; }
+
+/* ------------------------------------------------------------ components view */
+#view-components { position: fixed; top: var(--ds-nav-h); left: 0; right: 0; bottom: 0; z-index: 10; display: none; }
+body.is-components #view-components { display: grid; grid-template-columns: 232px minmax(0, 1fr); }
+body.is-components #overview-frame { pointer-events: none; }  /* the live Overview background, parked behind */
+/* one scrim holds the specimens off the light rays; it lifts while Backgrounds is in view */
+#view-components::before { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background: rgba(10,10,10,.66); transition: opacity .8s ease; }
+body.ds-scene-clear #view-components::before { opacity: .15; }
+
+/* sidebar: its own dark glass, legible over any part of the scene */
+#ds-side { overflow-y: auto; padding: 28px 14px 40px; border-right: 1px solid rgba(255,255,255,.08);
+  background: rgba(10,10,10,.8); -webkit-backdrop-filter: blur(18px) saturate(1.2); backdrop-filter: blur(18px) saturate(1.2); }
+#ds-side p { margin: 0 10px 12px; font-size: 12px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: #a3a3a3; }
+#ds-side a { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 9999px; font-size: 14px; font-weight: 500;
+  color: #d4d4d4; border: 1px solid transparent; transition: color .2s, background-color .2s, border-color .2s; }
+#ds-side a b { font-weight: 500; font-size: 11px; color: #737373; font-variant-numeric: tabular-nums; }
+#ds-side a:hover { color: #fff; }
+#ds-side a.is-current { color: #fff; background: #262626; border-color: rgba(255,255,255,.1); }
+#ds-side a.is-current b { color: #22d3ee; }
+
+#ds-main { position: relative; overflow-y: auto; overflow-x: hidden; padding: 40px clamp(20px, 3.4vw, 56px) 160px; }
+#ds-main > * { max-width: 1180px; }
+.ds-group { padding-bottom: 96px; scroll-margin-top: 24px; }
+.ds-head { margin-bottom: 36px; }
+.ds-kicker { display: flex; justify-content: space-between; font-size: 12px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: #a3a3a3; }
+.ds-head h2 { margin-top: 10px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,.1); font-size: clamp(28px, 3.4vw, 40px); line-height: 1.1;
+  font-weight: 600; letter-spacing: -.025em; color: #fff; }
+.ds-sub { margin: 40px 0 16px; font-size: 12px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: #d4d4d4; }
+.ds-sub:first-child, .ds-head + .ds-sub { margin-top: 0; }
+.ds-spec { margin: 0 0 48px; }
+.ds-spec:last-child { margin-bottom: 0; }
+.ds-spec > h3 { margin: 0 0 14px; font-size: 14px; font-weight: 600; letter-spacing: -.01em; color: #fff; }
+.ds-meta { display: block; margin-top: 12px; font: 11.5px/1.55 ui-monospace, SFMono-Regular, Menlo, monospace; color: #a3a3a3; overflow-wrap: anywhere; }
+.ds-note { margin: 8px 0 0; max-width: 76ch; font-size: 13px; line-height: 1.6; color: #a3a3a3; }
+.ds-note code, .ds-meta b { color: #e5e5e5; font-weight: 400; }
+/* chrome labels stay readable on the live scene when the scrim lifts */
+.ds-head, .ds-sub, .ds-spec > h3, .ds-meta, .ds-note, .ds-type .role, .ds-type .face, .ds-type .sizes,
+.ds-sw strong, .ds-sw code, .ds-sw p, .ds-state small, .ds-state code, .ds-icon code, .ds-cell > small, .ds-famname {
+  text-shadow: 0 1px 2px rgba(0,0,0,.9), 0 0 14px rgba(0,0,0,.75); }
+.ds-row { display: flex; flex-wrap: wrap; align-items: center; gap: 20px 28px; }
+.ds-cell { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; min-width: 0; }
+.ds-cell > small { font-size: 11px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: #a3a3a3; }
+.ds-famname { margin: 0 0 10px; font-size: 13px; font-weight: 600; color: #fff; }
+
+/* typography: role | live sample | declared size */
+.ds-type { display: grid; grid-template-columns: 190px minmax(0, 1fr) 170px; gap: 28px; align-items: center; padding: 24px 0;
+  border-top: 1px solid rgba(255,255,255,.08); }
+.ds-type:last-child { border-bottom: 1px solid rgba(255,255,255,.08); }
+.ds-type .role { font-size: 14px; font-weight: 600; color: #fff; }
+.ds-type .face { margin-top: 4px; font-size: 12px; color: #a3a3a3; }
+.ds-type .face code { display: block; margin-top: 6px; font: 11px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; color: #8a8a8a; overflow-wrap: anywhere; }
+.ds-type .sample { min-width: 0; overflow-wrap: break-word; }
+.ds-type .sample > * { margin-top: 0 !important; margin-bottom: 0 !important; }
+.ds-type .sizes { text-align: right; font: 12px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace; color: #d4d4d4; }
+.ds-onsurf { display: inline-block; padding: 14px 18px; border-radius: 16px; }
+
+/* colors: live chip on its surface + label, value, token, use */
+.ds-colors { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 22px 28px; }
+.ds-sw { display: grid; grid-template-columns: 76px minmax(0, 1fr); gap: 14px; align-items: start; }
+.ds-chip { position: relative; height: 76px; border-radius: 16px; overflow: hidden; display: grid; place-items: center; background: #0a0a0a;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.1); }
+.ds-chip .aa { position: relative; font-size: 26px; font-weight: 600; letter-spacing: -.03em; line-height: 1; }
+.ds-chip .fill { position: absolute; inset: 0; }
+.ds-chip .bar { position: absolute; left: 12px; right: 12px; top: 50%; height: 0; }
+.ds-chip img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.ds-sw strong { display: block; font-size: 13px; font-weight: 600; color: #fff; }
+.ds-sw code { display: block; margin-top: 3px; font: 11px/1.45 ui-monospace, SFMono-Regular, Menlo, monospace; color: #d4d4d4; overflow-wrap: anywhere; }
+.ds-sw code.tok { color: #8a8a8a; }
+.ds-sw p { margin: 4px 0 0; font-size: 12px; line-height: 1.45; color: #a3a3a3; }
+.ds-states { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px; margin-bottom: 26px; }
+.ds-state { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.ds-state .ds-chip { height: 76px; }
+.ds-state small { font-size: 11px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: #a3a3a3; }
+.ds-state code { font: 11px/1.45 ui-monospace, SFMono-Regular, Menlo, monospace; color: #d4d4d4; overflow-wrap: anywhere; }
+
+/* backgrounds */
+.ds-window { position: relative; height: min(64vh, 620px); border-radius: 24px; box-shadow: inset 0 0 0 1px rgba(255,255,255,.14); }
+.ds-window > span { position: absolute; left: 16px; bottom: 14px; }
+.ds-bgbox { position: relative; height: 300px; border-radius: 24px; overflow: hidden; isolation: isolate; box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
+
+/* surfaces / cards / components */
+.ds-surfaces { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 24px; align-items: start; }
+.ds-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; align-items: stretch; }
+.ds-cards > * { min-width: 0; }
+.ds-wide { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 460px), 1fr)); gap: 16px; align-items: stretch; }
+.ds-wide > * { min-width: 0; }
+.ds-fit { max-width: 420px; }
+.ds-bento { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px; }
+
+/* icons: five to a row, id under each */
+.ds-icons { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 34px 20px; }
+.ds-icon { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; min-width: 0; }
+.ds-icon .stage { height: 40px; display: flex; align-items: center; }
+.ds-icon code { font: 11px/1.45 ui-monospace, SFMono-Regular, Menlo, monospace; color: #d4d4d4; overflow-wrap: anywhere; }
+.ds-icon code i { display: block; font-style: normal; color: #8a8a8a; }
+
+@media (max-width: 1080px) {
+  .ds-type { grid-template-columns: 150px minmax(0, 1fr); }
+  .ds-type .sizes { grid-column: 2; text-align: left; }
+  .ds-icons { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 767px) {
+  body.is-components #view-components { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); }
+  #ds-side { display: flex; align-items: center; gap: 4px; overflow-x: auto; overflow-y: hidden; padding: 10px 16px; border-right: 0;
+    border-bottom: 1px solid rgba(255,255,255,.08); scrollbar-width: none; }
+  #ds-side::-webkit-scrollbar { display: none; }
+  #ds-side p { display: none; }
+  #ds-side a { flex: 0 0 auto; padding: 7px 12px; white-space: nowrap; }
+  #ds-main { padding: 28px 16px 120px; }
+  .ds-type { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .ds-type .sizes { grid-column: auto; text-align: left; }
+  .ds-cards { grid-template-columns: minmax(0, 1fr); }
+  .ds-window { height: 420px; }
+  .ds-bgbox { height: 240px; }
+}
+@media (max-width: 480px) {
+  .ds-icons { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ds-colors { grid-template-columns: minmax(0, 1fr); }
+}
+</style>
+</head>
+<body class="min-h-screen bg-neutral-950 text-white antialiased">
+
+<!-- Top bar (derived: the page's "Top Bar" slot is empty). Icon tile = the lead card's tile on the
+     cyan-500 card fill; links = the page's neutral-800 pill buttons -->
+<header id="ds-nav">
+  <nav class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between gap-3">
+    <a href="#overview" class="flex items-center gap-3 min-w-0">
+      <span class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl bg-cyan-500 border border-white/30 shadow-lg shadow-cyan-900/40">
+        <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:waterdrops-bold-duotone" class="iconify h-4 w-4 text-white iconify--solar"><path fill="currentColor" d="M10 17.833C10 20.134 8.21 22 6 22s-4-1.866-4-4.167c0-1.44 1.566-3.361 2.738-4.598a1.724 1.724 0 0 1 2.524 0C8.434 14.472 10 16.393 10 17.833"></path><path fill="currentColor" d="M22 17.833C22 20.134 20.21 22 18 22s-4-1.866-4-4.167c0-1.44 1.566-3.361 2.738-4.598a1.724 1.724 0 0 1 2.524 0C20.434 14.472 22 16.393 22 17.833" opacity=".7"></path><path fill="currentColor" d="M16 7.833C16 10.134 14.21 12 12 12s-4-1.866-4-4.167c0-1.44 1.566-3.361 2.738-4.598a1.724 1.724 0 0 1 2.524 0C14.434 4.472 16 6.393 16 7.833" opacity=".4"></path></svg>
+      </span>
+      <span class="text-sm font-semibold tracking-tight whitespace-nowrap">Aurora Garden</span>
+    </a>
+    <div class="ds-links flex items-center gap-2">
+      <a id="nav-overview" class="inline-flex items-center rounded-full bg-neutral-800 px-3 py-1.5 text-[11px] font-medium text-neutral-100 border border-white/10 hover:bg-neutral-700 hover:border-white/20 transition" href="#overview">Overview</a>
+      <a id="nav-components" class="inline-flex items-center rounded-full bg-neutral-800 px-3 py-1.5 text-[11px] font-medium text-neutral-100 border border-white/10 hover:bg-neutral-700 hover:border-white/20 transition" href="#components">Components</a>
+    </div>
+  </nav>
+</header>
+
+<iframe id="overview-frame" title="Overview" src="assets/overview/index.html"></iframe>
+
+<div id="view-components">
+<aside id="ds-side">
+  <p>Components</p>
+  <a href="#components-typography"><b>01</b>Typography</a>
+  <a href="#components-colors"><b>02</b>Colors</a>
+  <a href="#components-backgrounds"><b>03</b>Backgrounds</a>
+  <a href="#components-surfaces"><b>04</b>Surfaces</a>
+  <a href="#components-icons"><b>05</b>Icons</a>
+  <a href="#components-actions"><b>06</b>Actions</a>
+  <a href="#components-controls"><b>07</b>Controls</a>
+  <a href="#components-badges"><b>08</b>Badges and status</a>
+  <a href="#components-cards"><b>09</b>Cards</a>
+  <a href="#components-data"><b>10</b>Data display</a>
+  <a href="#components-media"><b>11</b>Media</a>
+</aside>
+<main id="ds-main">
+
+<section class="ds-group" id="components-typography">
+<div class="ds-head">
+  <div class="ds-kicker"><span>Foundations</span><span>(01)</span></div>
+  <h2>Typography</h2>
+</div>
+
+<p class="ds-note" style="margin:0 0 22px">One family throughout: the page loads no web font, so every style is Tailwind's default <code>font-sans</code> stack (ui-sans-serif, system-ui, sans-serif). Hierarchy comes from weight 600, tight tracking and arbitrary pixel sizes.</p>
+<div class="ds-typelist">
+<div class="ds-type">
+  <div><div class="role">Heading 1</div><div class="face">System sans (font-sans) · Semibold 600<code>h2.text-[22px].sm:text-[24px].font-semibold.tracking-tight · text-yellow-950</code></div></div>
+  <div class="sample"><div class="ds-onsurf bg-yellow-400"><h2 class="text-[22px] sm:text-[24px] font-semibold tracking-tight text-yellow-950">Lorem Ipsum Dolor</h2></div></div>
+  <div class="sizes">24px | 22px</div>
+</div>
+<div class="ds-type">
+  <div><div class="role">Heading 2</div><div class="face">System sans (font-sans) · Semibold 600<code>h2.text-[22px].font-semibold.tracking-tight</code></div></div>
+  <div class="sample"><h2 class="text-[22px] font-semibold tracking-tight">Lorem Ipsum Dolor</h2></div>
+  <div class="sizes">22px</div>
+</div>
+<div class="ds-type">
+  <div><div class="role">Lead</div><div class="face">System sans (font-sans) · Semibold 600<code>p.text-[19px].sm:text-[21px].leading-snug.font-semibold.tracking-tight</code></div></div>
+  <div class="sample"><div class="ds-onsurf bg-cyan-500"><p class="text-[19px] sm:text-[21px] leading-snug font-semibold tracking-tight">
+                  Aurora Garden <span class="whitespace-nowrap">Design System</span>
+                </p></div></div>
+  <div class="sizes">21px | 19px</div>
+</div>
+<div class="ds-type">
+  <div><div class="role">Metric</div><div class="face">System sans (font-sans) · Semibold 600<code>p.text-[21px].font-semibold.tracking-tight</code></div></div>
+  <div class="sample"><p class="text-[21px] font-semibold tracking-tight">11 km/h</p></div>
+  <div class="sizes">21px</div>
+</div>
+<div class="ds-type">
+  <div><div class="role">Metric S</div><div class="face">System sans (font-sans) · Semibold 600<code>p.text-lg.font-semibold.tracking-tight · text-yellow-950</code></div></div>
+  <div class="sample"><div class="ds-onsurf bg-yellow-400"><p class="text-lg font-semibold tracking-tight text-yellow-950">72%</p></div></div>
+  <div class="sizes">18px (text-lg)</div>
+</div>
+<div class="ds-type">
+  <div><div class="role">Title</div><div class="face">System sans (font-sans) · Semibold 600 · Medium 500<code>p.text-sm.leading-snug.font-semibold · p.text-sm.font-medium.tracking-tight</code></div></div>
+  <div class="sample"><p class="text-sm leading-snug font-semibold tracking-tight">Sit amet consectetur</p>
+<br><p class="text-sm font-medium tracking-tight">Lorem Ipsum Dolor</p></div>
+  <div class="sizes">14px (text-sm)</div>
+</div>
+<div class="ds-type">
+  <div><div class="role">Eyebrow</div><div class="face">System sans (font-sans) · Medium 500 · uppercase · 0.14em<code>p.text-xs.font-medium.uppercase.tracking-[0.14em].text-neutral-400</code></div></div>
+  <div class="sample"><p class="text-xs font-medium uppercase tracking-[0.14em] text-neutral-400">Lorem ipsum</p></div>
+  <div class="sizes">12px (text-xs)</div>
+</div>
+<div class="ds-type">
+  <div><div class="role">Text</div><div class="face">System sans (font-sans) · Regular 400<code>p.text-xs.text-neutral-300 (spans .font-medium)</code></div></div>
+  <div class="sample"><p class="flex-1 text-xs text-neutral-300 border-white/10 border-b mb-4 pb-3">
+                Lorem ipsum <span class="font-medium">dolor sit, amet elit</span> sed <span class="font-medium">6:30 AM</span> do <span class="font-medium">35 minutes</span>.
+              </p></div>
+  <div class="sizes">12px (text-xs)</div>
+</div>
+<div class="ds-type">
+  <div><div class="role">Label</div><div class="face">System sans (font-sans) · Medium 500 · Regular 400<code>button .text-[11px] (pills) · .text-xs.font-medium (Configure zone)</code></div></div>
+  <div class="sample"><button class="inline-flex items-center justify-center gap-1 rounded-full bg-neutral-800 px-3 py-2 text-xs font-medium text-neutral-100 hover:bg-neutral-700 hover:border-white/20 transition border border-white/10">
+                  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:settings-bold-duotone" class="iconify h-3.5 w-3.5 iconify--solar"><path fill="currentColor" fill-rule="evenodd" d="M14.279 2.152C13.909 2 13.439 2 12.5 2s-1.408 0-1.779.152a2 2 0 0 0-1.09 1.083c-.094.223-.13.484-.145.863a1.62 1.62 0 0 1-.796 1.353a1.64 1.64 0 0 1-1.579.008c-.338-.178-.583-.276-.825-.308a2.03 2.03 0 0 0-1.49.396c-.318.242-.553.646-1.022 1.453c-.47.807-.704 1.21-.757 1.605c-.07.526.074 1.058.4 1.479c.148.192.357.353.68.555c.477.297.783.803.783 1.361s-.306 1.064-.782 1.36c-.324.203-.533.364-.682.556a2 2 0 0 0-.399 1.479c.053.394.287.798.757 1.605s.704 1.21 1.022 1.453c.424.323.96.465 1.49.396c.242-.032.487-.13.825-.308a1.64 1.64 0 0 1 1.58.008c.486.28.774.795.795 1.353c.015.38.051.64.145.863c.204.49.596.88 1.09 1.083c.37.152.84.152 1.779.152s1.409 0 1.779-.152a2 2 0 0 0 1.09-1.083c.094-.223.13-.483.145-.863c.02-.558.309-1.074.796-1.353a1.64 1.64 0 0 1 1.579-.008c.338.178.583.276.825.308c.53.07 1.066-.073 1.49-.396c.318-.242.553-.646 1.022-1.453c.47-.807.704-1.21.757-1.605a2 2 0 0 0-.4-1.479c-.148-.192-.357-.353-.68-.555c-.477-.297-.783-.803-.783-1.361s.306-1.064.782-1.36c.324-.203.533-.364.682-.556a2 2 0 0 0 .399-1.479c-.053-.394-.287-.798-.757-1.605s-.704-1.21-1.022-1.453a2.03 2.03 0 0 0-1.49-.396c-.242.032-.487.13-.825.308a1.64 1.64 0 0 1-1.58-.008a1.62 1.62 0 0 1-.795-1.353c-.015-.38-.051-.64-.145-.863a2 2 0 0 0-1.09-1.083" clip-rule="evenodd" opacity=".5"></path><path fill="currentColor" d="M15.523 12c0 1.657-1.354 3-3.023 3s-3.023-1.343-3.023-3S10.83 9 12.5 9s3.023 1.343 3.023 3"></path></svg>
+                  Configure zone
+                </button></div>
+  <div class="sizes">11px | 12px (text-xs)</div>
+</div>
+<div class="ds-type">
+  <div><div class="role">Meta</div><div class="face">System sans (font-sans) · Medium 500 · uppercase · 0.14em<code>span.text-[10px].font-medium.uppercase.tracking-[0.14em] · p .text-[10px]</code></div></div>
+  <div class="sample"><div class="ds-onsurf bg-emerald-600"><span class="rounded-full bg-white/15 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.14em] text-white/90 border border-white/30">
+                    Sensor
+                  </span></div></div>
+  <div class="sizes">10px</div>
+</div>
+</div>
+</section>
+
+<section class="ds-group" id="components-colors">
+<div class="ds-head">
+  <div class="ds-kicker"><span>Foundations</span><span>(02)</span></div>
+  <h2>Colors</h2>
+</div>
+
+<p class="ds-sub">Brand and Accent</p>
+<div class="ds-colors">
+<div class="ds-sw"><div class="ds-chip"><span class="fill" style="background:#06b6d4"></span></div><div><strong>Lead card fill</strong><code>#06b6d4</code><code class="tok">bg-cyan-500</code><p>Rule card; the hero statement sits on it</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="fill" style="background:#059669"></span></div><div><strong>Sensor card fill</strong><code>#059669</code><code class="tok">bg-emerald-600</code><p>Rain-guard card</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="fill" style="background:#facc15"></span></div><div><strong>Plan card fill</strong><code>#facc15</code><code class="tok">bg-yellow-400</code><p>Seasonal adjustment card</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="fill" style="background:#0284c7"></span></div><div><strong>Schedule card fill</strong><code>#0284c7</code><code class="tok">bg-sky-600</code><p>Weekly limit card</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="fill" style="background:#fbbf24"></span></div><div><strong>Highlight</strong><code>#fbbf24</code><code class="tok">bg-amber-400</code><p>Watered days, half-day marks, legend dot</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="fill" style="background:#0ea5e9"></span></div><div><strong>Icon tile · sky</strong><code>#0ea5e9</code><code class="tok">bg-sky-500</code><p>Wind card icon tile</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="fill" style="background:rgba(168,85,247,.8)"></span></div><div><strong>Icon tile · purple</strong><code>rgb(168 85 247 / 0.8)</code><code class="tok">bg-purple-500/80</code><p>Next-cycle icon tile</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="fill" style="background:#6ee7b7"></span></div><div><strong>Positive</strong><code>#6ee7b7</code><code class="tok">text-emerald-300 · bg-emerald-300</code><p>Forecast impact labels, savings dot</p></div></div>
+</div>
+<p class="ds-sub">Surfaces</p>
+<div class="ds-colors">
+<div class="ds-sw"><div class="ds-chip"><span class="fill" style="background:#0a0a0a"></span></div><div><strong>Page ground</strong><code>#0a0a0a</code><code class="tok">bg-neutral-950</code><p>body, under the light-rays scene</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="fill" style="background:linear-gradient(to bottom right, rgba(255,255,255,.1), rgba(255,255,255,0))"></span></div><div><strong>Glass card</strong><code>linear-gradient(to bottom right, rgb(255 255 255 / .1), rgb(255 255 255 / 0))</code><code class="tok">bg-gradient-to-br from-white/10 to-white/0</code><p>Wind, calendar, zone, next-cycle, forecast cards; forecast day tiles</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="fill" style="background:#262626"></span></div><div><strong>Control fill</strong><code>#262626</code><code class="tok">bg-neutral-800</code><p>Pill and icon buttons, skipped calendar days</p></div></div>
+<div class="ds-sw"><div class="ds-chip" style="background:#06b6d4"><span class="fill" style="background:rgba(255,255,255,.15)"></span></div><div><strong>Chip on color</strong><code>rgb(255 255 255 / 0.15)</code><code class="tok">bg-white/15</code><p>Automation pill, Sensor badge, icon tile on cyan</p></div></div>
+<div class="ds-sw"><div class="ds-chip" style="background:#059669"><span class="fill" style="background:rgba(255,255,255,.2)"></span></div><div><strong>Track on color</strong><code>rgb(255 255 255 / 0.2)</code><code class="tok">bg-white/20</code><p>Toggle track, rain-card icon tile</p></div></div>
+<div class="ds-sw"><div class="ds-chip" style="background:#facc15"><span class="fill" style="background:rgba(253,224,71,.7)"></span></div><div><strong>Control on yellow</strong><code>rgb(253 224 71 / 0.7)</code><code class="tok">bg-yellow-300/70 · bg-yellow-300/60</code><p>Month select (icon button uses /60)</p></div></div>
+<div class="ds-sw"><div class="ds-chip" style="background:#0284c7"><span class="fill" style="background:rgba(14,165,233,.5)"></span></div><div><strong>Slider track</strong><code>rgb(14 165 233 / 0.5)</code><code class="tok">bg-sky-500/50</code><p>Weekly limit track; fill is bg-white</p></div></div>
+<div class="ds-sw"><div class="ds-chip" style="background:#facc15"><span class="fill" style="background:#fefce8"></span></div><div><strong>Current bar</strong><code>#fefce8</code><code class="tok">bg-yellow-50</code><p>Current-month bar (others yellow-900 at /20–/60)</p></div></div>
+</div>
+<p class="ds-sub">Text and Icons</p>
+<div class="ds-colors">
+<div class="ds-sw"><div class="ds-chip"><span class="aa" style="color:#ffffff">Aa</span></div><div><strong>Primary text</strong><code>#ffffff</code><code class="tok">text-white</code><p>Titles, metrics, icons on color</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="aa" style="color:#f5f5f5">Aa</span></div><div><strong>Strong text</strong><code>#f5f5f5</code><code class="tok">text-neutral-100</code><p>Pill labels, forecast temperatures</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="aa" style="color:#d4d4d4">Aa</span></div><div><strong>Body text</strong><code>#d4d4d4</code><code class="tok">text-neutral-300</code><p>Card paragraphs, day names</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="aa" style="color:#a3a3a3">Aa</span></div><div><strong>Muted text</strong><code>#a3a3a3</code><code class="tok">text-neutral-400</code><p>Eyebrows, labels, legends</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="aa" style="color:#737373">Aa</span></div><div><strong>Meta text</strong><code>#737373</code><code class="tok">text-neutral-500</code><p>"Now" timestamp</p></div></div>
+<div class="ds-sw"><div class="ds-chip" style="background:#06b6d4"><span class="aa" style="color:rgba(207,250,254,.8)">Aa</span></div><div><strong>Text on cyan</strong><code>rgb(207 250 254 / 0.8)</code><code class="tok">text-cyan-100/80</code><p>Eyebrow and meta on the lead card</p></div></div>
+<div class="ds-sw"><div class="ds-chip" style="background:#059669"><span class="aa" style="color:rgba(236,253,245,.85)">Aa</span></div><div><strong>Text on emerald</strong><code>rgb(236 253 245 / 0.85)</code><code class="tok">text-emerald-50/85</code><p>Rain-guard label</p></div></div>
+<div class="ds-sw"><div class="ds-chip" style="background:#facc15"><span class="aa" style="color:#422006">Aa</span></div><div><strong>Ink on yellow</strong><code>#422006</code><code class="tok">text-yellow-950 · /80</code><p>Headings and values on the plan card (labels at /80)</p></div></div>
+<div class="ds-sw"><div class="ds-chip" style="background:#0284c7"><span class="aa" style="color:rgba(240,249,255,.9)">Aa</span></div><div><strong>Text on sky</strong><code>rgb(240 249 255 / 0.9)</code><code class="tok">text-sky-50/90</code><p>Paragraph and meta on the schedule card</p></div></div>
+<div class="ds-sw"><div class="ds-chip" style="background:#ffffff"><span class="aa" style="color:#082f49">Aa</span></div><div><strong>Ink on white fill</strong><code>#082f49</code><code class="tok">text-sky-950</code><p>Slider value inside the white fill</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="aa" style="color:#38bdf8">Aa</span></div><div><strong>Icon · sky</strong><code>#38bdf8</code><code class="tok">text-sky-400 · text-sky-300</code><p>Drip-line waterdrops (cloud-rain uses sky-300 #7dd3fc)</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="aa" style="color:#fcd34d">Aa</span></div><div><strong>Icon · sun</strong><code>#fcd34d</code><code class="tok">text-amber-300</code><p>Sunny forecast days</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="aa" style="color:#34d399">Aa</span></div><div><strong>Icon · safe</strong><code>#34d399</code><code class="tok">text-emerald-400</code><p>Weather-safe shield</p></div></div>
+</div>
+<p class="ds-sub">Borders</p>
+<div class="ds-colors">
+<div class="ds-sw"><div class="ds-chip"><span class="fill" style="background:rgba(255,255,255,.1)"></span></div><div><strong>Hairline</strong><code>rgb(255 255 255 / 0.1)</code><code class="tok">border-white/10</code><p>Pill buttons, dividers, day dots (hover /20)</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="fill" style="background:rgba(255,255,255,.05)"></span></div><div><strong>Divider faint</strong><code>rgb(255 255 255 / 0.05)</code><code class="tok">border-white/5</code><p>Calendar summary divider</p></div></div>
+<div class="ds-sw"><div class="ds-chip" style="background:#06b6d4"><span class="fill" style="background:rgba(255,255,255,.15)"></span></div><div><strong>Color-card edge</strong><code>rgb(255 255 255 / 0.15)</code><code class="tok">border-white/15</code><p>Solid cards</p></div></div>
+<div class="ds-sw"><div class="ds-chip" style="background:#0284c7"><span class="fill" style="background:rgba(255,255,255,.2)"></span></div><div><strong>Rule on color</strong><code>rgb(255 255 255 / 0.2)</code><code class="tok">border-white/20 · /30 · /40</code><p>Dividers inside color cards; chips use /30, toggle /40</p></div></div>
+<div class="ds-sw"><div class="ds-chip" style="box-shadow:none;background:#0a0a0a"><span class="fill" style="position:absolute;inset:0;border-radius:16px;--border-gradient: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0)); --border-radius-before: 16px"></span></div><div><strong>Glass hairline</strong><code>linear-gradient(135deg, rgba(255,255,255,.1), rgba(255,255,255,0))</code><code class="tok">--border-gradient · --border-radius-before</code><p>Masked 1px ::before ring on glass cards (180deg on the tall ones)</p></div></div>
+<div class="ds-sw"><div class="ds-chip" style="background:#fbbf24"><span class="fill" style="background:rgba(253,230,138,.8)"></span></div><div><strong>Watered ring</strong><code>rgb(253 230 138 / 0.8)</code><code class="tok">border-amber-200/80</code><p>Watered day dots</p></div></div>
+<div class="ds-sw"><div class="ds-chip"><span class="fill" style="background:rgba(125,211,252,.7)"></span></div><div><strong>Tile rings</strong><code>rgb(125 211 252 / 0.7)</code><code class="tok">border-sky-300/70 · border-purple-300/70</code><p>Sky tile (purple tile: purple-300/70)</p></div></div>
+<div class="ds-sw"><div class="ds-chip" style="background:#facc15"><span class="fill" style="background:rgba(202,138,4,.4)"></span></div><div><strong>Yellow control edge</strong><code>rgb(202 138 4 / 0.4)</code><code class="tok">border-yellow-600/40 · border-yellow-200</code><p>Month select (icon button: yellow-200)</p></div></div>
+</div>
+<p class="ds-sub">Interactive States</p>
+<p class="ds-famname">Pill / icon button (dark)</p>
+<div class="ds-states"><div class="ds-state"><div class="ds-chip"><span class="fill" style="background:#262626;inset:18px;border-radius:9999px;border:1px solid rgba(255,255,255,.1)"></span></div><small>Default</small><code>bg-neutral-800 · border-white/10</code></div><div class="ds-state"><div class="ds-chip"><span class="fill" style="background:#404040;inset:18px;border-radius:9999px;border:1px solid rgba(255,255,255,.2)"></span></div><small>Hover</small><code>hover:bg-neutral-700 · hover:border-white/20</code></div></div>
+<p class="ds-famname">Chip on color</p>
+<div class="ds-states"><div class="ds-state"><div class="ds-chip" style="background:#06b6d4"><span class="fill" style="background:rgba(255,255,255,.15);inset:18px;border-radius:9999px;border:1px solid rgba(255,255,255,.3)"></span></div><small>Default</small><code>bg-white/15 · border-white/30</code></div><div class="ds-state"><div class="ds-chip" style="background:#06b6d4"><span class="fill" style="background:rgba(255,255,255,.2);inset:18px;border-radius:9999px;border:1px solid rgba(255,255,255,.3)"></span></div><small>Hover</small><code>hover:bg-white/20</code></div></div>
+<p class="ds-famname">Toggle track</p>
+<div class="ds-states"><div class="ds-state"><div class="ds-chip" style="background:#06b6d4"><span class="fill" style="background:rgba(255,255,255,.2);inset:22px 14px;border-radius:9999px;border:1px solid rgba(255,255,255,.4)"></span></div><small>Default</small><code>bg-white/20 · border-white/40</code></div><div class="ds-state"><div class="ds-chip" style="background:#06b6d4"><span class="fill" style="background:rgba(255,255,255,.3);inset:22px 14px;border-radius:9999px;border:1px solid rgba(255,255,255,.4)"></span></div><small>Hover</small><code>hover:bg-white/30</code></div></div>
+<p class="ds-famname">Icon button on yellow</p>
+<div class="ds-states"><div class="ds-state"><div class="ds-chip" style="background:#facc15"><span class="fill" style="background:rgba(253,224,71,.6);inset:18px;border-radius:9999px;border:1px solid #fef08a"></span></div><small>Default</small><code>bg-yellow-300/60 · border-yellow-200</code></div><div class="ds-state"><div class="ds-chip" style="background:#facc15"><span class="fill" style="background:rgba(253,224,71,.8);inset:18px;border-radius:9999px;border:1px solid #fef08a"></span></div><small>Hover</small><code>hover:bg-yellow-300/80</code></div></div>
+<p class="ds-famname">Select on yellow</p>
+<div class="ds-states"><div class="ds-state"><div class="ds-chip" style="background:#facc15"><span class="fill" style="background:rgba(253,224,71,.7);inset:20px 10px;border-radius:16px;border:1px solid rgba(202,138,4,.4)"></span></div><small>Default</small><code>bg-yellow-300/70 · border-yellow-600/40</code></div><div class="ds-state"><div class="ds-chip" style="background:#facc15"><span class="fill" style="background:rgba(254,240,138,.8);inset:20px 10px;border-radius:16px;border:1px solid rgba(161,98,7,.5)"></span></div><small>Hover</small><code>hover:bg-yellow-200/80 · hover:border-yellow-700/50</code></div></div>
+<p class="ds-sub">Overlays</p>
+<div class="ds-colors"><div class="ds-sw"><div class="ds-chip"><img src="assets/overview/assets/hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/917d6f93-fb36-439a-8c48-884b67b35381_1600w.jpg" alt=""><span class="fill bg-gradient-to-t from-black/70 via-black/30 to-transparent"></span></div><div><strong>Photo scrim</strong><code>rgb(0 0 0 / .7) → rgb(0 0 0 / .3) → transparent</code><code class="tok">bg-gradient-to-t from-black/70 via-black/30 to-transparent</code><p>Zone photo, under its caption</p></div></div><div class="ds-sw"><div class="ds-chip"><img src="assets/overview/assets/hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/917d6f93-fb36-439a-8c48-884b67b35381_1600w.jpg" alt=""><span class="fill" style="inset:24px 10px;border-radius:9999px;background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.2)"></span></div><div><strong>Badge on photo</strong><code>rgb(0 0 0 / 0.6)</code><code class="tok">bg-black/60 · border-white/20</code><p>"Scheduled" badge over the photo</p></div></div></div>
+</section>
+
+<section class="ds-group" id="components-backgrounds">
+<div class="ds-head">
+  <div class="ds-kicker"><span>Foundations</span><span>(03)</span></div>
+  <h2>Backgrounds</h2>
+</div>
+
+  <div class="ds-spec">
+    <h3>Light-rays scene · page backdrop (live)</h3>
+    <div class="ds-window">
+      <span class="inline-flex items-center rounded-full bg-black/60 px-2.5 py-1 text-[11px] font-medium text-white/90 border border-white/20">Live · Unicorn Studio</span>
+    </div>
+    <code class="ds-meta"><b>.aura-background-component</b> fixed top-0 w-full h-screen -z-10 saturate-50 · mask linear-gradient(to bottom, transparent, black 0%, black 80%, transparent) &gt; <b>[data-us-project="qpSlPSWA2bdkUAYztz8z"]</b> · unicornStudio.umd.js v1.4.29 · scene "Copy of Light rays (Remix)" v1.4.35 · 60 fps · dpi 1.5</code>
+    <p class="ds-note">This window looks straight through to the Overview's own scene, which runs as the background of this whole view; the scrim lifts while this group is in view. Layer stack from the project file: <code>Rays rectangle → gradientMap → noiseFill → polar → vignette → voronoi → glyphDither (circles sprite) → godrays (blue noise)</code>. No pointer, scroll or appear states.</p>
+  </div>
+  <div class="ds-spec">
+    <h3>Page ground</h3>
+    <div class="ds-bgbox bg-neutral-950"></div>
+    <code class="ds-meta">body.min-h-screen.bg-neutral-950 · #0a0a0a — what shows below the scene's 80% fade</code>
+  </div>
+</section>
+
+<section class="ds-group" id="components-surfaces">
+<div class="ds-head">
+  <div class="ds-kicker"><span>Foundations</span><span>(04)</span></div>
+  <h2>Surfaces</h2>
+</div>
+
+  <p class="ds-sub">Glass</p>
+  <div class="ds-surfaces">
+    <div class="ds-cell" style="align-items:stretch"><div class="bg-gradient-to-br from-white/10 to-white/0 rounded-3xl shadow-lg shadow-black/60 backdrop-blur-lg" style="position: relative; --border-gradient: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0)); --border-radius-before: 24px; height: 180px"></div><code class="ds-meta"><b>glass card</b> · from-white/10 to-white/0 · backdrop-blur-lg · rounded-3xl · shadow-lg shadow-black/60 · --border-gradient 135deg · 24px</code></div>
+    <div class="ds-cell" style="align-items:stretch"><div class="bg-gradient-to-br from-white/10 to-white/0 rounded-3xl shadow-lg shadow-black/60 backdrop-blur-lg" style="position: relative; --border-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0)); --border-radius-before: 24px; height: 180px"></div><code class="ds-meta"><b>glass card, tall</b> · same fill · --border-gradient 180deg (zone, next-cycle, calendar)</code></div>
+    <div class="ds-cell" style="align-items:stretch"><div style="width:120px"><div class="flex flex-col bg-gradient-to-br from-white/10 to-white/0 rounded-2xl pt-3 pr-2 pb-3 pl-2 items-center" style="position: relative; --border-gradient: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0)); --border-radius-before: 16px">
+                  <p class="text-xs text-neutral-300 mb-1">Tue</p>
+                  <div class="flex items-center justify-center mb-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:sun-bold-duotone" class="iconify h-4.5 w-4.5 text-amber-300 iconify--solar"><path fill="currentColor" d="M18 12a6 6 0 1 1-12 0a6 6 0 0 1 12 0"></path><path fill="currentColor" fill-rule="evenodd" d="M12 1.25a.75.75 0 0 1 .75.75v1a.75.75 0 0 1-1.5 0V2a.75.75 0 0 1 .75-.75M1.25 12a.75.75 0 0 1 .75-.75h1a.75.75 0 0 1 0 1.5H2a.75.75 0 0 1-.75-.75m19 0a.75.75 0 0 1 .75-.75h1a.75.75 0 0 1 0 1.5h-1a.75.75 0 0 1-.75-.75M12 20.25a.75.75 0 0 1 .75.75v1a.75.75 0 0 1-1.5 0v-1a.75.75 0 0 1 .75-.75" clip-rule="evenodd"></path><path fill="currentColor" d="M4.398 4.398a.75.75 0 0 1 1.061 0l.393.393a.75.75 0 0 1-1.06 1.06l-.394-.392a.75.75 0 0 1 0-1.06m15.202 0a.75.75 0 0 1 0 1.06l-.392.393a.75.75 0 0 1-1.06-1.06l.392-.393a.75.75 0 0 1 1.06 0m-1.453 13.748a.75.75 0 0 1 1.061 0l.393.393a.75.75 0 0 1-1.06 1.06l-.394-.392a.75.75 0 0 1 0-1.06m-12.295 0a.75.75 0 0 1 0 1.06l-.393.393a.75.75 0 1 1-1.06-1.06l.392-.393a.75.75 0 0 1 1.06 0" opacity=".5"></path></svg>
+                  </div>
+                  <p class="text-xs font-medium text-neutral-100 mb-1">23°C</p>
+                  <span class="text-[10px] text-emerald-300">Normal</span>
+                </div></div><code class="ds-meta"><b>inner tile</b> · rounded-2xl · pt-3 pb-3 px-2 · --border-gradient 135deg · 16px</code></div>
+  </div>
+  <p class="ds-sub">Solid color cards</p>
+  <div class="ds-surfaces">
+    <div class="ds-cell" style="align-items:stretch"><div class="bg-cyan-500 rounded-3xl shadow-lg shadow-cyan-900/40 border border-white/15" style="height:150px"></div><code class="ds-meta">bg-cyan-500 · border-white/15 · shadow-lg shadow-cyan-900/40</code></div>
+    <div class="ds-cell" style="align-items:stretch"><div class="bg-emerald-600 border-white/15 border rounded-3xl shadow-lg shadow-emerald-900/40" style="height:150px"></div><code class="ds-meta">bg-emerald-600 · shadow-emerald-900/40</code></div>
+    <div class="ds-cell" style="align-items:stretch"><div class="bg-yellow-400 rounded-3xl shadow-lg shadow-yellow-900/40 border border-white/15" style="height:150px"></div><code class="ds-meta">bg-yellow-400 · shadow-yellow-900/40</code></div>
+    <div class="ds-cell" style="align-items:stretch"><div class="bg-sky-600 rounded-3xl shadow-lg shadow-sky-900/40 border border-white/15" style="height:150px"></div><code class="ds-meta">bg-sky-600 · shadow-sky-900/40</code></div>
+  </div>
+  <p class="ds-sub">Icon tiles</p>
+  <div class="ds-row">
+    <div class="ds-cell"><div class="bg-cyan-500 rounded-2xl p-3"><div class="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-white/15 border border-white/30">
+                  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:temperature-bold-duotone" class="iconify h-4.5 w-4.5 text-white iconify--solar"><path fill="currentColor" d="M17.5 16.5a5.5 5.5 0 1 1-8.939-4.293c.264-.211.439-.521.439-.86V5a3 3 0 1 1 6 0v6.348c0 .338.175.648.439.86A5.49 5.49 0 0 1 17.5 16.5" opacity=".5"></path><path fill="currentColor" d="M12.75 5a.75.75 0 0 0-1.5 0v8.38c0 .437-.297.808-.658 1.054a2.5 2.5 0 1 0 2.816 0c-.36-.246-.658-.617-.658-1.054z"></path></svg>
+                </div></div><small>on cyan · bg-white/15 border-white/30</small></div>
+    <div class="ds-cell"><div class="p-3"><div class="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-sky-500 border border-sky-300/70">
+                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:wind-bold-duotone" class="iconify h-4.5 w-4.5 text-white iconify--solar"><path fill="currentColor" fill-rule="evenodd" d="M6.25 5.5A3.25 3.25 0 1 1 9.5 8.75H3a.75.75 0 0 1 0-1.5h6.5A1.75 1.75 0 1 0 7.75 5.5v.357a.75.75 0 1 1-1.5 0z" clip-rule="evenodd"></path><path fill="currentColor" d="M3.25 14a.75.75 0 0 1 .75-.75h14.5a4.25 4.25 0 1 1-4.25 4.25V17a.75.75 0 0 1 1.5 0v.5a2.75 2.75 0 1 0 2.75-2.75H4a.75.75 0 0 1-.75-.75" opacity=".4"></path><path fill="currentColor" d="M14.25 7.5a4.25 4.25 0 1 1 4.25 4.25H2a.75.75 0 0 1 0-1.5h16.5a2.75 2.75 0 1 0-2.75-2.75V8a.75.75 0 0 1-1.5 0z" opacity=".7"></path></svg>
+                  </div></div><small>bg-sky-500 border-sky-300/70</small></div>
+    <div class="ds-cell"><div class="bg-emerald-600 rounded-2xl p-3"><div class="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-white/20 border border-white/40">
+                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:cloud-rain-bold-duotone" class="iconify iconify--solar w-[16px] h-[16px]" stroke-width="2" data-icon-replaced="true" style="color: rgb(255, 255, 255); width: 16px; height: 16px;"><path fill="currentColor" fill-rule="evenodd" d="M12.03 14.97a.75.75 0 0 1 0 1.06l-2 2a.75.75 0 1 1-1.06-1.06l2-2a.75.75 0 0 1 1.06 0m4.5 0a.75.75 0 0 1 0 1.06l-2 2a.75.75 0 1 1-1.06-1.06l2-2a.75.75 0 0 1 1.06 0m-8.5 3.5a.75.75 0 0 1 0 1.06l-2 2a.75.75 0 0 1-1.06-1.06l2-2a.75.75 0 0 1 1.06 0m9.5 0a.75.75 0 0 1 0 1.06l-2 2a.75.75 0 1 1-1.06-1.06l2-2a.75.75 0 0 1 1.06 0m-5 1a.75.75 0 0 1 0 1.06l-2 2a.75.75 0 1 1-1.06-1.06l2-2a.75.75 0 0 1 1.06 0" clip-rule="evenodd"></path><path fill="currentColor" d="M12.03 14.97a.75.75 0 0 1 0 1.06l-2 2a.746.746 0 0 1-1.06 0a.746.746 0 0 1 0-1.06l2-2a.75.75 0 0 1 1.06 0m3.44 0l-2 2a.75.75 0 1 0 1.06 1.06l2-2a.75.75 0 1 0-1.06-1.06"></path><path fill="currentColor" d="M16.286 19C19.442 19 22 16.472 22 13.353c0-2.472-1.607-4.573-3.845-5.338C17.837 5.194 15.415 3 12.476 3C9.32 3 6.762 5.528 6.762 8.647c0 .69.125 1.35.354 1.962a4.4 4.4 0 0 0-.83-.08C3.919 10.53 2 12.426 2 14.765S3.919 19 6.286 19z" opacity=".5" class=""></path></svg>
+                  </div></div><small>on emerald · bg-white/20 border-white/40</small></div>
+    <div class="ds-cell"><div class="p-3"><div class="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-purple-500/80 border border-purple-300/70">
+                  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:bell-bing-bold-duotone" class="iconify h-4.5 w-4.5 text-white iconify--solar"><path fill="currentColor" d="M18.75 9v.704c0 .845.24 1.671.692 2.374l1.108 1.723c1.011 1.574.239 3.713-1.52 4.21a25.8 25.8 0 0 1-14.06 0c-1.759-.497-2.531-2.636-1.52-4.21l1.108-1.723a4.4 4.4 0 0 0 .693-2.374V9c0-3.866 3.022-7 6.749-7s6.75 3.134 6.75 7" opacity=".5"></path><path fill="currentColor" d="M12.75 6a.75.75 0 0 0-1.5 0v4a.75.75 0 0 0 1.5 0zM7.243 18.545a5.002 5.002 0 0 0 9.513 0c-3.145.59-6.367.59-9.513 0"></path></svg>
+                </div></div><small>bg-purple-500/80 border-purple-300/70</small></div>
+  </div>
+  <code class="ds-meta">inline-flex h-9 w-9 items-center justify-center rounded-2xl + border</code>
+</section>
+
+<section class="ds-group" id="components-icons">
+<div class="ds-head">
+  <div class="ds-kicker"><span>Foundations</span><span>(05)</span></div>
+  <h2>Icons</h2>
+</div>
+
+  <div class="ds-icons">
+<div class="ds-icon"><div class="stage"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:temperature-bold-duotone" class="iconify h-4.5 w-4.5 text-white iconify--solar"><path fill="currentColor" d="M17.5 16.5a5.5 5.5 0 1 1-8.939-4.293c.264-.211.439-.521.439-.86V5a3 3 0 1 1 6 0v6.348c0 .338.175.648.439.86A5.49 5.49 0 0 1 17.5 16.5" opacity=".5"></path><path fill="currentColor" d="M12.75 5a.75.75 0 0 0-1.5 0v8.38c0 .437-.297.808-.658 1.054a2.5 2.5 0 1 0 2.816 0c-.36-.246-.658-.617-.658-1.054z"></path></svg></div><code>temperature-bold-duotone<i>h-4.5 w-4.5 text-white</i></code></div>
+<div class="ds-icon"><div class="stage"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" style="color: rgb(255, 255, 255); width: 16px; height: 16px" class="iconify iconify--solar w-[16px] h-[16px]" aria-hidden="true" role="img" data-icon="solar:cloud-rain-bold-duotone" data-solar="reorder-bold-duotone" data-icon-set="solar" data-icon-replaced="true" stroke-width="2"><path fill="#ffffff" d="M12 22c-4.714 0-7.071 0-8.536-1.465C2 19.072 2 16.714 2 12s0-7.071 1.464-8.536C4.93 2 7.286 2 12 2s7.071 0 8.535 1.464C22 4.93 22 7.286 22 12s0 7.071-1.465 8.535C19.072 22 16.714 22 12 22" opacity=".5"></path><path fill="#ffffff" d="M19.75 10a.75.75 0 0 1-.75.75H5a.75.75 0 0 1 0-1.5h14a.75.75 0 0 1 .75.75m0 4a.75.75 0 0 1-.75.75H5a.75.75 0 0 1 0-1.5h14a.75.75 0 0 1 .75.75m0-8a.75.75 0 0 1-.75.75H5a.75.75 0 0 1 0-1.5h14a.75.75 0 0 1 .75.75m0 12a.75.75 0 0 1-.75.75H5a.75.75 0 0 1 0-1.5h14a.75.75 0 0 1 .75.75"></path></svg></div><code>cloud-rain-bold-duotone<i>w-[16px] h-[16px] · paths: reorder-bold-duotone</i></code></div>
+<div class="ds-icon"><div class="stage"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:wind-bold-duotone" class="iconify h-4.5 w-4.5 text-white iconify--solar"><path fill="currentColor" fill-rule="evenodd" d="M6.25 5.5A3.25 3.25 0 1 1 9.5 8.75H3a.75.75 0 0 1 0-1.5h6.5A1.75 1.75 0 1 0 7.75 5.5v.357a.75.75 0 1 1-1.5 0z" clip-rule="evenodd"></path><path fill="currentColor" d="M3.25 14a.75.75 0 0 1 .75-.75h14.5a4.25 4.25 0 1 1-4.25 4.25V17a.75.75 0 0 1 1.5 0v.5a2.75 2.75 0 1 0 2.75-2.75H4a.75.75 0 0 1-.75-.75" opacity=".4"></path><path fill="currentColor" d="M14.25 7.5a4.25 4.25 0 1 1 4.25 4.25H2a.75.75 0 0 1 0-1.5h16.5a2.75 2.75 0 1 0-2.75-2.75V8a.75.75 0 0 1-1.5 0z" opacity=".7"></path></svg></div><code>wind-bold-duotone<i>h-4.5 w-4.5 text-white</i></code></div>
+<div class="ds-icon"><div class="stage"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:graph-new-up-bold-duotone" class="iconify iconify--solar mr-1 w-[12px] h-[12px]" stroke-width="2" data-icon-replaced="true" style="width: 12px; height: 12px; color: rgb(52, 211, 153);"><path fill="currentColor" d="M2 12c0-4.714 0-7.071 1.464-8.536C4.93 2 7.286 2 12 2s7.071 0 8.535 1.464C22 4.93 22 7.286 22 12s0 7.071-1.465 8.535C19.072 22 16.714 22 12 22s-7.071 0-8.536-1.465C2 19.072 2 16.714 2 12" opacity=".5" class=""></path><path fill="currentColor" d="M22 5a3 3 0 1 1-6 0a3 3 0 0 1 6 0m-7.5 5.75a.75.75 0 0 1 0-1.5H17a.75.75 0 0 1 .75.75v2.5a.75.75 0 0 1-1.5 0v-.69l-2.013 2.013a1.75 1.75 0 0 1-2.474 0l-1.586-1.586a.25.25 0 0 0-.354 0L7.53 14.53a.75.75 0 0 1-1.06-1.06l2.293-2.293a1.75 1.75 0 0 1 2.474 0l1.586 1.586a.25.25 0 0 0 .354 0l2.012-2.013z"></path></svg></div><code>graph-new-up-bold-duotone<i>mr-1 w-[12px] h-[12px]</i></code></div>
+<div class="ds-icon"><div class="stage"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:calendar-bold-duotone" class="iconify h-4.5 w-4.5 text-neutral-200 iconify--solar"><path fill="currentColor" d="M6.94 2c.416 0 .753.324.753.724v1.46c.668-.012 1.417-.012 2.26-.012h4.015c.842 0 1.591 0 2.259.013v-1.46c0-.4.337-.725.753-.725s.753.324.753.724V4.25c1.445.111 2.394.384 3.09 1.055c.698.67.982 1.582 1.097 2.972L22 9H2v-.724c.116-1.39.4-2.302 1.097-2.972s1.645-.944 3.09-1.055V2.724c0-.4.337-.724.753-.724" class=""></path><path fill="currentColor" d="M22 14v-2c0-.839-.004-2.335-.017-3H2.01c-.013.665-.01 2.161-.01 3v2c0 3.771 0 5.657 1.172 6.828S6.228 22 10 22h4c3.77 0 5.656 0 6.828-1.172S22 17.772 22 14" opacity=".5" class=""></path><path fill="currentColor" d="M18 17a1 1 0 1 1-2 0a1 1 0 0 1 2 0m0-4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m-5 4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m0-4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m-5 4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m0-4a1 1 0 1 1-2 0a1 1 0 0 1 2 0"></path></svg></div><code>calendar-bold-duotone<i>h-4.5 w-4.5 text-neutral-200</i></code></div>
+<div class="ds-icon"><div class="stage"><span class="inline-flex items-center justify-center rounded-xl bg-yellow-400" style="padding:8px"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:refresh-circle-bold-duotone" class="iconify h-4.5 w-4.5 text-yellow-950 iconify--solar"><circle cx="12" cy="12" r="10" fill="currentColor" opacity=".5"></circle><path fill="currentColor" d="M7.378 11.63h-.75zm0 .926l-.562.497a.75.75 0 0 0 1.08.044zm2.141-1.015a.75.75 0 0 0-1.038-1.082zm-2.958-1.038a.75.75 0 1 0-1.122.994zm8.37-1.494a.75.75 0 1 0 1.102-1.018zM12.045 6.25c-2.986 0-5.416 2.403-5.416 5.38h1.5c0-2.137 1.747-3.88 3.916-3.88zm-5.416 5.38v.926h1.5v-.926zm1.269 1.467l1.622-1.556l-1.038-1.082l-1.622 1.555zm.042-1.039l-1.378-1.555l-1.122.994l1.377 1.556zm8.094-4.067a5.42 5.42 0 0 0-3.99-1.741v1.5a3.92 3.92 0 0 1 2.889 1.26zm.585 3.453l.56-.498a.75.75 0 0 0-1.08-.043zm-2.139 1.014a.75.75 0 1 0 1.04 1.082zm2.96 1.04a.75.75 0 0 0 1.12-.997zm-8.393 1.507a.75.75 0 0 0-1.094 1.026zm2.888 2.745c2.993 0 5.434-2.4 5.434-5.38h-1.5c0 2.135-1.753 3.88-3.934 3.88zm5.434-5.38v-.926h-1.5v.926zm-1.27-1.467l-1.619 1.555l1.04 1.082l1.618-1.555zm-.04 1.04l1.38 1.554l1.122-.996l-1.381-1.555zM7.952 16.03a5.45 5.45 0 0 0 3.982 1.719v-1.5c-1.143 0-2.17-.48-2.888-1.245z"></path></svg></span></div><code>refresh-circle-bold-duotone<i>h-4.5 w-4.5 text-yellow-950</i></code></div>
+<div class="ds-icon"><div class="stage"><span class="inline-flex items-center justify-center rounded-xl bg-yellow-400" style="padding:8px"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:alt-arrow-down-bold-duotone" class="iconify h-3.5 w-3.5 text-yellow-950 iconify--solar"><path fill="currentColor" d="m8.303 12.404l3.327 3.431c.213.22.527.22.74 0l6.43-6.63C19.201 8.79 18.958 8 18.43 8h-5.723z"></path><path fill="currentColor" d="M11.293 8H5.57c-.528 0-.771.79-.37 1.205l2.406 2.481z" opacity=".5"></path></svg></span></div><code>alt-arrow-down-bold-duotone<i>h-3.5 w-3.5 text-yellow-950</i></code></div>
+<div class="ds-icon"><div class="stage"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:clock-circle-bold-duotone" class="iconify mr-1 h-3.5 w-3.5 iconify--solar"><path fill="currentColor" d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2S2 6.477 2 12s4.477 10 10 10" opacity=".5"></path><path fill="currentColor" fill-rule="evenodd" d="M12 7.25a.75.75 0 0 1 .75.75v3.69l2.28 2.28a.75.75 0 1 1-1.06 1.06l-2.5-2.5a.75.75 0 0 1-.22-.53V8a.75.75 0 0 1 .75-.75" clip-rule="evenodd"></path></svg></div><code>clock-circle-bold-duotone<i>mr-1 h-3.5 w-3.5</i></code></div>
+<div class="ds-icon"><div class="stage"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:waterdrops-bold-duotone" class="iconify h-4 w-4 text-sky-400 iconify--solar"><path fill="currentColor" d="M10 17.833C10 20.134 8.21 22 6 22s-4-1.866-4-4.167c0-1.44 1.566-3.361 2.738-4.598a1.724 1.724 0 0 1 2.524 0C8.434 14.472 10 16.393 10 17.833"></path><path fill="currentColor" d="M22 17.833C22 20.134 20.21 22 18 22s-4-1.866-4-4.167c0-1.44 1.566-3.361 2.738-4.598a1.724 1.724 0 0 1 2.524 0C20.434 14.472 22 16.393 22 17.833" opacity=".7"></path><path fill="currentColor" d="M16 7.833C16 10.134 14.21 12 12 12s-4-1.866-4-4.167c0-1.44 1.566-3.361 2.738-4.598a1.724 1.724 0 0 1 2.524 0C14.434 4.472 16 6.393 16 7.833" opacity=".4"></path></svg></div><code>waterdrops-bold-duotone<i>h-4 w-4 text-sky-400</i></code></div>
+<div class="ds-icon"><div class="stage"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:settings-bold-duotone" class="iconify h-3.5 w-3.5 iconify--solar"><path fill="currentColor" fill-rule="evenodd" d="M14.279 2.152C13.909 2 13.439 2 12.5 2s-1.408 0-1.779.152a2 2 0 0 0-1.09 1.083c-.094.223-.13.484-.145.863a1.62 1.62 0 0 1-.796 1.353a1.64 1.64 0 0 1-1.579.008c-.338-.178-.583-.276-.825-.308a2.03 2.03 0 0 0-1.49.396c-.318.242-.553.646-1.022 1.453c-.47.807-.704 1.21-.757 1.605c-.07.526.074 1.058.4 1.479c.148.192.357.353.68.555c.477.297.783.803.783 1.361s-.306 1.064-.782 1.36c-.324.203-.533.364-.682.556a2 2 0 0 0-.399 1.479c.053.394.287.798.757 1.605s.704 1.21 1.022 1.453c.424.323.96.465 1.49.396c.242-.032.487-.13.825-.308a1.64 1.64 0 0 1 1.58.008c.486.28.774.795.795 1.353c.015.38.051.64.145.863c.204.49.596.88 1.09 1.083c.37.152.84.152 1.779.152s1.409 0 1.779-.152a2 2 0 0 0 1.09-1.083c.094-.223.13-.483.145-.863c.02-.558.309-1.074.796-1.353a1.64 1.64 0 0 1 1.579-.008c.338.178.583.276.825.308c.53.07 1.066-.073 1.49-.396c.318-.242.553-.646 1.022-1.453c.47-.807.704-1.21.757-1.605a2 2 0 0 0-.4-1.479c-.148-.192-.357-.353-.68-.555c-.477-.297-.783-.803-.783-1.361s.306-1.064.782-1.36c.324-.203.533-.364.682-.556a2 2 0 0 0 .399-1.479c-.053-.394-.287-.798-.757-1.605s-.704-1.21-1.022-1.453a2.03 2.03 0 0 0-1.49-.396c-.242.032-.487.13-.825.308a1.64 1.64 0 0 1-1.58-.008a1.62 1.62 0 0 1-.795-1.353c-.015-.38-.051-.64-.145-.863a2 2 0 0 0-1.09-1.083" clip-rule="evenodd" opacity=".5"></path><path fill="currentColor" d="M15.523 12c0 1.657-1.354 3-3.023 3s-3.023-1.343-3.023-3S10.83 9 12.5 9s3.023 1.343 3.023 3"></path></svg></div><code>settings-bold-duotone<i>h-3.5 w-3.5</i></code></div>
+<div class="ds-icon"><div class="stage"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:bell-bing-bold-duotone" class="iconify h-4.5 w-4.5 text-white iconify--solar"><path fill="currentColor" d="M18.75 9v.704c0 .845.24 1.671.692 2.374l1.108 1.723c1.011 1.574.239 3.713-1.52 4.21a25.8 25.8 0 0 1-14.06 0c-1.759-.497-2.531-2.636-1.52-4.21l1.108-1.723a4.4 4.4 0 0 0 .693-2.374V9c0-3.866 3.022-7 6.749-7s6.75 3.134 6.75 7" opacity=".5"></path><path fill="currentColor" d="M12.75 6a.75.75 0 0 0-1.5 0v4a.75.75 0 0 0 1.5 0zM7.243 18.545a5.002 5.002 0 0 0 9.513 0c-3.145.59-6.367.59-9.513 0"></path></svg></div><code>bell-bing-bold-duotone<i>h-4.5 w-4.5 text-white</i></code></div>
+<div class="ds-icon"><div class="stage"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:shield-check-bold-duotone" class="iconify h-3.5 w-3.5 text-emerald-400 iconify--solar"><path fill="currentColor" d="M3.378 5.082C3 5.62 3 7.22 3 10.417v1.574c0 5.638 4.239 8.375 6.899 9.536c.721.315 1.082.473 2.101.473c1.02 0 1.38-.158 2.101-.473C16.761 20.365 21 17.63 21 11.991v-1.574c0-3.198 0-4.797-.378-5.335c-.377-.537-1.88-1.052-4.887-2.081l-.573-.196C13.595 2.268 12.812 2 12 2s-1.595.268-3.162.805L8.265 3c-3.007 1.03-4.51 1.545-4.887 2.082" opacity=".5"></path><path fill="currentColor" d="M15.06 10.5a.75.75 0 0 0-1.12-1l-3.011 3.374l-.87-.974a.75.75 0 0 0-1.118 1l1.428 1.6a.75.75 0 0 0 1.119 0z"></path></svg></div><code>shield-check-bold-duotone<i>h-3.5 w-3.5 text-emerald-400</i></code></div>
+<div class="ds-icon"><div class="stage"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:pen-new-round-bold-duotone" class="iconify h-3.5 w-3.5 iconify--solar"><circle cx="12" cy="12" r="10" fill="currentColor" opacity=".5"></circle><path fill="currentColor" d="M13.926 14.302c.245-.191.467-.413.912-.858l5.54-5.54c.134-.134.073-.365-.106-.427a6.1 6.1 0 0 1-2.3-1.449a6.1 6.1 0 0 1-1.45-2.3c-.061-.18-.292-.24-.426-.106l-5.54 5.54c-.445.444-.667.667-.858.912a5 5 0 0 0-.577.932c-.133.28-.233.579-.431 1.175l-.257.77l-.409 1.226l-.382 1.148a.817.817 0 0 0 1.032 1.033l1.15-.383l1.224-.408l.77-.257c.597-.199.895-.298 1.175-.432q.498-.237.933-.576m8.187-8.132a3.028 3.028 0 0 0-4.282-4.283l-.179.178a.73.73 0 0 0-.206.651c.027.15.077.37.168.633a4.9 4.9 0 0 0 1.174 1.863a4.9 4.9 0 0 0 1.862 1.174c.263.09.483.141.633.168c.24.043.48-.035.652-.207z"></path></svg></div><code>pen-new-round-bold-duotone<i>h-3.5 w-3.5</i></code></div>
+<div class="ds-icon"><div class="stage"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:map-point-bold-duotone" class="iconify h-3.5 w-3.5 iconify--solar"><path fill="currentColor" d="M12 2c-4.418 0-8 4.003-8 8.5c0 4.462 2.553 9.312 6.537 11.174a3.45 3.45 0 0 0 2.926 0C17.447 19.812 20 14.962 20 10.5C20 6.003 16.418 2 12 2" opacity=".5"></path><path fill="currentColor" d="M12 12.5a2.5 2.5 0 1 0 0-5a2.5 2.5 0 0 0 0 5"></path></svg></div><code>map-point-bold-duotone<i>h-3.5 w-3.5</i></code></div>
+<div class="ds-icon"><div class="stage"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:sun-bold-duotone" class="iconify h-4.5 w-4.5 text-amber-300 iconify--solar"><path fill="currentColor" d="M18 12a6 6 0 1 1-12 0a6 6 0 0 1 12 0"></path><path fill="currentColor" fill-rule="evenodd" d="M12 1.25a.75.75 0 0 1 .75.75v1a.75.75 0 0 1-1.5 0V2a.75.75 0 0 1 .75-.75M1.25 12a.75.75 0 0 1 .75-.75h1a.75.75 0 0 1 0 1.5H2a.75.75 0 0 1-.75-.75m19 0a.75.75 0 0 1 .75-.75h1a.75.75 0 0 1 0 1.5h-1a.75.75 0 0 1-.75-.75M12 20.25a.75.75 0 0 1 .75.75v1a.75.75 0 0 1-1.5 0v-1a.75.75 0 0 1 .75-.75" clip-rule="evenodd"></path><path fill="currentColor" d="M4.398 4.398a.75.75 0 0 1 1.061 0l.393.393a.75.75 0 0 1-1.06 1.06l-.394-.392a.75.75 0 0 1 0-1.06m15.202 0a.75.75 0 0 1 0 1.06l-.392.393a.75.75 0 0 1-1.06-1.06l.392-.393a.75.75 0 0 1 1.06 0m-1.453 13.748a.75.75 0 0 1 1.061 0l.393.393a.75.75 0 0 1-1.06 1.06l-.394-.392a.75.75 0 0 1 0-1.06m-12.295 0a.75.75 0 0 1 0 1.06l-.393.393a.75.75 0 1 1-1.06-1.06l.392-.393a.75.75 0 0 1 1.06 0" opacity=".5"></path></svg></div><code>sun-bold-duotone<i>h-4.5 w-4.5 text-amber-300</i></code></div>
+<div class="ds-icon"><div class="stage"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:cloud-bold-duotone" class="iconify h-4.5 w-4.5 text-neutral-100 iconify--solar"><path fill="currentColor" fill-rule="evenodd" d="M22 14.353C22 17.472 19.442 20 16.286 20h-5.787a7.5 7.5 0 0 1 7.487-11.853q.119.422.17.868C20.392 9.78 22 11.881 22 14.353" clip-rule="evenodd" opacity=".5"></path><path fill="currentColor" d="M12.476 4C9.32 4 6.762 6.528 6.762 9.647c0 .69.125 1.35.354 1.962a4.4 4.4 0 0 0-.83-.08C3.919 11.53 2 13.426 2 15.765S3.919 20 6.286 20H10.5a7.5 7.5 0 0 1 7.487-11.853l-.047-.158C17.224 5.68 15.048 4 12.476 4" class=""></path></svg></div><code>cloud-bold-duotone<i>h-4.5 w-4.5 text-neutral-100</i></code></div>
+<div class="ds-icon"><div class="stage"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:cloud-rain-bold-duotone" class="iconify h-4.5 w-4.5 text-sky-300 iconify--solar"><path fill="currentColor" fill-rule="evenodd" d="M12.03 14.97a.75.75 0 0 1 0 1.06l-2 2a.75.75 0 1 1-1.06-1.06l2-2a.75.75 0 0 1 1.06 0m4.5 0a.75.75 0 0 1 0 1.06l-2 2a.75.75 0 1 1-1.06-1.06l2-2a.75.75 0 0 1 1.06 0m-8.5 3.5a.75.75 0 0 1 0 1.06l-2 2a.75.75 0 0 1-1.06-1.06l2-2a.75.75 0 0 1 1.06 0m9.5 0a.75.75 0 0 1 0 1.06l-2 2a.75.75 0 1 1-1.06-1.06l2-2a.75.75 0 0 1 1.06 0m-5 1a.75.75 0 0 1 0 1.06l-2 2a.75.75 0 1 1-1.06-1.06l2-2a.75.75 0 0 1 1.06 0" clip-rule="evenodd"></path><path fill="currentColor" d="M12.03 14.97a.75.75 0 0 1 0 1.06l-2 2a.746.746 0 0 1-1.06 0a.746.746 0 0 1 0-1.06l2-2a.75.75 0 0 1 1.06 0m3.44 0l-2 2a.75.75 0 1 0 1.06 1.06l2-2a.75.75 0 1 0-1.06-1.06"></path><path fill="currentColor" d="M16.286 19C19.442 19 22 16.472 22 13.353c0-2.472-1.607-4.573-3.845-5.338C17.837 5.194 15.415 3 12.476 3C9.32 3 6.762 5.528 6.762 8.647c0 .69.125 1.35.354 1.962a4.4 4.4 0 0 0-.83-.08C3.919 10.53 2 12.426 2 14.765S3.919 19 6.286 19z" opacity=".5"></path></svg></div><code>cloud-rain-bold-duotone<i>h-4.5 w-4.5 text-sky-300</i></code></div>
+<div class="ds-icon"><div class="stage"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:slider-vertical-bold-duotone" class="iconify h-5 w-5 text-sky-50/90 iconify--solar"><path fill="currentColor" d="M6 8c0-2.828 0-4.243.879-5.121C7.757 2 9.172 2 12 2s4.243 0 5.121.879C18 3.757 18 5.172 18 8v8c0 2.828 0 4.243-.879 5.121C16.243 22 14.828 22 12 22s-4.243 0-5.121-.879C6 20.243 6 18.828 6 16z"></path><path fill="currentColor" d="M6.141 4.5C6 5.343 6 6.462 6 8v8c0 1.538 0 2.657.141 3.5H6c-1.4 0-2.1 0-2.635-.273a2.5 2.5 0 0 1-1.093-1.092C2 17.6 2 16.9 2 15.5v-7c0-1.4 0-2.1.272-2.635a2.5 2.5 0 0 1 1.093-1.093C3.9 4.5 4.6 4.5 6 4.5zm11.718 0C18 5.343 18 6.462 18 8v8c0 1.538 0 2.657-.141 3.5H18c1.4 0 2.1 0 2.635-.273a2.5 2.5 0 0 0 1.092-1.092C22 17.6 22 16.9 22 15.5v-7c0-1.4 0-2.1-.273-2.635a2.5 2.5 0 0 0-1.092-1.093C20.1 4.5 19.4 4.5 18 4.5z" opacity=".5"></path></svg></div><code>slider-vertical-bold-duotone<i>h-5 w-5 text-sky-50/90</i></code></div>
+<div class="ds-icon"><div class="stage"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:waterdrop-bold-duotone" class="iconify h-3 w-3 iconify--solar"><path fill="currentColor" d="M11.612 22h.777C17.145 22 21 18.057 21 13.193v-.265c0-4.611-2.729-8.765-6.903-10.507a5.43 5.43 0 0 0-4.194 0C5.73 4.163 3 8.317 3 12.928v.265C3 18.057 6.855 22 11.612 22" opacity=".5"></path><path fill="currentColor" d="M12.066 5.961a.75.75 0 0 1-.366.996c-1.545.715-2.793 2.168-3.37 3.993a.75.75 0 1 1-1.43-.453c.691-2.186 2.206-3.993 4.17-4.902a.75.75 0 0 1 .996.366"></path></svg></div><code>waterdrop-bold-duotone<i>h-3 w-3</i></code></div>
+<div class="ds-icon"><div class="stage"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:info-circle-bold-duotone" class="iconify h-3.5 w-3.5 text-sky-50 iconify--solar"><path fill="currentColor" d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12S6.477 2 12 2s10 4.477 10 10" opacity=".5"></path><path fill="currentColor" d="M12 17.75a.75.75 0 0 0 .75-.75v-6a.75.75 0 0 0-1.5 0v6c0 .414.336.75.75.75M12 7a1 1 0 1 1 0 2a1 1 0 0 1 0-2"></path></svg></div><code>info-circle-bold-duotone<i>h-3.5 w-3.5 text-sky-50</i></code></div>
+  </div>
+  <p class="ds-note" style="margin-top:28px">Solar <code>*-bold-duotone</code> set, inlined as Iconify SVGs (1em box, a 0.4–0.7 opacity back path). Sizes as declared: <code>h-4.5 w-4.5</code> is not a Tailwind v3 step, so those render at the 1em default of their text. The Wednesday forecast asks for <code>solar:sun-cloud-bold-duotone</code>, which Iconify answers as not found — the slot stays empty, as on the live page.</p>
+</section>
+<section class="ds-group" id="components-actions">
+<div class="ds-head">
+  <div class="ds-kicker"><span>Components</span><span>(06)</span></div>
+  <h2>Actions</h2>
+</div>
+  <div class="ds-spec ">
+    <h3>Pill button · dark</h3>
+    <div class="ds-row"><div class="ds-cell"><small>icon + label</small><button class="inline-flex items-center justify-center rounded-full bg-neutral-800 px-2.5 py-1 text-[11px] text-neutral-200 border border-white/10 hover:bg-neutral-700 hover:border-white/20 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:graph-new-up-bold-duotone" class="iconify iconify--solar mr-1 w-[12px] h-[12px]" stroke-width="2" data-icon-replaced="true" style="width: 12px; height: 12px; color: rgb(52, 211, 153);"><path fill="currentColor" d="M2 12c0-4.714 0-7.071 1.464-8.536C4.93 2 7.286 2 12 2s7.071 0 8.535 1.464C22 4.93 22 7.286 22 12s0 7.071-1.465 8.535C19.072 22 16.714 22 12 22s-7.071 0-8.536-1.465C2 19.072 2 16.714 2 12" opacity=".5" class=""></path><path fill="currentColor" d="M22 5a3 3 0 1 1-6 0a3 3 0 0 1 6 0m-7.5 5.75a.75.75 0 0 1 0-1.5H17a.75.75 0 0 1 .75.75v2.5a.75.75 0 0 1-1.5 0v-.69l-2.013 2.013a1.75 1.75 0 0 1-2.474 0l-1.586-1.586a.25.25 0 0 0-.354 0L7.53 14.53a.75.75 0 0 1-1.06-1.06l2.293-2.293a1.75 1.75 0 0 1 2.474 0l1.586 1.586a.25.25 0 0 0 .354 0l2.012-2.013z"></path></svg>
+                    Live
+                  </button></div><div class="ds-cell"><small>icon + label</small><button class="inline-flex items-center gap-1 rounded-full bg-neutral-800 px-2.5 py-1 text-[11px] text-neutral-100 hover:bg-neutral-700 hover:border-white/20 transition border border-white/10">
+                  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:pen-new-round-bold-duotone" class="iconify h-3.5 w-3.5 iconify--solar"><circle cx="12" cy="12" r="10" fill="currentColor" opacity=".5"></circle><path fill="currentColor" d="M13.926 14.302c.245-.191.467-.413.912-.858l5.54-5.54c.134-.134.073-.365-.106-.427a6.1 6.1 0 0 1-2.3-1.449a6.1 6.1 0 0 1-1.45-2.3c-.061-.18-.292-.24-.426-.106l-5.54 5.54c-.445.444-.667.667-.858.912a5 5 0 0 0-.577.932c-.133.28-.233.579-.431 1.175l-.257.77l-.409 1.226l-.382 1.148a.817.817 0 0 0 1.032 1.033l1.15-.383l1.224-.408l.77-.257c.597-.199.895-.298 1.175-.432q.498-.237.933-.576m8.187-8.132a3.028 3.028 0 0 0-4.282-4.283l-.179.178a.73.73 0 0 0-.206.651c.027.15.077.37.168.633a4.9 4.9 0 0 0 1.174 1.863a4.9 4.9 0 0 0 1.862 1.174c.263.09.483.141.633.168c.24.043.48-.035.652-.207z"></path></svg>
+                  Edit
+                </button></div><div class="ds-cell"><small>icon + label</small><button class="inline-flex items-center gap-1 rounded-full bg-neutral-800 px-2.5 py-1 text-[11px] text-neutral-100 hover:bg-neutral-700 hover:border-white/20 transition border border-white/10">
+                  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:map-point-bold-duotone" class="iconify h-3.5 w-3.5 iconify--solar"><path fill="currentColor" d="M12 2c-4.418 0-8 4.003-8 8.5c0 4.462 2.553 9.312 6.537 11.174a3.45 3.45 0 0 0 2.926 0C17.447 19.812 20 14.962 20 10.5C20 6.003 16.418 2 12 2" opacity=".5"></path><path fill="currentColor" d="M12 12.5a2.5 2.5 0 1 0 0-5a2.5 2.5 0 0 0 0 5"></path></svg>
+                  Home garden
+                </button></div></div>
+    <code class="ds-meta">button.inline-flex.rounded-full.bg-neutral-800.px-2.5.py-1.text-[11px] · border-white/10 · hover:bg-neutral-700 hover:border-white/20 · transition</code>
+    <p class="ds-note">One family: 11px label after a 12–14px Solar icon (mr-1 or gap-1). Hover lifts the fill to neutral-700 and the hairline to /20.</p>
+  </div>
+  <div class="ds-spec ">
+    <h3>Block button</h3>
+    <div class="ds-fit" style="width:100%"><button class="w-full inline-flex items-center justify-center gap-1 rounded-full bg-neutral-800 px-3 py-2 text-xs font-medium text-neutral-100 hover:bg-neutral-700 hover:border-white/20 transition border border-white/10">
+                  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:settings-bold-duotone" class="iconify h-3.5 w-3.5 iconify--solar"><path fill="currentColor" fill-rule="evenodd" d="M14.279 2.152C13.909 2 13.439 2 12.5 2s-1.408 0-1.779.152a2 2 0 0 0-1.09 1.083c-.094.223-.13.484-.145.863a1.62 1.62 0 0 1-.796 1.353a1.64 1.64 0 0 1-1.579.008c-.338-.178-.583-.276-.825-.308a2.03 2.03 0 0 0-1.49.396c-.318.242-.553.646-1.022 1.453c-.47.807-.704 1.21-.757 1.605c-.07.526.074 1.058.4 1.479c.148.192.357.353.68.555c.477.297.783.803.783 1.361s-.306 1.064-.782 1.36c-.324.203-.533.364-.682.556a2 2 0 0 0-.399 1.479c.053.394.287.798.757 1.605s.704 1.21 1.022 1.453c.424.323.96.465 1.49.396c.242-.032.487-.13.825-.308a1.64 1.64 0 0 1 1.58.008c.486.28.774.795.795 1.353c.015.38.051.64.145.863c.204.49.596.88 1.09 1.083c.37.152.84.152 1.779.152s1.409 0 1.779-.152a2 2 0 0 0 1.09-1.083c.094-.223.13-.483.145-.863c.02-.558.309-1.074.796-1.353a1.64 1.64 0 0 1 1.579-.008c.338.178.583.276.825.308c.53.07 1.066-.073 1.49-.396c.318-.242.553-.646 1.022-1.453c.47-.807.704-1.21.757-1.605a2 2 0 0 0-.4-1.479c-.148-.192-.357-.353-.68-.555c-.477-.297-.783-.803-.783-1.361s.306-1.064.782-1.36c.324-.203.533-.364.682-.556a2 2 0 0 0 .399-1.479c-.053-.394-.287-.798-.757-1.605s-.704-1.21-1.022-1.453a2.03 2.03 0 0 0-1.49-.396c-.242.032-.487.13-.825.308a1.64 1.64 0 0 1-1.58-.008a1.62 1.62 0 0 1-.795-1.353c-.015-.38-.051-.64-.145-.863a2 2 0 0 0-1.09-1.083" clip-rule="evenodd" opacity=".5"></path><path fill="currentColor" d="M15.523 12c0 1.657-1.354 3-3.023 3s-3.023-1.343-3.023-3S10.83 9 12.5 9s3.023 1.343 3.023 3"></path></svg>
+                  Configure zone
+                </button></div>
+    <code class="ds-meta">button.w-full.rounded-full.bg-neutral-800.px-3.py-2.text-xs.font-medium · gap-1 · hover:bg-neutral-700</code>
+  </div>
+  <div class="ds-spec ">
+    <h3>Icon button</h3>
+    <div class="ds-row"><div class="ds-cell"><small>dark</small><button class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-neutral-800 border border-white/10 hover:bg-neutral-700 hover:border-white/20 transition">
+                  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:calendar-bold-duotone" class="iconify h-4.5 w-4.5 text-neutral-200 iconify--solar"><path fill="currentColor" d="M6.94 2c.416 0 .753.324.753.724v1.46c.668-.012 1.417-.012 2.26-.012h4.015c.842 0 1.591 0 2.259.013v-1.46c0-.4.337-.725.753-.725s.753.324.753.724V4.25c1.445.111 2.394.384 3.09 1.055c.698.67.982 1.582 1.097 2.972L22 9H2v-.724c.116-1.39.4-2.302 1.097-2.972s1.645-.944 3.09-1.055V2.724c0-.4.337-.724.753-.724" class=""></path><path fill="currentColor" d="M22 14v-2c0-.839-.004-2.335-.017-3H2.01c-.013.665-.01 2.161-.01 3v2c0 3.771 0 5.657 1.172 6.828S6.228 22 10 22h4c3.77 0 5.656 0 6.828-1.172S22 17.772 22 14" opacity=".5" class=""></path><path fill="currentColor" d="M18 17a1 1 0 1 1-2 0a1 1 0 0 1 2 0m0-4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m-5 4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m0-4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m-5 4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m0-4a1 1 0 1 1-2 0a1 1 0 0 1 2 0"></path></svg>
+                </button></div><div class="ds-cell"><small>on yellow</small><div class="bg-yellow-400 rounded-3xl p-4 border border-white/15"><button class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-yellow-300/60 hover:bg-yellow-300/80 transition border border-yellow-200">
+                  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:refresh-circle-bold-duotone" class="iconify h-4.5 w-4.5 text-yellow-950 iconify--solar"><circle cx="12" cy="12" r="10" fill="currentColor" opacity=".5"></circle><path fill="currentColor" d="M7.378 11.63h-.75zm0 .926l-.562.497a.75.75 0 0 0 1.08.044zm2.141-1.015a.75.75 0 0 0-1.038-1.082zm-2.958-1.038a.75.75 0 1 0-1.122.994zm8.37-1.494a.75.75 0 1 0 1.102-1.018zM12.045 6.25c-2.986 0-5.416 2.403-5.416 5.38h1.5c0-2.137 1.747-3.88 3.916-3.88zm-5.416 5.38v.926h1.5v-.926zm1.269 1.467l1.622-1.556l-1.038-1.082l-1.622 1.555zm.042-1.039l-1.378-1.555l-1.122.994l1.377 1.556zm8.094-4.067a5.42 5.42 0 0 0-3.99-1.741v1.5a3.92 3.92 0 0 1 2.889 1.26zm.585 3.453l.56-.498a.75.75 0 0 0-1.08-.043zm-2.139 1.014a.75.75 0 1 0 1.04 1.082zm2.96 1.04a.75.75 0 0 0 1.12-.997zm-8.393 1.507a.75.75 0 0 0-1.094 1.026zm2.888 2.745c2.993 0 5.434-2.4 5.434-5.38h-1.5c0 2.135-1.753 3.88-3.934 3.88zm5.434-5.38v-.926h-1.5v.926zm-1.27-1.467l-1.619 1.555l1.04 1.082l1.618-1.555zm-.04 1.04l1.38 1.554l1.122-.996l-1.381-1.555zM7.952 16.03a5.45 5.45 0 0 0 3.982 1.719v-1.5c-1.143 0-2.17-.48-2.888-1.245z"></path></svg>
+                </button></div></div></div>
+    <code class="ds-meta">button.h-8.w-8.rounded-full · bg-neutral-800 border-white/10 | bg-yellow-300/60 border-yellow-200 hover:bg-yellow-300/80</code>
+  </div>
+  <div class="ds-spec ">
+    <h3>Chip button on color</h3>
+    <div class="bg-cyan-500 rounded-3xl p-4 inline-block border border-white/15"><button class="inline-flex items-center justify-center rounded-full bg-white/15 px-2.5 py-1 text-[11px] font-medium text-white/90 hover:bg-white/20 transition border border-white/30">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" style="color: rgb(255, 255, 255); width: 16px; height: 16px" class="iconify iconify--solar w-[16px] h-[16px]" aria-hidden="true" role="img" data-icon="solar:cloud-rain-bold-duotone" data-solar="reorder-bold-duotone" data-icon-set="solar" data-icon-replaced="true" stroke-width="2"><path fill="#ffffff" d="M12 22c-4.714 0-7.071 0-8.536-1.465C2 19.072 2 16.714 2 12s0-7.071 1.464-8.536C4.93 2 7.286 2 12 2s7.071 0 8.535 1.464C22 4.93 22 7.286 22 12s0 7.071-1.465 8.535C19.072 22 16.714 22 12 22" opacity=".5"></path><path fill="#ffffff" d="M19.75 10a.75.75 0 0 1-.75.75H5a.75.75 0 0 1 0-1.5h14a.75.75 0 0 1 .75.75m0 4a.75.75 0 0 1-.75.75H5a.75.75 0 0 1 0-1.5h14a.75.75 0 0 1 .75.75m0-8a.75.75 0 0 1-.75.75H5a.75.75 0 0 1 0-1.5h14a.75.75 0 0 1 .75.75m0 12a.75.75 0 0 1-.75.75H5a.75.75 0 0 1 0-1.5h14a.75.75 0 0 1 .75.75"></path></svg>
+                  <span class="ml-1">Automation</span>
+                </button></div>
+    <code class="ds-meta">button.rounded-full.bg-white/15.px-2.5.py-1.text-[11px].font-medium.text-white/90 · border-white/30 · hover:bg-white/20</code>
+    <p class="ds-note">Its icon is the Solar cloud-rain slot filled with reorder-bold-duotone paths, exactly as exported.</p>
+  </div>
+</section>
+
+<section class="ds-group" id="components-controls">
+<div class="ds-head">
+  <div class="ds-kicker"><span>Components</span><span>(07)</span></div>
+  <h2>Controls</h2>
+</div>
+  <div class="ds-spec ">
+    <h3>Toggle switch</h3>
+    <div class="ds-fit"><div class="bg-cyan-500 rounded-3xl px-5 py-4 border border-white/15"><div class="border-white/20 flex items-center justify-between">
+                <span class="text-xs text-cyan-100/80">Rule status</span>
+                <button class="relative inline-flex h-7 w-12 items-center rounded-full bg-white/20 transition border border-white/40 hover:bg-white/30">
+                  <span class="absolute left-0.5 top-0.5 h-6 w-6 rounded-full bg-white shadow-md translate-x-0"></span>
+                  <span class="sr-only">Toggle smart rule</span>
+                </button>
+              </div></div></div>
+    <code class="ds-meta">button.relative.h-7.w-12.rounded-full.bg-white/20.border-white/40 · hover:bg-white/30 &gt; knob span.h-6.w-6.rounded-full.bg-white.shadow-md.translate-x-0</code>
+    <p class="ds-note">Static in the source (no handler): shown in its off position, as exported.</p>
+  </div>
+  <div class="ds-spec ">
+    <h3>Select</h3>
+    <div class="ds-fit"><div class="bg-yellow-400 rounded-3xl p-5 border border-white/15"><div class="flex-1">
+                    <p class="text-[11px] text-yellow-950/80 mb-1">Current month</p>
+                    <button class="w-full flex items-center justify-between rounded-2xl bg-yellow-300/70 px-3 py-2 text-xs font-medium text-yellow-950 border border-yellow-600/40 hover:bg-yellow-200/80 hover:border-yellow-700/50">
+                      <span>April</span>
+                      <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:alt-arrow-down-bold-duotone" class="iconify h-3.5 w-3.5 text-yellow-950 iconify--solar"><path fill="currentColor" d="m8.303 12.404l3.327 3.431c.213.22.527.22.74 0l6.43-6.63C19.201 8.79 18.958 8 18.43 8h-5.723z"></path><path fill="currentColor" d="M11.293 8H5.57c-.528 0-.771.79-.37 1.205l2.406 2.481z" opacity=".5"></path></svg>
+                    </button>
+                  </div></div></div>
+    <code class="ds-meta">button.w-full.rounded-2xl.bg-yellow-300/70.px-3.py-2.text-xs.font-medium.text-yellow-950 · border-yellow-600/40 · hover:bg-yellow-200/80 hover:border-yellow-700/50 · alt-arrow-down 14px</code>
+  </div>
+  <div class="ds-spec ">
+    <h3>Limit slider</h3>
+    <div style="max-width:560px"><div class="bg-sky-600 rounded-3xl p-5 border border-white/15"><div class="w-full">
+                  <div class="relative w-full h-9 rounded-full bg-sky-500/50 flex items-center px-3 border border-sky-300/60">
+                    <div class="absolute inset-y-0 left-0 rounded-full bg-white w-1/2"></div>
+                    <div class="relative flex w-full items-center justify-between text-[11px] font-medium">
+                      <span class="text-sky-950 z-10">11h</span>
+                      <span class="text-sky-100 z-10">20h max</span>
+                    </div>
+                    <div class="absolute right-[50%] translate-x-1/2 top-1/2 -translate-y-1/2 h-7 w-7 rounded-full bg-sky-700 border border-white/80 shadow-lg flex items-center justify-center text-[10px] font-semibold text-white">
+                      <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:waterdrop-bold-duotone" class="iconify h-3 w-3 iconify--solar"><path fill="currentColor" d="M11.612 22h.777C17.145 22 21 18.057 21 13.193v-.265c0-4.611-2.729-8.765-6.903-10.507a5.43 5.43 0 0 0-4.194 0C5.73 4.163 3 8.317 3 12.928v.265C3 18.057 6.855 22 11.612 22" opacity=".5"></path><path fill="currentColor" d="M12.066 5.961a.75.75 0 0 1-.366.996c-1.545.715-2.793 2.168-3.37 3.993a.75.75 0 1 1-1.43-.453c.691-2.186 2.206-3.993 4.17-4.902a.75.75 0 0 1 .996.366"></path></svg>
+                    </div>
+                  </div>
+                </div></div></div>
+    <code class="ds-meta">div.relative.h-9.rounded-full.bg-sky-500/50.border-sky-300/60 &gt; fill .absolute.inset-y-0.left-0.rounded-full.bg-white.w-1/2 · values text-[11px] font-medium sky-950 | sky-100 · thumb bg-sky-700 border-white/80</code>
+    <p class="ds-note">A display-only range: the white fill carries the current value (w-1/2), the thumb sits on its edge.</p>
+  </div>
+</section>
+
+<section class="ds-group" id="components-badges">
+<div class="ds-head">
+  <div class="ds-kicker"><span>Components</span><span>(08)</span></div>
+  <h2>Badges and status</h2>
+</div>
+  <div class="ds-spec ">
+    <h3>Badges</h3>
+    <div class="ds-row"><div class="ds-cell"><small>on color</small><div class="bg-emerald-600 rounded-3xl p-4 border border-white/15"><span class="rounded-full bg-white/15 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.14em] text-white/90 border border-white/30">
+                    Sensor
+                  </span></div></div><div class="ds-cell"><small>on photo</small><div class="relative overflow-hidden rounded-3xl" style="width:220px;height:84px"><img src="assets/overview/assets/hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/917d6f93-fb36-439a-8c48-884b67b35381_1600w.jpg" alt="" class="h-full w-full object-cover"><div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div><div class="absolute top-3 left-3"><span class="inline-flex items-center rounded-full bg-black/60 px-2.5 py-1 text-[11px] font-medium text-white/90 border border-white/20">
+                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:clock-circle-bold-duotone" class="iconify mr-1 h-3.5 w-3.5 iconify--solar"><path fill="currentColor" d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2S2 6.477 2 12s4.477 10 10 10" opacity=".5"></path><path fill="currentColor" fill-rule="evenodd" d="M12 7.25a.75.75 0 0 1 .75.75v3.69l2.28 2.28a.75.75 0 1 1-1.06 1.06l-2.5-2.5a.75.75 0 0 1-.22-.53V8a.75.75 0 0 1 .75-.75" clip-rule="evenodd"></path></svg>
+                    Scheduled
+                  </span></div></div></div></div>
+    <code class="ds-meta">span.rounded-full.bg-white/15.px-2.py-0.5.text-[10px].font-medium.uppercase.tracking-[0.14em].border-white/30 · span.rounded-full.bg-black/60.px-2.5.py-1.text-[11px].border-white/20 + clock-circle</code>
+  </div>
+  <div class="ds-spec ">
+    <h3>Legend</h3>
+    <div class="ds-fit" style="width:100%"><div class="flex items-center justify-between text-[11px] text-neutral-400">
+                <div class="flex items-center gap-2">
+                  <span class="inline-block h-2.5 w-2.5 rounded-full bg-amber-400"></span>
+                  <span class="">Watered</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="inline-block h-2.5 w-2.5 rounded-full bg-neutral-700"></span>
+                  <span class="">Skipped</span>
+                </div>
+              </div></div>
+    <code class="ds-meta">text-[11px] text-neutral-400 · dot span.h-2.5.w-2.5.rounded-full · bg-amber-400 (watered) | bg-neutral-700 (skipped)</code>
+  </div>
+  <div class="ds-spec ">
+    <h3>Status lines</h3>
+    <div class="ds-row"><div class="ds-cell"><small>safe</small><div class="text-[11px] text-neutral-400"><div class="flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:shield-check-bold-duotone" class="iconify h-3.5 w-3.5 text-emerald-400 iconify--solar"><path fill="currentColor" d="M3.378 5.082C3 5.62 3 7.22 3 10.417v1.574c0 5.638 4.239 8.375 6.899 9.536c.721.315 1.082.473 2.101.473c1.02 0 1.38-.158 2.101-.473C16.761 20.365 21 17.63 21 11.991v-1.574c0-3.198 0-4.797-.378-5.335c-.377-.537-1.88-1.052-4.887-2.081l-.573-.196C13.595 2.268 12.812 2 12 2s-1.595.268-3.162.805L8.265 3c-3.007 1.03-4.51 1.545-4.887 2.082" opacity=".5"></path><path fill="currentColor" d="M15.06 10.5a.75.75 0 0 0-1.12-1l-3.011 3.374l-.87-.974a.75.75 0 0 0-1.118 1l1.428 1.6a.75.75 0 0 0 1.119 0z"></path></svg>
+                  <span class="">Weather-safe</span>
+                </div></div></div><div class="ds-cell"><small>info</small><div class="flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:waterdrops-bold-duotone" class="iconify h-4 w-4 text-sky-400 iconify--solar"><path fill="currentColor" d="M10 17.833C10 20.134 8.21 22 6 22s-4-1.866-4-4.167c0-1.44 1.566-3.361 2.738-4.598a1.724 1.724 0 0 1 2.524 0C8.434 14.472 10 16.393 10 17.833"></path><path fill="currentColor" d="M22 17.833C22 20.134 20.21 22 18 22s-4-1.866-4-4.167c0-1.44 1.566-3.361 2.738-4.598a1.724 1.724 0 0 1 2.524 0C20.434 14.472 22 16.393 22 17.833" opacity=".7"></path><path fill="currentColor" d="M16 7.833C16 10.134 14.21 12 12 12s-4-1.866-4-4.167c0-1.44 1.566-3.361 2.738-4.598a1.724 1.724 0 0 1 2.524 0C14.434 4.472 16 6.393 16 7.833" opacity=".4"></path></svg>
+                  <p class="text-xs text-neutral-300">Lorem ipsum dolor sit</p>
+                </div></div></div>
+    <code class="ds-meta">flex gap-2 · shield-check text-emerald-400 + text-[11px] text-neutral-400 · waterdrops text-sky-400 + text-xs text-neutral-300</code>
+  </div>
+  <div class="ds-spec ">
+    <h3>Impact labels</h3>
+    <div class="ds-row"><span class="text-[10px] text-emerald-300">Normal</span><span class="text-[10px] text-emerald-300">Slight</span><span class="text-[10px] text-emerald-300">Reduced</span><span class="text-[10px] text-emerald-300">Paused</span></div>
+    <code class="ds-meta">span.text-[10px].text-emerald-300 — Normal · Slight · Reduced · Paused</code>
+  </div>
+  <div class="ds-spec ">
+    <h3>Summary row on color</h3>
+    <div style="max-width:560px"><div class="bg-sky-600 rounded-3xl px-5 py-4 border border-white/15"><div class="flex items-center justify-between text-[11px] text-sky-50/90">
+                  <div class="flex items-center gap-2">
+                    <span class="inline-flex h-2.5 w-2.5 rounded-full bg-emerald-300"></span>
+                    <span>Estimated savings: <span class="font-medium">18%</span></span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:info-circle-bold-duotone" class="iconify h-3.5 w-3.5 text-sky-50 iconify--solar"><path fill="currentColor" d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12S6.477 2 12 2s10 4.477 10 10" opacity=".5"></path><path fill="currentColor" d="M12 17.75a.75.75 0 0 0 .75-.75v-6a.75.75 0 0 0-1.5 0v6c0 .414.336.75.75.75M12 7a1 1 0 1 1 0 2a1 1 0 0 1 0-2"></path></svg>
+                    <span>Reference: 400 L/week</span>
+                  </div>
+                </div></div></div>
+    <code class="ds-meta">text-[11px] text-sky-50/90 · dot bg-emerald-300 · info-circle text-sky-50 · value span.font-medium</code>
+  </div>
+</section>
+<section class="ds-group" id="components-cards">
+<div class="ds-head">
+  <div class="ds-kicker"><span>Components</span><span>(09)</span></div>
+  <h2>Cards</h2>
+</div>
+<p class="ds-sub">Solid color cards</p>
+  <div class="ds-spec ">
+    <h3>Lead card · rule</h3>
+    <div class="ds-cards"><div class="ds-slot" style="display:flex;flex-direction:column;"><section class="md:col-span-4 lg:col-span-5 bg-cyan-500 rounded-3xl p-5 sm:p-6 flex flex-col justify-between shadow-lg shadow-cyan-900/40 border border-white/15 min-h-[280px]">
+              <div class="flex items-start justify-between gap-3 mb-6">
+                <div class="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-white/15 border border-white/30">
+                  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:temperature-bold-duotone" class="iconify h-4.5 w-4.5 text-white iconify--solar"><path fill="currentColor" d="M17.5 16.5a5.5 5.5 0 1 1-8.939-4.293c.264-.211.439-.521.439-.86V5a3 3 0 1 1 6 0v6.348c0 .338.175.648.439.86A5.49 5.49 0 0 1 17.5 16.5" opacity=".5"></path><path fill="currentColor" d="M12.75 5a.75.75 0 0 0-1.5 0v8.38c0 .437-.297.808-.658 1.054a2.5 2.5 0 1 0 2.816 0c-.36-.246-.658-.617-.658-1.054z"></path></svg>
+                </div>
+                <button class="inline-flex items-center justify-center rounded-full bg-white/15 px-2.5 py-1 text-[11px] font-medium text-white/90 hover:bg-white/20 transition border border-white/30">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" style="color: rgb(255, 255, 255); width: 16px; height: 16px" class="iconify iconify--solar w-[16px] h-[16px]" aria-hidden="true" role="img" data-icon="solar:cloud-rain-bold-duotone" data-solar="reorder-bold-duotone" data-icon-set="solar" data-icon-replaced="true" stroke-width="2"><path fill="#ffffff" d="M12 22c-4.714 0-7.071 0-8.536-1.465C2 19.072 2 16.714 2 12s0-7.071 1.464-8.536C4.93 2 7.286 2 12 2s7.071 0 8.535 1.464C22 4.93 22 7.286 22 12s0 7.071-1.465 8.535C19.072 22 16.714 22 12 22" opacity=".5"></path><path fill="#ffffff" d="M19.75 10a.75.75 0 0 1-.75.75H5a.75.75 0 0 1 0-1.5h14a.75.75 0 0 1 .75.75m0 4a.75.75 0 0 1-.75.75H5a.75.75 0 0 1 0-1.5h14a.75.75 0 0 1 .75.75m0-8a.75.75 0 0 1-.75.75H5a.75.75 0 0 1 0-1.5h14a.75.75 0 0 1 .75.75m0 12a.75.75 0 0 1-.75.75H5a.75.75 0 0 1 0-1.5h14a.75.75 0 0 1 .75.75"></path></svg>
+                  <span class="ml-1">Automation</span>
+                </button>
+              </div>
+              <div class="space-y-2">
+                <p class="text-xs font-medium uppercase tracking-[0.14em] text-cyan-100/80">Lorem ipsum</p>
+                <p class="text-[19px] sm:text-[21px] leading-snug font-semibold tracking-tight">
+                  Aurora Garden <span class="whitespace-nowrap">Design System</span>
+                </p>
+                <p class="text-xs text-cyan-100/80 pt-1">
+                  Saturated <span class="font-medium">color tiles</span> and <span class="font-medium">frosted glass</span> over drifting light rays.
+                </p>
+              </div>
+              <div class="mt-5 pt-4 border-t border-white/20 flex items-center justify-between">
+                <span class="text-xs text-cyan-100/80">Rule status</span>
+                <button class="relative inline-flex h-7 w-12 items-center rounded-full bg-white/20 transition border border-white/40 hover:bg-white/30">
+                  <span class="absolute left-0.5 top-0.5 h-6 w-6 rounded-full bg-white shadow-md translate-x-0"></span>
+                  <span class="sr-only">Toggle smart rule</span>
+                </button>
+              </div>
+            </section></div></div>
+    <code class="ds-meta">section.bg-cyan-500.rounded-3xl.p-5.sm:p-6.min-h-[280px] · border-white/15 · shadow-lg shadow-cyan-900/40 — icon tile + chip button, eyebrow / lead / meta, divider + toggle</code>
+    <p class="ds-note">Carries the hero statement on the Overview.</p>
+  </div>
+  <div class="ds-spec ">
+    <h3>Plan card · seasonal</h3>
+    <div class="ds-wide"><div class="ds-slot" style="display:flex;flex-direction:column;"><section class="md:col-span-8 lg:col-span-6 bg-yellow-400 rounded-3xl px-5 py-5 sm:px-6 sm:py-6 flex flex-col shadow-lg shadow-yellow-900/40 border border-white/15 min-h-[300px]">
+              <div class="flex items-center justify-between mb-4">
+                <div class="">
+                  <p class="text-xs font-medium uppercase tracking-[0.14em] text-yellow-950/80">Lorem ipsum</p>
+                  <h2 class="text-[22px] sm:text-[24px] font-semibold tracking-tight text-yellow-950">Lorem Ipsum Dolor</h2>
+                </div>
+                <button class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-yellow-300/60 hover:bg-yellow-300/80 transition border border-yellow-200">
+                  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:refresh-circle-bold-duotone" class="iconify h-4.5 w-4.5 text-yellow-950 iconify--solar"><circle cx="12" cy="12" r="10" fill="currentColor" opacity=".5"></circle><path fill="currentColor" d="M7.378 11.63h-.75zm0 .926l-.562.497a.75.75 0 0 0 1.08.044zm2.141-1.015a.75.75 0 0 0-1.038-1.082zm-2.958-1.038a.75.75 0 1 0-1.122.994zm8.37-1.494a.75.75 0 1 0 1.102-1.018zM12.045 6.25c-2.986 0-5.416 2.403-5.416 5.38h1.5c0-2.137 1.747-3.88 3.916-3.88zm-5.416 5.38v.926h1.5v-.926zm1.269 1.467l1.622-1.556l-1.038-1.082l-1.622 1.555zm.042-1.039l-1.378-1.555l-1.122.994l1.377 1.556zm8.094-4.067a5.42 5.42 0 0 0-3.99-1.741v1.5a3.92 3.92 0 0 1 2.889 1.26zm.585 3.453l.56-.498a.75.75 0 0 0-1.08-.043zm-2.139 1.014a.75.75 0 1 0 1.04 1.082zm2.96 1.04a.75.75 0 0 0 1.12-.997zm-8.393 1.507a.75.75 0 0 0-1.094 1.026zm2.888 2.745c2.993 0 5.434-2.4 5.434-5.38h-1.5c0 2.135-1.753 3.88-3.934 3.88zm5.434-5.38v-.926h-1.5v.926zm-1.27-1.467l-1.619 1.555l1.04 1.082l1.618-1.555zm-.04 1.04l1.38 1.554l1.122-.996l-1.381-1.555zM7.952 16.03a5.45 5.45 0 0 0 3.982 1.719v-1.5c-1.143 0-2.17-.48-2.888-1.245z"></path></svg>
+                </button>
+              </div>
+
+              <div class="flex-1 flex flex-col gap-4">
+                <!-- Months scale -->
+                <div class="flex items-center justify-between text-[10px] text-yellow-950/80">
+                  <span>Jan</span><span>Feb</span><span>Mar</span><span class="font-medium text-yellow-950">Apr</span><span>May</span><span>Jun</span><span class="">Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span>
+                </div>
+                <!-- Bars -->
+                <div class="mt-1 grid grid-cols-12 gap-1.5 h-28 items-end">
+                  <div class="rounded-full bg-yellow-900/40 h-[26%]"></div>
+                  <div class="rounded-full bg-yellow-900/40 h-[32%]"></div>
+                  <div class="rounded-full bg-yellow-900/40 h-[45%]"></div>
+                  <div class="rounded-full bg-yellow-50 h-[68%] shadow-md shadow-yellow-900/40 border border-yellow-200/70"></div>
+                  <div class="rounded-full bg-yellow-900/60 h-[74%]"></div>
+                  <div class="rounded-full bg-yellow-900/60 h-[80%]"></div>
+                  <div class="rounded-full bg-yellow-900/60 h-[92%]"></div>
+                  <div class="rounded-full bg-yellow-900/60 h-[100%]"></div>
+                  <div class="rounded-full bg-yellow-900/40 h-[77%]"></div>
+                  <div class="rounded-full bg-yellow-900/30 h-[60%]"></div>
+                  <div class="rounded-full bg-yellow-900/20 h-[40%]"></div>
+                  <div class="rounded-full bg-yellow-900/20 h-[34%]"></div>
+                </div>
+
+                <!-- Range + percentage -->
+                <div class="mt-3 flex items-center justify-between gap-3">
+                  <div class="flex-1">
+                    <p class="text-[11px] text-yellow-950/80 mb-1">Current month</p>
+                    <button class="w-full flex items-center justify-between rounded-2xl bg-yellow-300/70 px-3 py-2 text-xs font-medium text-yellow-950 border border-yellow-600/40 hover:bg-yellow-200/80 hover:border-yellow-700/50">
+                      <span>April</span>
+                      <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:alt-arrow-down-bold-duotone" class="iconify h-3.5 w-3.5 text-yellow-950 iconify--solar"><path fill="currentColor" d="m8.303 12.404l3.327 3.431c.213.22.527.22.74 0l6.43-6.63C19.201 8.79 18.958 8 18.43 8h-5.723z"></path><path fill="currentColor" d="M11.293 8H5.57c-.528 0-.771.79-.37 1.205l2.406 2.481z" opacity=".5"></path></svg>
+                    </button>
+                  </div>
+                  <div class="flex flex-col items-end">
+                    <p class="text-[11px] text-yellow-950/80 mb-0.5">Water usage target</p>
+                    <p class="text-lg font-semibold tracking-tight text-yellow-950">72%</p>
+                  </div>
+                </div>
+              </div>
+            </section></div></div>
+    <code class="ds-meta">section.bg-yellow-400.rounded-3xl.px-5.py-5.sm:px-6.sm:py-6.min-h-[300px] · shadow-yellow-900/40 — eyebrow + h2 + icon button, month scale, 12 bars, select + target</code>
+  </div>
+  <div class="ds-spec ">
+    <h3>Schedule card · weekly limit</h3>
+    <div class="ds-wide"><div class="ds-slot" style="display:flex;flex-direction:column;"><section class="md:col-span-8 lg:col-span-6 bg-sky-600 rounded-3xl p-5 sm:p-6 flex flex-col justify-between shadow-lg shadow-sky-900/40 border border-white/15">
+              <div class="flex items-center justify-between mb-4">
+                <div class="">
+                  <p class="text-xs font-medium uppercase tracking-[0.14em] text-sky-50/90">Lorem ipsum</p>
+                  <h2 class="text-[22px] font-semibold tracking-tight text-white">Lorem Ipsum Dolor</h2>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:slider-vertical-bold-duotone" class="iconify h-5 w-5 text-sky-50/90 iconify--solar"><path fill="currentColor" d="M6 8c0-2.828 0-4.243.879-5.121C7.757 2 9.172 2 12 2s4.243 0 5.121.879C18 3.757 18 5.172 18 8v8c0 2.828 0 4.243-.879 5.121C16.243 22 14.828 22 12 22s-4.243 0-5.121-.879C6 20.243 6 18.828 6 16z"></path><path fill="currentColor" d="M6.141 4.5C6 5.343 6 6.462 6 8v8c0 1.538 0 2.657.141 3.5H6c-1.4 0-2.1 0-2.635-.273a2.5 2.5 0 0 1-1.093-1.092C2 17.6 2 16.9 2 15.5v-7c0-1.4 0-2.1.272-2.635a2.5 2.5 0 0 1 1.093-1.093C3.9 4.5 4.6 4.5 6 4.5zm11.718 0C18 5.343 18 6.462 18 8v8c0 1.538 0 2.657-.141 3.5H18c1.4 0 2.1 0 2.635-.273a2.5 2.5 0 0 0 1.092-1.092C22 17.6 22 16.9 22 15.5v-7c0-1.4 0-2.1-.273-2.635a2.5 2.5 0 0 0-1.092-1.093C20.1 4.5 19.4 4.5 18 4.5z" opacity=".5"></path></svg>
+              </div>
+
+              <p class="text-xs text-sky-50/90 mb-4 border-b border-white/20 pb-3">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor incididunt.
+              </p>
+
+              <div class="mt-1 space-y-3">
+                <div class="w-full">
+                  <div class="relative w-full h-9 rounded-full bg-sky-500/50 flex items-center px-3 border border-sky-300/60">
+                    <div class="absolute inset-y-0 left-0 rounded-full bg-white w-1/2"></div>
+                    <div class="relative flex w-full items-center justify-between text-[11px] font-medium">
+                      <span class="text-sky-950 z-10">11h</span>
+                      <span class="text-sky-100 z-10">20h max</span>
+                    </div>
+                    <div class="absolute right-[50%] translate-x-1/2 top-1/2 -translate-y-1/2 h-7 w-7 rounded-full bg-sky-700 border border-white/80 shadow-lg flex items-center justify-center text-[10px] font-semibold text-white">
+                      <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:waterdrop-bold-duotone" class="iconify h-3 w-3 iconify--solar"><path fill="currentColor" d="M11.612 22h.777C17.145 22 21 18.057 21 13.193v-.265c0-4.611-2.729-8.765-6.903-10.507a5.43 5.43 0 0 0-4.194 0C5.73 4.163 3 8.317 3 12.928v.265C3 18.057 6.855 22 11.612 22" opacity=".5"></path><path fill="currentColor" d="M12.066 5.961a.75.75 0 0 1-.366.996c-1.545.715-2.793 2.168-3.37 3.993a.75.75 0 1 1-1.43-.453c.691-2.186 2.206-3.993 4.17-4.902a.75.75 0 0 1 .996.366"></path></svg>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex items-center justify-between text-[11px] text-sky-50/90">
+                  <div class="flex items-center gap-2">
+                    <span class="inline-flex h-2.5 w-2.5 rounded-full bg-emerald-300"></span>
+                    <span>Estimated savings: <span class="font-medium">18%</span></span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:info-circle-bold-duotone" class="iconify h-3.5 w-3.5 text-sky-50 iconify--solar"><path fill="currentColor" d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12S6.477 2 12 2s10 4.477 10 10" opacity=".5"></path><path fill="currentColor" d="M12 17.75a.75.75 0 0 0 .75-.75v-6a.75.75 0 0 0-1.5 0v6c0 .414.336.75.75.75M12 7a1 1 0 1 1 0 2a1 1 0 0 1 0-2"></path></svg>
+                    <span>Reference: 400 L/week</span>
+                  </div>
+                </div>
+              </div>
+            </section></div></div>
+    <code class="ds-meta">section.bg-sky-600.rounded-3xl.p-5.sm:p-6 · shadow-sky-900/40 — eyebrow + h2 + slider-vertical icon, paragraph, limit slider, summary row</code>
+  </div>
+<p class="ds-sub">Glass cards</p>
+  <div class="ds-spec ">
+    <h3>Metric card + sensor card (stacked pair)</h3>
+    <div class="ds-cards"><div class="ds-slot" style="display:flex;flex-direction:column;"><div class="md:col-span-4 lg:col-span-3 flex flex-col gap-4 gap-x-4 gap-y-4">
+              <!-- Wind card -->
+              <section class="flex flex-col shadow-neutral-900/50 min-h-[130px] sm:p-5 bg-gradient-to-br from-white/10 to-white/0 h-1/2 rounded-3xl pt-4 pr-4 pb-4 pl-4 shadow-lg backdrop-blur-lg justify-between" style="position: relative; --border-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0)); --border-radius-before: 24px">
+                <div class="flex items-center justify-between mb-3">
+                  <div class="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-sky-500 border border-sky-300/70">
+                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:wind-bold-duotone" class="iconify h-4.5 w-4.5 text-white iconify--solar"><path fill="currentColor" fill-rule="evenodd" d="M6.25 5.5A3.25 3.25 0 1 1 9.5 8.75H3a.75.75 0 0 1 0-1.5h6.5A1.75 1.75 0 1 0 7.75 5.5v.357a.75.75 0 1 1-1.5 0z" clip-rule="evenodd"></path><path fill="currentColor" d="M3.25 14a.75.75 0 0 1 .75-.75h14.5a4.25 4.25 0 1 1-4.25 4.25V17a.75.75 0 0 1 1.5 0v.5a2.75 2.75 0 1 0 2.75-2.75H4a.75.75 0 0 1-.75-.75" opacity=".4"></path><path fill="currentColor" d="M14.25 7.5a4.25 4.25 0 1 1 4.25 4.25H2a.75.75 0 0 1 0-1.5h16.5a2.75 2.75 0 1 0-2.75-2.75V8a.75.75 0 0 1-1.5 0z" opacity=".7"></path></svg>
+                  </div>
+                  <button class="inline-flex items-center justify-center rounded-full bg-neutral-800 px-2.5 py-1 text-[11px] text-neutral-200 border border-white/10 hover:bg-neutral-700 hover:border-white/20 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:graph-new-up-bold-duotone" class="iconify iconify--solar mr-1 w-[12px] h-[12px]" stroke-width="2" data-icon-replaced="true" style="width: 12px; height: 12px; color: rgb(52, 211, 153);"><path fill="currentColor" d="M2 12c0-4.714 0-7.071 1.464-8.536C4.93 2 7.286 2 12 2s7.071 0 8.535 1.464C22 4.93 22 7.286 22 12s0 7.071-1.465 8.535C19.072 22 16.714 22 12 22s-7.071 0-8.536-1.465C2 19.072 2 16.714 2 12" opacity=".5" class=""></path><path fill="currentColor" d="M22 5a3 3 0 1 1-6 0a3 3 0 0 1 6 0m-7.5 5.75a.75.75 0 0 1 0-1.5H17a.75.75 0 0 1 .75.75v2.5a.75.75 0 0 1-1.5 0v-.69l-2.013 2.013a1.75 1.75 0 0 1-2.474 0l-1.586-1.586a.25.25 0 0 0-.354 0L7.53 14.53a.75.75 0 0 1-1.06-1.06l2.293-2.293a1.75 1.75 0 0 1 2.474 0l1.586 1.586a.25.25 0 0 0 .354 0l2.012-2.013z"></path></svg>
+                    Live
+                  </button>
+                </div>
+                <div class="space-y-1">
+                  <div class="flex items-center justify-between">
+                    <p class="text-xs text-neutral-400">Wind speed</p>
+                    <span class="text-[10px] text-neutral-500">Now</span>
+                  </div>
+                  <p class="text-[21px] font-semibold tracking-tight">11 km/h</p>
+                </div>
+              </section>
+
+              <!-- Rain sensor card -->
+              <section class="sm:p-5 flex flex-col shadow-emerald-900/40 min-h-[130px] bg-emerald-600 h-1/2 border-white/15 border rounded-3xl pt-4 pr-4 pb-4 pl-4 shadow-lg justify-between">
+                <div class="flex items-center justify-between mb-3">
+                  <div class="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-white/20 border border-white/40">
+                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:cloud-rain-bold-duotone" class="iconify iconify--solar w-[16px] h-[16px]" stroke-width="2" data-icon-replaced="true" style="color: rgb(255, 255, 255); width: 16px; height: 16px;"><path fill="currentColor" fill-rule="evenodd" d="M12.03 14.97a.75.75 0 0 1 0 1.06l-2 2a.75.75 0 1 1-1.06-1.06l2-2a.75.75 0 0 1 1.06 0m4.5 0a.75.75 0 0 1 0 1.06l-2 2a.75.75 0 1 1-1.06-1.06l2-2a.75.75 0 0 1 1.06 0m-8.5 3.5a.75.75 0 0 1 0 1.06l-2 2a.75.75 0 0 1-1.06-1.06l2-2a.75.75 0 0 1 1.06 0m9.5 0a.75.75 0 0 1 0 1.06l-2 2a.75.75 0 1 1-1.06-1.06l2-2a.75.75 0 0 1 1.06 0m-5 1a.75.75 0 0 1 0 1.06l-2 2a.75.75 0 1 1-1.06-1.06l2-2a.75.75 0 0 1 1.06 0" clip-rule="evenodd"></path><path fill="currentColor" d="M12.03 14.97a.75.75 0 0 1 0 1.06l-2 2a.746.746 0 0 1-1.06 0a.746.746 0 0 1 0-1.06l2-2a.75.75 0 0 1 1.06 0m3.44 0l-2 2a.75.75 0 1 0 1.06 1.06l2-2a.75.75 0 1 0-1.06-1.06"></path><path fill="currentColor" d="M16.286 19C19.442 19 22 16.472 22 13.353c0-2.472-1.607-4.573-3.845-5.338C17.837 5.194 15.415 3 12.476 3C9.32 3 6.762 5.528 6.762 8.647c0 .69.125 1.35.354 1.962a4.4 4.4 0 0 0-.83-.08C3.919 10.53 2 12.426 2 14.765S3.919 19 6.286 19z" opacity=".5" class=""></path></svg>
+                  </div>
+                  <span class="rounded-full bg-white/15 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.14em] text-white/90 border border-white/30">
+                    Sensor
+                  </span>
+                </div>
+                <div class="space-y-1">
+                  <p class="text-xs text-emerald-50/85">Lorem ipsum dolor</p>
+                  <p class="text-sm leading-snug font-semibold tracking-tight">Sit amet consectetur</p>
+                </div>
+              </section>
+            </div></div></div>
+    <code class="ds-meta">wrapper flex flex-col gap-4 &gt; glass section (min-h-[130px], shadow-neutral-900/50, 135deg hairline) + section.bg-emerald-600 (shadow-emerald-900/40) · each h-1/2</code>
+    <p class="ds-note">The pair shares one grid column (md:col-span-4 lg:col-span-3) on the page.</p>
+  </div>
+  <div class="ds-spec ">
+    <h3>Calendar card</h3>
+    <div class="ds-cards"><div class="ds-slot" style="display:flex;flex-direction:column;"><section class="flex flex-col shadow-black/60 min-h-[280px] md:col-span-8 lg:col-span-4 sm:p-6 bg-gradient-to-br from-white/10 to-white/0 rounded-3xl pt-5 pr-5 pb-5 pl-5 shadow-lg backdrop-blur-lg" style="position: relative; --border-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0)); --border-radius-before: 24px">
+              <div class="flex items-center justify-between mb-4">
+                <div class="">
+                  <p class="text-xs font-medium uppercase tracking-[0.14em] text-neutral-400">Lorem ipsum</p>
+                  <h2 class="text-[22px] font-semibold tracking-tight">Lorem Ipsum Dolor</h2>
+                </div>
+                <button class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-neutral-800 border border-white/10 hover:bg-neutral-700 hover:border-white/20 transition">
+                  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:calendar-bold-duotone" class="iconify h-4.5 w-4.5 text-neutral-200 iconify--solar"><path fill="currentColor" d="M6.94 2c.416 0 .753.324.753.724v1.46c.668-.012 1.417-.012 2.26-.012h4.015c.842 0 1.591 0 2.259.013v-1.46c0-.4.337-.725.753-.725s.753.324.753.724V4.25c1.445.111 2.394.384 3.09 1.055c.698.67.982 1.582 1.097 2.972L22 9H2v-.724c.116-1.39.4-2.302 1.097-2.972s1.645-.944 3.09-1.055V2.724c0-.4.337-.724.753-.724" class=""></path><path fill="currentColor" d="M22 14v-2c0-.839-.004-2.335-.017-3H2.01c-.013.665-.01 2.161-.01 3v2c0 3.771 0 5.657 1.172 6.828S6.228 22 10 22h4c3.77 0 5.656 0 6.828-1.172S22 17.772 22 14" opacity=".5" class=""></path><path fill="currentColor" d="M18 17a1 1 0 1 1-2 0a1 1 0 0 1 2 0m0-4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m-5 4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m0-4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m-5 4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m0-4a1 1 0 1 1-2 0a1 1 0 0 1 2 0"></path></svg>
+                </button>
+              </div>
+              <p class="text-xs text-neutral-400 mb-4 border-b border-white/5 pb-3">Lorem ipsum dolor sit amet consectetur.</p>
+
+              <div class="grid grid-cols-7 gap-2 text-center text-[11px] text-neutral-400 mb-2">
+                <span class="">M</span><span class="">T</span><span class="">W</span><span class="">T</span><span class="">F</span><span class="">S</span><span class="">S</span>
+              </div>
+
+              <div class="grid grid-cols-7 gap-2 flex-1">
+                <!-- Row 1 -->
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-neutral-800 border border-white/10"></div>
+                  <div class="absolute inset-y-0 right-0 h-7 w-3.5 rounded-r-full bg-amber-400"></div>
+                </div>
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-amber-400 border border-amber-200/80"></div>
+                </div>
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-neutral-800 border border-white/10"></div>
+                </div>
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-amber-400 border border-amber-200/80"></div>
+                </div>
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-neutral-800 border border-white/10"></div>
+                  <div class="absolute inset-y-0 right-0 h-7 w-3.5 rounded-r-full bg-amber-400"></div>
+                </div>
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-neutral-800 border border-white/10"></div>
+                </div>
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-amber-400 border border-amber-200/80"></div>
+                </div>
+
+                <!-- Row 2 -->
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-amber-400 border border-amber-200/80"></div>
+                </div>
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-neutral-800 border border-white/10"></div>
+                </div>
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-amber-400 border border-amber-200/80"></div>
+                </div>
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-neutral-800 border border-white/10"></div>
+                  <div class="absolute inset-y-0 right-0 h-7 w-3.5 rounded-r-full bg-amber-400"></div>
+                </div>
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-amber-400 border border-amber-200/80"></div>
+                </div>
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-neutral-800 border border-white/10"></div>
+                </div>
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-amber-400 border border-amber-200/80"></div>
+                </div>
+
+                <!-- Row 3 -->
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-neutral-800 border border-white/10"></div>
+                </div>
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-neutral-800 border border-white/10"></div>
+                  <div class="absolute inset-y-0 right-0 h-7 w-3.5 rounded-r-full bg-amber-400"></div>
+                </div>
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-amber-400 border border-amber-200/80"></div>
+                </div>
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-neutral-800 border border-white/10"></div>
+                </div>
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-amber-400 border border-amber-200/80"></div>
+                </div>
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-neutral-800 border border-white/10"></div>
+                </div>
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-amber-400 border border-amber-200/80"></div>
+                </div>
+
+                <!-- Row 4 -->
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-neutral-800 border border-white/10"></div>
+                </div>
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-amber-400 border border-amber-200/80"></div>
+                </div>
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-neutral-800 border border-white/10"></div>
+                </div>
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-neutral-800 border border-white/10"></div>
+                </div>
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-amber-400 border border-amber-200/80"></div>
+                </div>
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-neutral-800 border border-white/10"></div>
+                </div>
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-amber-400 border border-amber-200/80"></div>
+                </div>
+              </div>
+
+              <div class="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-[11px] text-neutral-400">
+                <div class="flex items-center gap-2">
+                  <span class="inline-block h-2.5 w-2.5 rounded-full bg-amber-400"></span>
+                  <span class="">Watered</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="inline-block h-2.5 w-2.5 rounded-full bg-neutral-700"></span>
+                  <span class="">Skipped</span>
+                </div>
+              </div>
+            </section></div></div>
+    <code class="ds-meta">glass section.min-h-[280px].p-5.sm:p-6 · 180deg hairline · 7-column day grid · legend row</code>
+  </div>
+  <div class="ds-spec ">
+    <h3>Zone card · photo + action</h3>
+    <div class="ds-cards"><div class="ds-slot" style="display:flex;flex-direction:column;"><section class="overflow-hidden flex flex-col shadow-black/60 min-h-[300px] md:col-span-4 lg:col-span-3 bg-gradient-to-br from-white/10 to-white/0 rounded-3xl shadow-lg backdrop-blur-lg" style="position: relative; --border-gradient: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0)); --border-radius-before: 24px">
+              <div class="relative h-44">
+                <img src="assets/overview/assets/hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/917d6f93-fb36-439a-8c48-884b67b35381_1600w.jpg" alt="Garden path" class="h-full w-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
+                <div class="absolute top-3 left-3">
+                  <span class="inline-flex items-center rounded-full bg-black/60 px-2.5 py-1 text-[11px] font-medium text-white/90 border border-white/20">
+                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:clock-circle-bold-duotone" class="iconify mr-1 h-3.5 w-3.5 iconify--solar"><path fill="currentColor" d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2S2 6.477 2 12s4.477 10 10 10" opacity=".5"></path><path fill="currentColor" fill-rule="evenodd" d="M12 7.25a.75.75 0 0 1 .75.75v3.69l2.28 2.28a.75.75 0 1 1-1.06 1.06l-2.5-2.5a.75.75 0 0 1-.22-.53V8a.75.75 0 0 1 .75-.75" clip-rule="evenodd"></path></svg>
+                    Scheduled
+                  </span>
+                </div>
+                <div class="absolute bottom-3 left-3 right-3">
+                  <div class="mb-2">
+                    <p class="text-xs text-white/80">Zone</p>
+                    <p class="text-sm font-medium tracking-tight">Lorem Ipsum Dolor</p>
+                  </div>
+                </div>
+              </div>
+              <div class="flex-1 flex flex-col border-white/10 border-t pt-4 pr-5 pb-4 pl-5 justify-between">
+                <div class="flex items-center gap-2 mb-3">
+                  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:waterdrops-bold-duotone" class="iconify h-4 w-4 text-sky-400 iconify--solar"><path fill="currentColor" d="M10 17.833C10 20.134 8.21 22 6 22s-4-1.866-4-4.167c0-1.44 1.566-3.361 2.738-4.598a1.724 1.724 0 0 1 2.524 0C8.434 14.472 10 16.393 10 17.833"></path><path fill="currentColor" d="M22 17.833C22 20.134 20.21 22 18 22s-4-1.866-4-4.167c0-1.44 1.566-3.361 2.738-4.598a1.724 1.724 0 0 1 2.524 0C20.434 14.472 22 16.393 22 17.833" opacity=".7"></path><path fill="currentColor" d="M16 7.833C16 10.134 14.21 12 12 12s-4-1.866-4-4.167c0-1.44 1.566-3.361 2.738-4.598a1.724 1.724 0 0 1 2.524 0C14.434 4.472 16 6.393 16 7.833" opacity=".4"></path></svg>
+                  <p class="text-xs text-neutral-300">Lorem ipsum dolor sit</p>
+                </div>
+                <button class="w-full inline-flex items-center justify-center gap-1 rounded-full bg-neutral-800 px-3 py-2 text-xs font-medium text-neutral-100 hover:bg-neutral-700 hover:border-white/20 transition border border-white/10">
+                  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:settings-bold-duotone" class="iconify h-3.5 w-3.5 iconify--solar"><path fill="currentColor" fill-rule="evenodd" d="M14.279 2.152C13.909 2 13.439 2 12.5 2s-1.408 0-1.779.152a2 2 0 0 0-1.09 1.083c-.094.223-.13.484-.145.863a1.62 1.62 0 0 1-.796 1.353a1.64 1.64 0 0 1-1.579.008c-.338-.178-.583-.276-.825-.308a2.03 2.03 0 0 0-1.49.396c-.318.242-.553.646-1.022 1.453c-.47.807-.704 1.21-.757 1.605c-.07.526.074 1.058.4 1.479c.148.192.357.353.68.555c.477.297.783.803.783 1.361s-.306 1.064-.782 1.36c-.324.203-.533.364-.682.556a2 2 0 0 0-.399 1.479c.053.394.287.798.757 1.605s.704 1.21 1.022 1.453c.424.323.96.465 1.49.396c.242-.032.487-.13.825-.308a1.64 1.64 0 0 1 1.58.008c.486.28.774.795.795 1.353c.015.38.051.64.145.863c.204.49.596.88 1.09 1.083c.37.152.84.152 1.779.152s1.409 0 1.779-.152a2 2 0 0 0 1.09-1.083c.094-.223.13-.483.145-.863c.02-.558.309-1.074.796-1.353a1.64 1.64 0 0 1 1.579-.008c.338.178.583.276.825.308c.53.07 1.066-.073 1.49-.396c.318-.242.553-.646 1.022-1.453c.47-.807.704-1.21.757-1.605a2 2 0 0 0-.4-1.479c-.148-.192-.357-.353-.68-.555c-.477-.297-.783-.803-.783-1.361s.306-1.064.782-1.36c.324-.203.533-.364.682-.556a2 2 0 0 0 .399-1.479c-.053-.394-.287-.798-.757-1.605s-.704-1.21-1.022-1.453a2.03 2.03 0 0 0-1.49-.396c-.242.032-.487.13-.825.308a1.64 1.64 0 0 1-1.58-.008a1.62 1.62 0 0 1-.795-1.353c-.015-.38-.051-.64-.145-.863a2 2 0 0 0-1.09-1.083" clip-rule="evenodd" opacity=".5"></path><path fill="currentColor" d="M15.523 12c0 1.657-1.354 3-3.023 3s-3.023-1.343-3.023-3S10.83 9 12.5 9s3.023 1.343 3.023 3"></path></svg>
+                  Configure zone
+                </button>
+              </div>
+            </section></div></div>
+    <code class="ds-meta">glass section.overflow-hidden.min-h-[300px] · photo h-44 + scrim + badge + caption · border-t body · block button</code>
+  </div>
+  <div class="ds-spec ">
+    <h3>Next-cycle card</h3>
+    <div class="ds-cards"><div class="ds-slot" style="display:flex;flex-direction:column;"><section class="flex flex-col shadow-black/60 min-h-[300px] md:col-span-4 lg:col-span-3 sm:p-6 bg-gradient-to-br from-white/10 to-white/0 rounded-3xl pt-5 pr-5 pb-5 pl-5 shadow-lg backdrop-blur-lg justify-between" style="position: relative; --border-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0)); --border-radius-before: 24px">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-purple-500/80 border border-purple-300/70">
+                  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:bell-bing-bold-duotone" class="iconify h-4.5 w-4.5 text-white iconify--solar"><path fill="currentColor" d="M18.75 9v.704c0 .845.24 1.671.692 2.374l1.108 1.723c1.011 1.574.239 3.713-1.52 4.21a25.8 25.8 0 0 1-14.06 0c-1.759-.497-2.531-2.636-1.52-4.21l1.108-1.723a4.4 4.4 0 0 0 .693-2.374V9c0-3.866 3.022-7 6.749-7s6.75 3.134 6.75 7" opacity=".5"></path><path fill="currentColor" d="M12.75 6a.75.75 0 0 0-1.5 0v4a.75.75 0 0 0 1.5 0zM7.243 18.545a5.002 5.002 0 0 0 9.513 0c-3.145.59-6.367.59-9.513 0"></path></svg>
+                </div>
+                <div class="">
+                  <p class="text-xs font-medium uppercase tracking-[0.14em] text-neutral-400">Lorem ipsum</p>
+                  <p class="text-sm font-medium tracking-tight">Lorem Ipsum · Dolor B</p>
+                </div>
+              </div>
+              <p class="flex-1 text-xs text-neutral-300 border-white/10 border-b mb-4 pb-3">
+                Lorem ipsum <span class="font-medium">dolor sit, amet elit</span> sed <span class="font-medium">6:30 AM</span> do <span class="font-medium">35 minutes</span>.
+              </p>
+              <div class="flex items-center justify-between text-[11px] text-neutral-400">
+                <div class="flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:shield-check-bold-duotone" class="iconify h-3.5 w-3.5 text-emerald-400 iconify--solar"><path fill="currentColor" d="M3.378 5.082C3 5.62 3 7.22 3 10.417v1.574c0 5.638 4.239 8.375 6.899 9.536c.721.315 1.082.473 2.101.473c1.02 0 1.38-.158 2.101-.473C16.761 20.365 21 17.63 21 11.991v-1.574c0-3.198 0-4.797-.378-5.335c-.377-.537-1.88-1.052-4.887-2.081l-.573-.196C13.595 2.268 12.812 2 12 2s-1.595.268-3.162.805L8.265 3c-3.007 1.03-4.51 1.545-4.887 2.082" opacity=".5"></path><path fill="currentColor" d="M15.06 10.5a.75.75 0 0 0-1.12-1l-3.011 3.374l-.87-.974a.75.75 0 0 0-1.118 1l1.428 1.6a.75.75 0 0 0 1.119 0z"></path></svg>
+                  <span class="">Weather-safe</span>
+                </div>
+                <button class="inline-flex items-center gap-1 rounded-full bg-neutral-800 px-2.5 py-1 text-[11px] text-neutral-100 hover:bg-neutral-700 hover:border-white/20 transition border border-white/10">
+                  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:pen-new-round-bold-duotone" class="iconify h-3.5 w-3.5 iconify--solar"><circle cx="12" cy="12" r="10" fill="currentColor" opacity=".5"></circle><path fill="currentColor" d="M13.926 14.302c.245-.191.467-.413.912-.858l5.54-5.54c.134-.134.073-.365-.106-.427a6.1 6.1 0 0 1-2.3-1.449a6.1 6.1 0 0 1-1.45-2.3c-.061-.18-.292-.24-.426-.106l-5.54 5.54c-.445.444-.667.667-.858.912a5 5 0 0 0-.577.932c-.133.28-.233.579-.431 1.175l-.257.77l-.409 1.226l-.382 1.148a.817.817 0 0 0 1.032 1.033l1.15-.383l1.224-.408l.77-.257c.597-.199.895-.298 1.175-.432q.498-.237.933-.576m8.187-8.132a3.028 3.028 0 0 0-4.282-4.283l-.179.178a.73.73 0 0 0-.206.651c.027.15.077.37.168.633a4.9 4.9 0 0 0 1.174 1.863a4.9 4.9 0 0 0 1.862 1.174c.263.09.483.141.633.168c.24.043.48-.035.652-.207z"></path></svg>
+                  Edit
+                </button>
+              </div>
+            </section></div></div>
+    <code class="ds-meta">glass section.min-h-[300px].p-5.sm:p-6 · purple icon tile · eyebrow + title · paragraph with .font-medium spans · status + Edit pill</code>
+  </div>
+  <div class="ds-spec ">
+    <h3>Forecast card</h3>
+    <div class="ds-wide"><div class="ds-slot" style="display:flex;flex-direction:column;"><section class="md:col-span-8 lg:col-span-6 sm:p-5 flex flex-col shadow-black/60 bg-gradient-to-br from-white/10 to-white/0 rounded-3xl pt-4 pr-4 pb-4 pl-4 shadow-lg backdrop-blur-lg justify-between" style="position: relative; --border-gradient: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0)); --border-radius-before: 24px">
+              <div class="flex items-center justify-between mb-3">
+                <div class="">
+                  <p class="text-xs font-medium uppercase tracking-[0.14em] text-neutral-400">Lorem ipsum</p>
+                  <p class="text-sm font-medium tracking-tight text-neutral-100">Lorem ipsum dolor sit amet</p>
+                </div>
+                <button class="inline-flex items-center gap-1 rounded-full bg-neutral-800 px-2.5 py-1 text-[11px] text-neutral-100 hover:bg-neutral-700 hover:border-white/20 transition border border-white/10">
+                  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:map-point-bold-duotone" class="iconify h-3.5 w-3.5 iconify--solar"><path fill="currentColor" d="M12 2c-4.418 0-8 4.003-8 8.5c0 4.462 2.553 9.312 6.537 11.174a3.45 3.45 0 0 0 2.926 0C17.447 19.812 20 14.962 20 10.5C20 6.003 16.418 2 12 2" opacity=".5"></path><path fill="currentColor" d="M12 12.5a2.5 2.5 0 1 0 0-5a2.5 2.5 0 0 0 0 5"></path></svg>
+                  Home garden
+                </button>
+              </div>
+
+              <div class="mt-2 grid grid-cols-5 gap-2">
+                <div class="flex flex-col bg-gradient-to-br from-white/10 to-white/0 rounded-2xl pt-3 pr-2 pb-3 pl-2 items-center" style="position: relative; --border-gradient: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0)); --border-radius-before: 16px">
+                  <p class="text-xs text-neutral-300 mb-1">Tue</p>
+                  <div class="flex items-center justify-center mb-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:sun-bold-duotone" class="iconify h-4.5 w-4.5 text-amber-300 iconify--solar"><path fill="currentColor" d="M18 12a6 6 0 1 1-12 0a6 6 0 0 1 12 0"></path><path fill="currentColor" fill-rule="evenodd" d="M12 1.25a.75.75 0 0 1 .75.75v1a.75.75 0 0 1-1.5 0V2a.75.75 0 0 1 .75-.75M1.25 12a.75.75 0 0 1 .75-.75h1a.75.75 0 0 1 0 1.5H2a.75.75 0 0 1-.75-.75m19 0a.75.75 0 0 1 .75-.75h1a.75.75 0 0 1 0 1.5h-1a.75.75 0 0 1-.75-.75M12 20.25a.75.75 0 0 1 .75.75v1a.75.75 0 0 1-1.5 0v-1a.75.75 0 0 1 .75-.75" clip-rule="evenodd"></path><path fill="currentColor" d="M4.398 4.398a.75.75 0 0 1 1.061 0l.393.393a.75.75 0 0 1-1.06 1.06l-.394-.392a.75.75 0 0 1 0-1.06m15.202 0a.75.75 0 0 1 0 1.06l-.392.393a.75.75 0 0 1-1.06-1.06l.392-.393a.75.75 0 0 1 1.06 0m-1.453 13.748a.75.75 0 0 1 1.061 0l.393.393a.75.75 0 0 1-1.06 1.06l-.394-.392a.75.75 0 0 1 0-1.06m-12.295 0a.75.75 0 0 1 0 1.06l-.393.393a.75.75 0 1 1-1.06-1.06l.392-.393a.75.75 0 0 1 1.06 0" opacity=".5"></path></svg>
+                  </div>
+                  <p class="text-xs font-medium text-neutral-100 mb-1">23°C</p>
+                  <span class="text-[10px] text-emerald-300">Normal</span>
+                </div>
+                <div class="flex flex-col bg-gradient-to-br from-white/10 to-white/0 rounded-2xl pt-3 pr-2 pb-3 pl-2 items-center" style="position: relative; --border-gradient: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0)); --border-radius-before: 16px">
+                  <p class="text-xs text-neutral-300 mb-1">Wed</p>
+                  <div class="flex items-center justify-center mb-1">
+                    <span class="iconify h-4.5 w-4.5 text-amber-200" data-icon="solar:sun-cloud-bold-duotone"></span>
+                  </div>
+                  <p class="text-xs font-medium text-neutral-100 mb-1">21°C</p>
+                  <span class="text-[10px] text-emerald-300">Slight</span>
+                </div>
+                <div class="flex flex-col bg-gradient-to-br from-white/10 to-white/0 rounded-2xl pt-3 pr-2 pb-3 pl-2 items-center" style="position: relative; --border-gradient: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0)); --border-radius-before: 16px">
+                  <p class="text-xs text-neutral-300 mb-1">Thu</p>
+                  <div class="flex items-center justify-center mb-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:cloud-bold-duotone" class="iconify h-4.5 w-4.5 text-neutral-100 iconify--solar"><path fill="currentColor" fill-rule="evenodd" d="M22 14.353C22 17.472 19.442 20 16.286 20h-5.787a7.5 7.5 0 0 1 7.487-11.853q.119.422.17.868C20.392 9.78 22 11.881 22 14.353" clip-rule="evenodd" opacity=".5"></path><path fill="currentColor" d="M12.476 4C9.32 4 6.762 6.528 6.762 9.647c0 .69.125 1.35.354 1.962a4.4 4.4 0 0 0-.83-.08C3.919 11.53 2 13.426 2 15.765S3.919 20 6.286 20H10.5a7.5 7.5 0 0 1 7.487-11.853l-.047-.158C17.224 5.68 15.048 4 12.476 4" class=""></path></svg>
+                  </div>
+                  <p class="text-xs font-medium text-neutral-100 mb-1">19°C</p>
+                  <span class="text-[10px] text-emerald-300">Reduced</span>
+                </div>
+                <div class="flex flex-col bg-gradient-to-br from-white/10 to-white/0 rounded-2xl pt-3 pr-2 pb-3 pl-2 items-center" style="position: relative; --border-gradient: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0)); --border-radius-before: 16px">
+                  <p class="text-xs text-neutral-300 mb-1">Fri</p>
+                  <div class="flex items-center justify-center mb-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:cloud-rain-bold-duotone" class="iconify h-4.5 w-4.5 text-sky-300 iconify--solar"><path fill="currentColor" fill-rule="evenodd" d="M12.03 14.97a.75.75 0 0 1 0 1.06l-2 2a.75.75 0 1 1-1.06-1.06l2-2a.75.75 0 0 1 1.06 0m4.5 0a.75.75 0 0 1 0 1.06l-2 2a.75.75 0 1 1-1.06-1.06l2-2a.75.75 0 0 1 1.06 0m-8.5 3.5a.75.75 0 0 1 0 1.06l-2 2a.75.75 0 0 1-1.06-1.06l2-2a.75.75 0 0 1 1.06 0m9.5 0a.75.75 0 0 1 0 1.06l-2 2a.75.75 0 1 1-1.06-1.06l2-2a.75.75 0 0 1 1.06 0m-5 1a.75.75 0 0 1 0 1.06l-2 2a.75.75 0 1 1-1.06-1.06l2-2a.75.75 0 0 1 1.06 0" clip-rule="evenodd"></path><path fill="currentColor" d="M12.03 14.97a.75.75 0 0 1 0 1.06l-2 2a.746.746 0 0 1-1.06 0a.746.746 0 0 1 0-1.06l2-2a.75.75 0 0 1 1.06 0m3.44 0l-2 2a.75.75 0 1 0 1.06 1.06l2-2a.75.75 0 1 0-1.06-1.06"></path><path fill="currentColor" d="M16.286 19C19.442 19 22 16.472 22 13.353c0-2.472-1.607-4.573-3.845-5.338C17.837 5.194 15.415 3 12.476 3C9.32 3 6.762 5.528 6.762 8.647c0 .69.125 1.35.354 1.962a4.4 4.4 0 0 0-.83-.08C3.919 10.53 2 12.426 2 14.765S3.919 19 6.286 19z" opacity=".5"></path></svg>
+                  </div>
+                  <p class="text-xs font-medium text-neutral-100 mb-1">18°C</p>
+                  <span class="text-[10px] text-emerald-300">Paused</span>
+                </div>
+                <div class="flex flex-col bg-gradient-to-br from-white/10 to-white/0 rounded-2xl pt-3 pr-2 pb-3 pl-2 items-center" style="position: relative; --border-gradient: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0)); --border-radius-before: 16px">
+                  <p class="text-xs text-neutral-300 mb-1">Sat</p>
+                  <div class="flex items-center justify-center mb-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:sun-bold-duotone" class="iconify h-4.5 w-4.5 text-amber-300 iconify--solar"><path fill="currentColor" d="M18 12a6 6 0 1 1-12 0a6 6 0 0 1 12 0"></path><path fill="currentColor" fill-rule="evenodd" d="M12 1.25a.75.75 0 0 1 .75.75v1a.75.75 0 0 1-1.5 0V2a.75.75 0 0 1 .75-.75M1.25 12a.75.75 0 0 1 .75-.75h1a.75.75 0 0 1 0 1.5H2a.75.75 0 0 1-.75-.75m19 0a.75.75 0 0 1 .75-.75h1a.75.75 0 0 1 0 1.5h-1a.75.75 0 0 1-.75-.75M12 20.25a.75.75 0 0 1 .75.75v1a.75.75 0 0 1-1.5 0v-1a.75.75 0 0 1 .75-.75" clip-rule="evenodd"></path><path fill="currentColor" d="M4.398 4.398a.75.75 0 0 1 1.061 0l.393.393a.75.75 0 0 1-1.06 1.06l-.394-.392a.75.75 0 0 1 0-1.06m15.202 0a.75.75 0 0 1 0 1.06l-.392.393a.75.75 0 0 1-1.06-1.06l.392-.393a.75.75 0 0 1 1.06 0m-1.453 13.748a.75.75 0 0 1 1.061 0l.393.393a.75.75 0 0 1-1.06 1.06l-.394-.392a.75.75 0 0 1 0-1.06m-12.295 0a.75.75 0 0 1 0 1.06l-.393.393a.75.75 0 1 1-1.06-1.06l.392-.393a.75.75 0 0 1 1.06 0" opacity=".5"></path></svg>
+                  </div>
+                  <p class="text-xs font-medium text-neutral-100 mb-1">22°C</p>
+                  <span class="text-[10px] text-emerald-300">Normal</span>
+                </div>
+              </div>
+            </section></div></div>
+    <code class="ds-meta">glass section.p-4.sm:p-5 · eyebrow + title + pill · grid-cols-5 inner tiles (rounded-2xl, 16px hairline)</code>
+  </div>
+</section>
+
+<section class="ds-group" id="components-data">
+<div class="ds-head">
+  <div class="ds-kicker"><span>Components</span><span>(10)</span></div>
+  <h2>Data display</h2>
+</div>
+  <div class="ds-spec ">
+    <h3>Metric</h3>
+    <div class="ds-fit" style="width:100%"><div class="space-y-1">
+                  <div class="flex items-center justify-between">
+                    <p class="text-xs text-neutral-400">Wind speed</p>
+                    <span class="text-[10px] text-neutral-500">Now</span>
+                  </div>
+                  <p class="text-[21px] font-semibold tracking-tight">11 km/h</p>
+                </div></div>
+    <code class="ds-meta">p.text-xs.text-neutral-400 label + span.text-[10px].text-neutral-500 timestamp · p.text-[21px].font-semibold.tracking-tight value</code>
+  </div>
+  <div class="ds-spec ">
+    <h3>Day states</h3>
+    <div class="ds-row"><div class="ds-cell"><small>watered</small><div style="width:44px"><div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-amber-400 border border-amber-200/80"></div>
+                </div></div></div><div class="ds-cell"><small>skipped</small><div style="width:44px"><div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-neutral-800 border border-white/10"></div>
+                </div></div></div><div class="ds-cell"><small>half day</small><div style="width:44px"><div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-neutral-800 border border-white/10"></div>
+                  <div class="absolute inset-y-0 right-0 h-7 w-3.5 rounded-r-full bg-amber-400"></div>
+                </div></div></div></div>
+    <code class="ds-meta">div.h-7.w-7.rounded-full · bg-amber-400 border-amber-200/80 | bg-neutral-800 border-white/10 | + absolute right-0 h-7 w-3.5 rounded-r-full bg-amber-400</code>
+  </div>
+  <div class="ds-spec ">
+    <h3>Calendar grid</h3>
+    <div class="ds-fit" style="width:100%"><div class="grid grid-cols-7 gap-2 text-center text-[11px] text-neutral-400 mb-2">
+                <span class="">M</span><span class="">T</span><span class="">W</span><span class="">T</span><span class="">F</span><span class="">S</span><span class="">S</span>
+              </div><div class="flex flex-col" style="min-height:160px"><div class="grid grid-cols-7 gap-2 flex-1">
+                <!-- Row 1 -->
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-neutral-800 border border-white/10"></div>
+                  <div class="absolute inset-y-0 right-0 h-7 w-3.5 rounded-r-full bg-amber-400"></div>
+                </div>
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-amber-400 border border-amber-200/80"></div>
+                </div>
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-neutral-800 border border-white/10"></div>
+                </div>
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-amber-400 border border-amber-200/80"></div>
+                </div>
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-neutral-800 border border-white/10"></div>
+                  <div class="absolute inset-y-0 right-0 h-7 w-3.5 rounded-r-full bg-amber-400"></div>
+                </div>
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-neutral-800 border border-white/10"></div>
+                </div>
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-amber-400 border border-amber-200/80"></div>
+                </div>
+
+                <!-- Row 2 -->
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-amber-400 border border-amber-200/80"></div>
+                </div>
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-neutral-800 border border-white/10"></div>
+                </div>
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-amber-400 border border-amber-200/80"></div>
+                </div>
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-neutral-800 border border-white/10"></div>
+                  <div class="absolute inset-y-0 right-0 h-7 w-3.5 rounded-r-full bg-amber-400"></div>
+                </div>
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-amber-400 border border-amber-200/80"></div>
+                </div>
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-neutral-800 border border-white/10"></div>
+                </div>
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-amber-400 border border-amber-200/80"></div>
+                </div>
+
+                <!-- Row 3 -->
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-neutral-800 border border-white/10"></div>
+                </div>
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-neutral-800 border border-white/10"></div>
+                  <div class="absolute inset-y-0 right-0 h-7 w-3.5 rounded-r-full bg-amber-400"></div>
+                </div>
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-amber-400 border border-amber-200/80"></div>
+                </div>
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-neutral-800 border border-white/10"></div>
+                </div>
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-amber-400 border border-amber-200/80"></div>
+                </div>
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-neutral-800 border border-white/10"></div>
+                </div>
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-amber-400 border border-amber-200/80"></div>
+                </div>
+
+                <!-- Row 4 -->
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-neutral-800 border border-white/10"></div>
+                </div>
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-amber-400 border border-amber-200/80"></div>
+                </div>
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-neutral-800 border border-white/10"></div>
+                </div>
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-neutral-800 border border-white/10"></div>
+                </div>
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-amber-400 border border-amber-200/80"></div>
+                </div>
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-neutral-800 border border-white/10"></div>
+                </div>
+                <div class="relative flex items-center justify-center">
+                  <div class="h-7 w-7 rounded-full bg-amber-400 border border-amber-200/80"></div>
+                </div>
+              </div></div></div>
+    <code class="ds-meta">grid grid-cols-7 gap-2 · weekday row text-[11px] text-neutral-400 · 28 day cells</code>
+  </div>
+  <div class="ds-spec ">
+    <h3>Monthly bars</h3>
+    <div style="max-width:600px"><div class="bg-yellow-400 rounded-3xl p-5 border border-white/15"><div class="flex flex-col gap-4"><div class="flex items-center justify-between text-[10px] text-yellow-950/80">
+                  <span>Jan</span><span>Feb</span><span>Mar</span><span class="font-medium text-yellow-950">Apr</span><span>May</span><span>Jun</span><span class="">Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span>
+                </div><div class="mt-1 grid grid-cols-12 gap-1.5 h-28 items-end">
+                  <div class="rounded-full bg-yellow-900/40 h-[26%]"></div>
+                  <div class="rounded-full bg-yellow-900/40 h-[32%]"></div>
+                  <div class="rounded-full bg-yellow-900/40 h-[45%]"></div>
+                  <div class="rounded-full bg-yellow-50 h-[68%] shadow-md shadow-yellow-900/40 border border-yellow-200/70"></div>
+                  <div class="rounded-full bg-yellow-900/60 h-[74%]"></div>
+                  <div class="rounded-full bg-yellow-900/60 h-[80%]"></div>
+                  <div class="rounded-full bg-yellow-900/60 h-[92%]"></div>
+                  <div class="rounded-full bg-yellow-900/60 h-[100%]"></div>
+                  <div class="rounded-full bg-yellow-900/40 h-[77%]"></div>
+                  <div class="rounded-full bg-yellow-900/30 h-[60%]"></div>
+                  <div class="rounded-full bg-yellow-900/20 h-[40%]"></div>
+                  <div class="rounded-full bg-yellow-900/20 h-[34%]"></div>
+                </div></div></div></div>
+    <code class="ds-meta">grid grid-cols-12 gap-1.5 h-28 items-end · bars rounded-full bg-yellow-900/20…/60 at 26–100% · current month bg-yellow-50 shadow-md shadow-yellow-900/40 border-yellow-200/70 · scale text-[10px] text-yellow-950/80, current .font-medium.text-yellow-950</code>
+    <p class="ds-note">The heights are the export's static values; nothing is animated.</p>
+  </div>
+  <div class="ds-spec ">
+    <h3>Target value</h3>
+    <div class="ds-row"><div class="bg-yellow-400 rounded-3xl px-5 py-4 border border-white/15"><div class="flex flex-col items-end">
+                    <p class="text-[11px] text-yellow-950/80 mb-0.5">Water usage target</p>
+                    <p class="text-lg font-semibold tracking-tight text-yellow-950">72%</p>
+                  </div></div></div>
+    <code class="ds-meta">p.text-[11px].text-yellow-950/80 label · p.text-lg.font-semibold.tracking-tight.text-yellow-950 value</code>
+  </div>
+  <div class="ds-spec ">
+    <h3>Forecast day tiles</h3>
+    <div style="max-width:620px"><div class="grid grid-cols-5 gap-2">
+                <div class="flex flex-col bg-gradient-to-br from-white/10 to-white/0 rounded-2xl pt-3 pr-2 pb-3 pl-2 items-center" style="position: relative; --border-gradient: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0)); --border-radius-before: 16px">
+                  <p class="text-xs text-neutral-300 mb-1">Tue</p>
+                  <div class="flex items-center justify-center mb-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:sun-bold-duotone" class="iconify h-4.5 w-4.5 text-amber-300 iconify--solar"><path fill="currentColor" d="M18 12a6 6 0 1 1-12 0a6 6 0 0 1 12 0"></path><path fill="currentColor" fill-rule="evenodd" d="M12 1.25a.75.75 0 0 1 .75.75v1a.75.75 0 0 1-1.5 0V2a.75.75 0 0 1 .75-.75M1.25 12a.75.75 0 0 1 .75-.75h1a.75.75 0 0 1 0 1.5H2a.75.75 0 0 1-.75-.75m19 0a.75.75 0 0 1 .75-.75h1a.75.75 0 0 1 0 1.5h-1a.75.75 0 0 1-.75-.75M12 20.25a.75.75 0 0 1 .75.75v1a.75.75 0 0 1-1.5 0v-1a.75.75 0 0 1 .75-.75" clip-rule="evenodd"></path><path fill="currentColor" d="M4.398 4.398a.75.75 0 0 1 1.061 0l.393.393a.75.75 0 0 1-1.06 1.06l-.394-.392a.75.75 0 0 1 0-1.06m15.202 0a.75.75 0 0 1 0 1.06l-.392.393a.75.75 0 0 1-1.06-1.06l.392-.393a.75.75 0 0 1 1.06 0m-1.453 13.748a.75.75 0 0 1 1.061 0l.393.393a.75.75 0 0 1-1.06 1.06l-.394-.392a.75.75 0 0 1 0-1.06m-12.295 0a.75.75 0 0 1 0 1.06l-.393.393a.75.75 0 1 1-1.06-1.06l.392-.393a.75.75 0 0 1 1.06 0" opacity=".5"></path></svg>
+                  </div>
+                  <p class="text-xs font-medium text-neutral-100 mb-1">23°C</p>
+                  <span class="text-[10px] text-emerald-300">Normal</span>
+                </div>
+                <div class="flex flex-col bg-gradient-to-br from-white/10 to-white/0 rounded-2xl pt-3 pr-2 pb-3 pl-2 items-center" style="position: relative; --border-gradient: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0)); --border-radius-before: 16px">
+                  <p class="text-xs text-neutral-300 mb-1">Wed</p>
+                  <div class="flex items-center justify-center mb-1">
+                    <span class="iconify h-4.5 w-4.5 text-amber-200" data-icon="solar:sun-cloud-bold-duotone"></span>
+                  </div>
+                  <p class="text-xs font-medium text-neutral-100 mb-1">21°C</p>
+                  <span class="text-[10px] text-emerald-300">Slight</span>
+                </div>
+                <div class="flex flex-col bg-gradient-to-br from-white/10 to-white/0 rounded-2xl pt-3 pr-2 pb-3 pl-2 items-center" style="position: relative; --border-gradient: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0)); --border-radius-before: 16px">
+                  <p class="text-xs text-neutral-300 mb-1">Thu</p>
+                  <div class="flex items-center justify-center mb-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:cloud-bold-duotone" class="iconify h-4.5 w-4.5 text-neutral-100 iconify--solar"><path fill="currentColor" fill-rule="evenodd" d="M22 14.353C22 17.472 19.442 20 16.286 20h-5.787a7.5 7.5 0 0 1 7.487-11.853q.119.422.17.868C20.392 9.78 22 11.881 22 14.353" clip-rule="evenodd" opacity=".5"></path><path fill="currentColor" d="M12.476 4C9.32 4 6.762 6.528 6.762 9.647c0 .69.125 1.35.354 1.962a4.4 4.4 0 0 0-.83-.08C3.919 11.53 2 13.426 2 15.765S3.919 20 6.286 20H10.5a7.5 7.5 0 0 1 7.487-11.853l-.047-.158C17.224 5.68 15.048 4 12.476 4" class=""></path></svg>
+                  </div>
+                  <p class="text-xs font-medium text-neutral-100 mb-1">19°C</p>
+                  <span class="text-[10px] text-emerald-300">Reduced</span>
+                </div>
+                <div class="flex flex-col bg-gradient-to-br from-white/10 to-white/0 rounded-2xl pt-3 pr-2 pb-3 pl-2 items-center" style="position: relative; --border-gradient: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0)); --border-radius-before: 16px">
+                  <p class="text-xs text-neutral-300 mb-1">Fri</p>
+                  <div class="flex items-center justify-center mb-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:cloud-rain-bold-duotone" class="iconify h-4.5 w-4.5 text-sky-300 iconify--solar"><path fill="currentColor" fill-rule="evenodd" d="M12.03 14.97a.75.75 0 0 1 0 1.06l-2 2a.75.75 0 1 1-1.06-1.06l2-2a.75.75 0 0 1 1.06 0m4.5 0a.75.75 0 0 1 0 1.06l-2 2a.75.75 0 1 1-1.06-1.06l2-2a.75.75 0 0 1 1.06 0m-8.5 3.5a.75.75 0 0 1 0 1.06l-2 2a.75.75 0 0 1-1.06-1.06l2-2a.75.75 0 0 1 1.06 0m9.5 0a.75.75 0 0 1 0 1.06l-2 2a.75.75 0 1 1-1.06-1.06l2-2a.75.75 0 0 1 1.06 0m-5 1a.75.75 0 0 1 0 1.06l-2 2a.75.75 0 1 1-1.06-1.06l2-2a.75.75 0 0 1 1.06 0" clip-rule="evenodd"></path><path fill="currentColor" d="M12.03 14.97a.75.75 0 0 1 0 1.06l-2 2a.746.746 0 0 1-1.06 0a.746.746 0 0 1 0-1.06l2-2a.75.75 0 0 1 1.06 0m3.44 0l-2 2a.75.75 0 1 0 1.06 1.06l2-2a.75.75 0 1 0-1.06-1.06"></path><path fill="currentColor" d="M16.286 19C19.442 19 22 16.472 22 13.353c0-2.472-1.607-4.573-3.845-5.338C17.837 5.194 15.415 3 12.476 3C9.32 3 6.762 5.528 6.762 8.647c0 .69.125 1.35.354 1.962a4.4 4.4 0 0 0-.83-.08C3.919 10.53 2 12.426 2 14.765S3.919 19 6.286 19z" opacity=".5"></path></svg>
+                  </div>
+                  <p class="text-xs font-medium text-neutral-100 mb-1">18°C</p>
+                  <span class="text-[10px] text-emerald-300">Paused</span>
+                </div>
+                <div class="flex flex-col bg-gradient-to-br from-white/10 to-white/0 rounded-2xl pt-3 pr-2 pb-3 pl-2 items-center" style="position: relative; --border-gradient: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0)); --border-radius-before: 16px">
+                  <p class="text-xs text-neutral-300 mb-1">Sat</p>
+                  <div class="flex items-center justify-center mb-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:sun-bold-duotone" class="iconify h-4.5 w-4.5 text-amber-300 iconify--solar"><path fill="currentColor" d="M18 12a6 6 0 1 1-12 0a6 6 0 0 1 12 0"></path><path fill="currentColor" fill-rule="evenodd" d="M12 1.25a.75.75 0 0 1 .75.75v1a.75.75 0 0 1-1.5 0V2a.75.75 0 0 1 .75-.75M1.25 12a.75.75 0 0 1 .75-.75h1a.75.75 0 0 1 0 1.5H2a.75.75 0 0 1-.75-.75m19 0a.75.75 0 0 1 .75-.75h1a.75.75 0 0 1 0 1.5h-1a.75.75 0 0 1-.75-.75M12 20.25a.75.75 0 0 1 .75.75v1a.75.75 0 0 1-1.5 0v-1a.75.75 0 0 1 .75-.75" clip-rule="evenodd"></path><path fill="currentColor" d="M4.398 4.398a.75.75 0 0 1 1.061 0l.393.393a.75.75 0 0 1-1.06 1.06l-.394-.392a.75.75 0 0 1 0-1.06m15.202 0a.75.75 0 0 1 0 1.06l-.392.393a.75.75 0 0 1-1.06-1.06l.392-.393a.75.75 0 0 1 1.06 0m-1.453 13.748a.75.75 0 0 1 1.061 0l.393.393a.75.75 0 0 1-1.06 1.06l-.394-.392a.75.75 0 0 1 0-1.06m-12.295 0a.75.75 0 0 1 0 1.06l-.393.393a.75.75 0 1 1-1.06-1.06l.392-.393a.75.75 0 0 1 1.06 0" opacity=".5"></path></svg>
+                  </div>
+                  <p class="text-xs font-medium text-neutral-100 mb-1">22°C</p>
+                  <span class="text-[10px] text-emerald-300">Normal</span>
+                </div>
+              </div></div>
+    <code class="ds-meta">grid grid-cols-5 gap-2 &gt; glass tile rounded-2xl pt-3 pb-3 px-2 · day text-xs text-neutral-300 · icon · temp text-xs font-medium text-neutral-100 · impact text-[10px] text-emerald-300</code>
+  </div>
+</section>
+
+<section class="ds-group" id="components-media">
+<div class="ds-head">
+  <div class="ds-kicker"><span>Components</span><span>(11)</span></div>
+  <h2>Media</h2>
+</div>
+  <div class="ds-spec ">
+    <h3>Photo header · badge + caption</h3>
+    <div class="overflow-hidden rounded-3xl" style="max-width:420px"><div class="relative h-44">
+                <img src="assets/overview/assets/hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/917d6f93-fb36-439a-8c48-884b67b35381_1600w.jpg" alt="Garden path" class="h-full w-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
+                <div class="absolute top-3 left-3">
+                  <span class="inline-flex items-center rounded-full bg-black/60 px-2.5 py-1 text-[11px] font-medium text-white/90 border border-white/20">
+                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" viewBox="0 0 24 24" data-icon="solar:clock-circle-bold-duotone" class="iconify mr-1 h-3.5 w-3.5 iconify--solar"><path fill="currentColor" d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2S2 6.477 2 12s4.477 10 10 10" opacity=".5"></path><path fill="currentColor" fill-rule="evenodd" d="M12 7.25a.75.75 0 0 1 .75.75v3.69l2.28 2.28a.75.75 0 1 1-1.06 1.06l-2.5-2.5a.75.75 0 0 1-.22-.53V8a.75.75 0 0 1 .75-.75" clip-rule="evenodd"></path></svg>
+                    Scheduled
+                  </span>
+                </div>
+                <div class="absolute bottom-3 left-3 right-3">
+                  <div class="mb-2">
+                    <p class="text-xs text-white/80">Zone</p>
+                    <p class="text-sm font-medium tracking-tight">Lorem Ipsum Dolor</p>
+                  </div>
+                </div>
+              </div></div>
+    <code class="ds-meta">div.relative.h-44 &gt; img.h-full.w-full.object-cover + .absolute.inset-0.bg-gradient-to-t.from-black/70.via-black/30.to-transparent + badge top-3 left-3 + caption bottom-3</code>
+    <p class="ds-note">Photo: Supabase-hosted 1600w JPEG from the export, stored locally.</p>
+  </div>
+</section>
+
+</main>
+</div>
+
+<script>
+(function () {
+  var COMPONENTS_ENABLED = true;   /* Overview approved (orchestrated run) */
+  var body = document.body, nav = document.getElementById('ds-nav'), frame = document.getElementById('overview-frame');
+  var linkO = document.getElementById('nav-overview'), linkC = document.getElementById('nav-components');
+  var main = document.getElementById('ds-main'), side = document.getElementById('ds-side');
+  var isComp = function (h) { return h === '#components' || h.indexOf('#components-') === 0; };
+  var mode = 'overview', pageY = 0;
+  if (!COMPONENTS_ENABLED) linkC.setAttribute('aria-disabled', 'true');
+
+  function send(m) { try { frame.contentWindow.postMessage(m, '*'); } catch (e) {} }
+  /* the embedded page keeps the bar's height as its top spacer */
+  function setNavH() {
+    var h = nav.offsetHeight;
+    document.documentElement.style.setProperty('--ds-nav-h', h + 'px');
+    send({ ds: 'navh', h: h });
+  }
+  addEventListener('resize', setNavH, { passive: true });
+  setNavH();
+
+  function post() { send({ ds: mode === 'components' ? 'bg' : 'page' }); }
+  function route() {
+    var h = location.hash;
+    if (isComp(h) && !COMPONENTS_ENABLED) { history.replaceState(null, '', location.pathname + location.search); h = ''; }
+    mode = isComp(h) ? 'components' : 'overview';
+    body.classList.toggle('is-components', mode === 'components');
+    linkO.classList.toggle('is-active', mode === 'overview');
+    linkC.classList.toggle('is-active', mode === 'components');
+    nav.classList.toggle('is-stuck', mode === 'components' || pageY > 8);
+    post();
+    if (mode !== 'components') { body.classList.remove('ds-scene-clear'); return; }
+    if (h === '#components') { main.scrollTop = 0; spy(); return; }
+    var el = document.getElementById(h.slice(1));
+    if (el) { main.scrollTop = el.offsetTop - 24; }
+    spy();
+  }
+  addEventListener('message', function (e) {
+    if (e.source !== frame.contentWindow || !e.data) return;
+    if (e.data.ds === 'ready') { body.classList.add('ds-overview-ready'); return; }
+    if (e.data.ds === 'scroll') { pageY = e.data.y; if (mode === 'overview') nav.classList.toggle('is-stuck', pageY > 8); }
+  });
+  frame.addEventListener('load', function () { setNavH(); post(); });
+
+  /* sidebar follows the scroll; the scrim lifts over Backgrounds */
+  var groups = [].slice.call(main.querySelectorAll('.ds-group'));
+  var sideLinks = [].slice.call(side.querySelectorAll('a'));
+  function spy() {
+    if (!groups.length) return;
+    var y = main.scrollTop + 160, cur = groups[0];
+    groups.forEach(function (g) { if (g.offsetTop <= y) cur = g; });
+    sideLinks.forEach(function (a) {
+      var on = a.getAttribute('href') === '#' + cur.id;
+      if (on && !a.classList.contains('is-current') && innerWidth < 768) side.scrollLeft = a.offsetLeft - 16;
+      a.classList.toggle('is-current', on);
+    });
+    body.classList.toggle('ds-scene-clear', cur.id === 'components-backgrounds');
+  }
+  main.addEventListener('scroll', spy, { passive: true });
+
+  /* sidebar links scroll the view without leaving a history entry per group */
+  side.addEventListener('click', function (e) {
+    var a = e.target.closest('a[href^="#components-"]');
+    if (!a) return;
+    e.preventDefault();
+    history.replaceState(null, '', a.getAttribute('href'));
+    route();
+  });
+
+  /* specimens stay put: links and form submits never navigate */
+  main.addEventListener('click', function (e) { if (e.target.closest('a')) e.preventDefault(); }, true);
+  main.addEventListener('submit', function (e) { e.preventDefault(); }, true);
+
+  addEventListener('hashchange', route);
+  route();
+})();
+</script>
+</body>
+</html>

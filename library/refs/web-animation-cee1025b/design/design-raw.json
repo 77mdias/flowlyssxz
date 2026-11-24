@@ -1,0 +1,1027 @@
+{
+ "source": "library/refs/web-animation-cee1025b/source.mp4",
+ "viewport_ref": 1440,
+ "ocr": true,
+ "roi": [
+  68,
+  106,
+  578,
+  322
+ ],
+ "theme": "claro",
+ "stills": [
+  {
+   "file": "stills/still_01_002.50s.png",
+   "t": 2.5,
+   "size": [
+    578,
+    322
+   ],
+   "paragraphs": [
+    {
+     "lines": 3,
+     "x_pct": 16.8,
+     "y_pct": 34.2,
+     "width_pct": 20.1,
+     "line_pitch_px_ref": 23.7,
+     "font_px_ref_est": 16.3
+    },
+    {
+     "lines": 4,
+     "x_pct": 16.8,
+     "y_pct": 49.4,
+     "width_pct": 21.3,
+     "line_pitch_px_ref": 24.9,
+     "font_px_ref_est": 17.2
+    }
+   ],
+   "lines": [
+    {
+     "x": 97.33333333333333,
+     "y": 110.33333333333333,
+     "w": 113.0,
+     "h": 5.666666666666667,
+     "text": "The intends to create product",
+     "via": "ocr",
+     "reliable": false,
+     "font_px_src": 6.1,
+     "font_px_ref": 15.2,
+     "font_vw": 1.05,
+     "x_pct": 16.8,
+     "y_pct": 34.3,
+     "right_pct": 36.4,
+     "center_pct": 26.6,
+     "color": "#777777",
+     "on": "#fafafa",
+     "contrast": 4.29
+    },
+    {
+     "x": 96.66666666666667,
+     "y": 120.33333333333333,
+     "w": 104.33333333333333,
+     "h": 5.666666666666667,
+     "text": "that stands cut by shape, finding",
+     "via": "ocr",
+     "reliable": false,
+     "font_px_src": 6.1,
+     "font_px_ref": 15.2,
+     "font_vw": 1.05,
+     "x_pct": 16.7,
+     "y_pct": 37.4,
+     "right_pct": 34.8,
+     "center_pct": 25.7,
+     "color": "#797979",
+     "on": "#f8f8f8",
+     "contrast": 4.1
+    },
+    {
+     "x": 102.0,
+     "y": 130.33333333333334,
+     "w": 99.0,
+     "h": 5.333333333333333,
+     "text": "perfect balance between meaning",
+     "via": "ocr",
+     "reliable": false,
+     "font_px_src": 5.7,
+     "font_px_ref": 14.3,
+     "font_vw": 0.99,
+     "x_pct": 17.6,
+     "y_pct": 40.5,
+     "right_pct": 34.8,
+     "center_pct": 26.2,
+     "color": "#787878",
+     "on": "#fafafa",
+     "contrast": 4.23
+    },
+    {
+     "x": 94.0,
+     "y": 138.0,
+     "w": 30.0,
+     "h": 9.333333333333334,
+     "text": "and tunct",
+     "via": "ocr",
+     "reliable": true,
+     "font_px_src": 12.4,
+     "font_px_ref": 31.0,
+     "font_vw": 2.15,
+     "x_pct": 16.3,
+     "y_pct": 42.9,
+     "right_pct": 21.5,
+     "center_pct": 18.9,
+     "color": "#818181",
+     "on": "#f8f8f8",
+     "contrast": 3.67
+    },
+    {
+     "x": 97.33333333333333,
+     "y": 159.33333333333334,
+     "w": 119.66666666666667,
+     "h": 5.666666666666667,
+     "text": "The cdject is by the shape of the",
+     "via": "ocr",
+     "reliable": false,
+     "font_px_src": 6.1,
+     "font_px_ref": 15.2,
+     "font_vw": 1.05,
+     "x_pct": 16.8,
+     "y_pct": 49.5,
+     "right_pct": 37.5,
+     "center_pct": 27.2,
+     "color": "#777777",
+     "on": "#f9f9f9",
+     "contrast": 4.25
+    },
+    {
+     "x": 97.0,
+     "y": 168.33333333333334,
+     "w": 112.0,
+     "h": 8.666666666666666,
+     "text": "Mushroom, and adapted",
+     "via": "ocr",
+     "reliable": false,
+     "font_px_src": 9.3,
+     "font_px_ref": 23.2,
+     "font_vw": 1.61,
+     "x_pct": 16.8,
+     "y_pct": 52.3,
+     "right_pct": 36.2,
+     "center_pct": 26.5,
+     "color": "#7d7d7d",
+     "on": "#f8f8f8",
+     "contrast": 3.88
+    },
+    {
+     "x": 96.66666666666667,
+     "y": 179.33333333333334,
+     "w": 111.0,
+     "h": 5.0,
+     "text": "to respond to aesthetic and functional",
+     "via": "ocr",
+     "reliable": false,
+     "font_px_src": 5.4,
+     "font_px_ref": 13.4,
+     "font_vw": 0.93,
+     "x_pct": 16.7,
+     "y_pct": 55.7,
+     "right_pct": 35.9,
+     "center_pct": 26.3,
+     "color": "#777777",
+     "on": "#fafafa",
+     "contrast": 4.29
+    },
+    {
+     "x": 97.0,
+     "y": 189.0,
+     "w": 118.66666666666667,
+     "h": 5.666666666666667,
+     "text": "needs while maintaining its peculiar form",
+     "via": "ocr",
+     "reliable": false,
+     "font_px_src": 6.1,
+     "font_px_ref": 15.2,
+     "font_vw": 1.05,
+     "x_pct": 16.8,
+     "y_pct": 58.7,
+     "right_pct": 37.3,
+     "center_pct": 27.0,
+     "color": "#797979",
+     "on": "#f8f8f8",
+     "contrast": 4.1
+    },
+    {
+     "x": 0.0,
+     "y": 243.33333333333334,
+     "w": 432.6666666666667,
+     "h": 78.66666666666667,
+     "text": "roncent",
+     "via": "ocr",
+     "reliable": true,
+     "font_px_src": 104.9,
+     "font_px_ref": 261.3,
+     "font_vw": 18.15,
+     "x_pct": 0.0,
+     "y_pct": 75.6,
+     "right_pct": 74.9,
+     "center_pct": 37.4,
+     "color": "#191919",
+     "on": "#f8f8f8",
+     "contrast": 16.56
+    }
+   ]
+  },
+  {
+   "file": "stills/still_02_005.25s.png",
+   "t": 5.25,
+   "size": [
+    578,
+    322
+   ],
+   "paragraphs": [
+    {
+     "lines": 8,
+     "x_pct": 16.8,
+     "y_pct": 26.7,
+     "width_pct": 21.3,
+     "line_pitch_px_ref": 24.9,
+     "font_px_ref_est": 17.2
+    },
+    {
+     "lines": 2,
+     "x_pct": 16.8,
+     "y_pct": 82.9,
+     "width_pct": 7.6,
+     "line_pitch_px_ref": 19.9,
+     "font_px_ref_est": 13.7
+    },
+    {
+     "lines": 2,
+     "x_pct": 28.4,
+     "y_pct": 82.9,
+     "width_pct": 8.3,
+     "line_pitch_px_ref": 19.9,
+     "font_px_ref_est": 13.7
+    }
+   ],
+   "lines": [
+    {
+     "x": 522.3333333333334,
+     "y": 33.0,
+     "w": 31.333333333333332,
+     "h": 7.333333333333333,
+     "text": "ova",
+     "via": "ocr",
+     "reliable": false,
+     "font_px_src": 9.8,
+     "font_px_ref": 24.4,
+     "font_vw": 1.69,
+     "x_pct": 90.4,
+     "y_pct": 10.2,
+     "right_pct": 95.8,
+     "center_pct": 93.1,
+     "color": "#000000",
+     "on": "#f8f8f8",
+     "contrast": 19.77
+    },
+    {
+     "x": 93.33333333333333,
+     "y": 83.33333333333333,
+     "w": 123.66666666666667,
+     "h": 11.333333333333334,
+     "text": "Mushroom charger has 15W transmitter",
+     "via": "ocr",
+     "reliable": true,
+     "font_px_src": 12.2,
+     "font_px_ref": 30.4,
+     "font_vw": 2.11,
+     "x_pct": 16.1,
+     "y_pct": 25.9,
+     "right_pct": 37.5,
+     "center_pct": 26.8,
+     "color": "#848484",
+     "on": "#f8f8f8",
+     "contrast": 3.52
+    },
+    {
+     "x": 137.66666666666666,
+     "y": 94.33333333333333,
+     "w": 78.33333333333333,
+     "h": 9.0,
+     "text": "of station packs with lot",
+     "via": "ocr",
+     "reliable": true,
+     "font_px_src": 9.7,
+     "font_px_ref": 24.1,
+     "font_vw": 1.67,
+     "x_pct": 23.8,
+     "y_pct": 29.3,
+     "right_pct": 37.4,
+     "center_pct": 30.6,
+     "color": "#828282",
+     "on": "#f8f8f8",
+     "contrast": 3.62
+    },
+    {
+     "x": 95.0,
+     "y": 104.33333333333333,
+     "w": 86.33333333333333,
+     "h": 9.0,
+     "text": "of power going into its quirky",
+     "via": "ocr",
+     "reliable": true,
+     "font_px_src": 9.7,
+     "font_px_ref": 24.1,
+     "font_vw": 1.67,
+     "x_pct": 16.4,
+     "y_pct": 32.4,
+     "right_pct": 31.4,
+     "center_pct": 23.9,
+     "color": "#808080",
+     "on": "#f8f8f8",
+     "contrast": 3.72
+    },
+    {
+     "x": 109.0,
+     "y": 123.0,
+     "w": 90.0,
+     "h": 10.666666666666666,
+     "text": "the charge power comparatie",
+     "via": "ocr",
+     "reliable": true,
+     "font_px_src": 11.5,
+     "font_px_ref": 28.6,
+     "font_vw": 1.98,
+     "x_pct": 18.9,
+     "y_pct": 38.2,
+     "right_pct": 34.4,
+     "center_pct": 26.6,
+     "color": "#7e7e7e",
+     "on": "#f8f8f8",
+     "contrast": 3.82
+    },
+    {
+     "x": 94.33333333333333,
+     "y": 133.66666666666666,
+     "w": 86.0,
+     "h": 9.333333333333334,
+     "text": "to wired charges, Mushroom",
+     "via": "ocr",
+     "reliable": true,
+     "font_px_src": 10.0,
+     "font_px_ref": 25.0,
+     "font_vw": 1.74,
+     "x_pct": 16.3,
+     "y_pct": 41.5,
+     "right_pct": 31.2,
+     "center_pct": 23.8,
+     "color": "#818181",
+     "on": "#f8f8f8",
+     "contrast": 3.67
+    },
+    {
+     "x": 100.66666666666667,
+     "y": 143.33333333333334,
+     "w": 107.0,
+     "h": 10.0,
+     "text": "an choke for both routine",
+     "via": "ocr",
+     "reliable": true,
+     "font_px_src": 13.3,
+     "font_px_ref": 33.2,
+     "font_vw": 2.31,
+     "x_pct": 17.4,
+     "y_pct": 44.5,
+     "right_pct": 35.9,
+     "center_pct": 26.7,
+     "color": "#858585",
+     "on": "#f8f8f8",
+     "contrast": 3.47
+    },
+    {
+     "x": 121.33333333333333,
+     "y": 152.0,
+     "w": 70.0,
+     "h": 11.333333333333334,
+     "text": "throughout the day and",
+     "via": "ocr",
+     "reliable": true,
+     "font_px_src": 12.2,
+     "font_px_ref": 30.4,
+     "font_vw": 2.11,
+     "x_pct": 21.0,
+     "y_pct": 47.2,
+     "right_pct": 33.1,
+     "center_pct": 27.0,
+     "color": "#848484",
+     "on": "#f8f8f8",
+     "contrast": 3.52
+    },
+    {
+     "x": 124.66666666666667,
+     "y": 160.66666666666666,
+     "w": 58.0,
+     "h": 12.333333333333334,
+     "text": "marathon charging.",
+     "via": "ocr",
+     "reliable": true,
+     "font_px_src": 13.3,
+     "font_px_ref": 33.0,
+     "font_vw": 2.29,
+     "x_pct": 21.6,
+     "y_pct": 49.9,
+     "right_pct": 31.6,
+     "center_pct": 26.6,
+     "color": "#828282",
+     "on": "#f8f8f8",
+     "contrast": 3.62
+    },
+    {
+     "x": 166.33333333333334,
+     "y": 238.66666666666666,
+     "w": 36.666666666666664,
+     "h": 9.333333333333334,
+     "text": "Power adapter",
+     "via": "ocr",
+     "reliable": true,
+     "font_px_src": 10.0,
+     "font_px_ref": 25.0,
+     "font_vw": 1.74,
+     "x_pct": 28.8,
+     "y_pct": 74.1,
+     "right_pct": 35.1,
+     "center_pct": 31.9,
+     "color": "#909090",
+     "on": "#f8f8f8",
+     "contrast": 3.01
+    },
+    {
+     "x": 102.66666666666667,
+     "y": 241.0,
+     "w": 44.666666666666664,
+     "h": 4.666666666666667,
+     "text": "Upto",
+     "via": "ocr",
+     "reliable": false,
+     "font_px_src": 5.0,
+     "font_px_ref": 12.5,
+     "font_vw": 0.87,
+     "x_pct": 17.8,
+     "y_pct": 74.8,
+     "right_pct": 25.5,
+     "center_pct": 21.6,
+     "color": "#8a8a8a",
+     "on": "#f3f3f3",
+     "contrast": 3.11
+    },
+    {
+     "x": 99.66666666666667,
+     "y": 266.3333333333333,
+     "w": 10.666666666666666,
+     "h": 9.0,
+     "text": "LED",
+     "via": "ocr",
+     "reliable": true,
+     "font_px_src": 12.5,
+     "font_px_ref": 31.1,
+     "font_vw": 2.16,
+     "x_pct": 17.2,
+     "y_pct": 82.7,
+     "right_pct": 19.1,
+     "center_pct": 18.2,
+     "color": "#959595",
+     "on": "#f8f8f8",
+     "contrast": 2.82
+    }
+   ]
+  },
+  {
+   "file": "stills/still_03_009.00s.png",
+   "t": 9.0,
+   "size": [
+    578,
+    322
+   ],
+   "paragraphs": [],
+   "lines": [
+    {
+     "x": 522.6666666666666,
+     "y": 33.666666666666664,
+     "w": 30.666666666666668,
+     "h": 6.333333333333333,
+     "text": "ova",
+     "via": "ocr",
+     "reliable": false,
+     "font_px_src": 8.4,
+     "font_px_ref": 21.0,
+     "font_vw": 1.46,
+     "x_pct": 90.4,
+     "y_pct": 10.5,
+     "right_pct": 95.7,
+     "center_pct": 93.1,
+     "color": "#000000",
+     "on": "#f8f8f8",
+     "contrast": 19.77
+    },
+    {
+     "x": 97.66666666666667,
+     "y": 36.333333333333336,
+     "w": 259.3333333333333,
+     "h": 12.333333333333334,
+     "text": "Preorder now on Kickstarter for $129",
+     "via": "ocr",
+     "reliable": true,
+     "font_px_src": 16.4,
+     "font_px_ref": 41.0,
+     "font_vw": 2.85,
+     "x_pct": 16.9,
+     "y_pct": 11.3,
+     "right_pct": 61.8,
+     "center_pct": 39.3,
+     "color": "#191919",
+     "on": "#f8f8f8",
+     "contrast": 16.56
+    }
+   ]
+  },
+  {
+   "file": "stills/still_04_011.50s.png",
+   "t": 11.5,
+   "size": [
+    578,
+    322
+   ],
+   "paragraphs": [],
+   "lines": [
+    {
+     "x": 189.66666666666666,
+     "y": 147.66666666666666,
+     "w": 202.33333333333334,
+     "h": 32.0,
+     "text": "mushroom",
+     "via": "ocr",
+     "reliable": true,
+     "font_px_src": 42.7,
+     "font_px_ref": 106.3,
+     "font_vw": 7.38,
+     "x_pct": 32.8,
+     "y_pct": 45.9,
+     "right_pct": 67.8,
+     "center_pct": 50.3,
+     "color": "#131313",
+     "on": "#f8f8f8",
+     "contrast": 17.5
+    }
+   ]
+  },
+  {
+   "file": "stills/still_05_014.00s.png",
+   "t": 14.0,
+   "size": [
+    578,
+    322
+   ],
+   "paragraphs": [
+    {
+     "lines": 3,
+     "x_pct": 16.8,
+     "y_pct": 67.7,
+     "width_pct": 20.2,
+     "line_pitch_px_ref": 23.7,
+     "font_px_ref_est": 16.3
+    }
+   ],
+   "lines": [
+    {
+     "x": 522.6666666666666,
+     "y": 33.333333333333336,
+     "w": 30.666666666666668,
+     "h": 6.666666666666667,
+     "text": "ova",
+     "via": "ocr",
+     "reliable": false,
+     "font_px_src": 8.9,
+     "font_px_ref": 22.1,
+     "font_vw": 1.54,
+     "x_pct": 90.4,
+     "y_pct": 10.4,
+     "right_pct": 95.7,
+     "center_pct": 93.1,
+     "color": "#000000",
+     "on": "#f8f8f8",
+     "contrast": 19.77
+    },
+    {
+     "x": 97.0,
+     "y": 34.333333333333336,
+     "w": 16.333333333333332,
+     "h": 5.0,
+     "text": "Specs",
+     "via": "ocr",
+     "reliable": false,
+     "font_px_src": 5.4,
+     "font_px_ref": 13.4,
+     "font_vw": 0.93,
+     "x_pct": 16.8,
+     "y_pct": 10.7,
+     "right_pct": 19.6,
+     "center_pct": 18.2,
+     "color": "#8d8d8d",
+     "on": "#f3f3f3",
+     "contrast": 2.99
+    },
+    {
+     "x": 127.0,
+     "y": 34.666666666666664,
+     "w": 16.333333333333332,
+     "h": 4.333333333333333,
+     "text": "About",
+     "via": "ocr",
+     "reliable": false,
+     "font_px_src": 5.8,
+     "font_px_ref": 14.4,
+     "font_vw": 1.0,
+     "x_pct": 22.0,
+     "y_pct": 10.8,
+     "right_pct": 24.8,
+     "center_pct": 23.4,
+     "color": "#818080",
+     "on": "#f5f5f5",
+     "contrast": 3.61
+    },
+    {
+     "x": 96.66666666666667,
+     "y": 218.0,
+     "w": 91.66666666666667,
+     "h": 5.666666666666667,
+     "text": "Mustroom is wireless charger,",
+     "via": "ocr",
+     "reliable": false,
+     "font_px_src": 6.1,
+     "font_px_ref": 15.2,
+     "font_vw": 1.05,
+     "x_pct": 16.7,
+     "y_pct": 67.7,
+     "right_pct": 32.6,
+     "center_pct": 24.7,
+     "color": "#767676",
+     "on": "#f8f8f8",
+     "contrast": 4.28
+    },
+    {
+     "x": 96.33333333333333,
+     "y": 228.0,
+     "w": 114.66666666666667,
+     "h": 5.0,
+     "text": "characterized by simple and essential",
+     "via": "ocr",
+     "reliable": false,
+     "font_px_src": 5.4,
+     "font_px_ref": 13.4,
+     "font_vw": 0.93,
+     "x_pct": 16.7,
+     "y_pct": 70.8,
+     "right_pct": 36.5,
+     "center_pct": 26.6,
+     "color": "#767676",
+     "on": "#f8f8f8",
+     "contrast": 4.28
+    },
+    {
+     "x": 96.33333333333333,
+     "y": 237.66666666666666,
+     "w": 105.33333333333333,
+     "h": 5.333333333333333,
+     "text": "Gesign, Gefined by soft and rousded",
+     "via": "ocr",
+     "reliable": false,
+     "font_px_src": 5.7,
+     "font_px_ref": 14.3,
+     "font_vw": 0.99,
+     "x_pct": 16.7,
+     "y_pct": 73.8,
+     "right_pct": 34.9,
+     "center_pct": 25.8,
+     "color": "#7b7b7b",
+     "on": "#fafafa",
+     "contrast": 4.06
+    }
+   ]
+  }
+ ],
+ "colors": [
+  {
+   "hex": "#f7f7f7",
+   "lab": [
+    97.3,
+    0.0,
+    0.0
+   ],
+   "share": 0.7854,
+   "presence": 1.0,
+   "chroma": 0.0,
+   "lightness": 97.3
+  },
+  {
+   "hex": "#1c1c1c",
+   "lab": [
+    10.2,
+    -0.2,
+    0.1
+   ],
+   "share": 0.0594,
+   "presence": 0.8,
+   "chroma": 0.2,
+   "lightness": 10.2
+  },
+  {
+   "hex": "#c5c6c6",
+   "lab": [
+    79.7,
+    -0.1,
+    -0.5
+   ],
+   "share": 0.0504,
+   "presence": 1.0,
+   "chroma": 0.5,
+   "lightness": 79.7
+  },
+  {
+   "hex": "#494f4e",
+   "lab": [
+    33.2,
+    -2.9,
+    0.1
+   ],
+   "share": 0.032,
+   "presence": 0.8,
+   "chroma": 2.9,
+   "lightness": 33.2
+  },
+  {
+   "hex": "#697378",
+   "lab": [
+    47.6,
+    -2.4,
+    -4.2
+   ],
+   "share": 0.0239,
+   "presence": 0.8,
+   "chroma": 4.8,
+   "lightness": 47.6
+  },
+  {
+   "hex": "#ae7043",
+   "lab": [
+    53.0,
+    19.8,
+    35.0
+   ],
+   "share": 0.0195,
+   "presence": 0.2,
+   "chroma": 40.2,
+   "lightness": 53.0
+  },
+  {
+   "hex": "#964d29",
+   "lab": [
+    41.2,
+    27.7,
+    34.6
+   ],
+   "share": 0.0087,
+   "presence": 0.4,
+   "chroma": 44.3,
+   "lightness": 41.2
+  },
+  {
+   "hex": "#a49e9c",
+   "lab": [
+    65.6,
+    1.7,
+    1.9
+   ],
+   "share": 0.0081,
+   "presence": 0.6,
+   "chroma": 2.5,
+   "lightness": 65.6
+  },
+  {
+   "hex": "#302e31",
+   "lab": [
+    19.2,
+    2.0,
+    -1.8
+   ],
+   "share": 0.0039,
+   "presence": 0.2,
+   "chroma": 2.7,
+   "lightness": 19.2
+  },
+  {
+   "hex": "#8f9396",
+   "lab": [
+    60.8,
+    -1.2,
+    -1.8
+   ],
+   "share": 0.0039,
+   "presence": 0.2,
+   "chroma": 2.2,
+   "lightness": 60.8
+  },
+  {
+   "hex": "#c59e84",
+   "lab": [
+    67.9,
+    10.8,
+    18.9
+   ],
+   "share": 0.0027,
+   "presence": 0.2,
+   "chroma": 21.8,
+   "lightness": 67.9
+  },
+  {
+   "hex": "#695a58",
+   "lab": [
+    39.7,
+    5.8,
+    3.4
+   ],
+   "share": 0.0022,
+   "presence": 0.2,
+   "chroma": 6.7,
+   "lightness": 39.7
+  }
+ ],
+ "roles": {
+  "bg": "#f7f7f7",
+  "bg_alt": [],
+  "text": "#1c1c1c",
+  "text_alt": [
+   "#8f9396",
+   "#697378"
+  ],
+  "accent_candidates": [
+   "#ae7043",
+   "#964d29"
+  ],
+  "neutral_ramp": [
+   "#1c1c1c",
+   "#302e31",
+   "#494f4e",
+   "#695a58",
+   "#697378",
+   "#8f9396",
+   "#a49e9c",
+   "#c5c6c6",
+   "#f7f7f7"
+  ]
+ },
+ "contrast": {
+  "text_on_bg": 15.91,
+  "accents_on_bg": {
+   "#ae7043": 3.77,
+   "#964d29": 5.78
+  }
+ },
+ "type_scale": [
+  {
+   "confidence": "baixa",
+   "px_ref": 13.4,
+   "vw": 0.93,
+   "count": 4,
+   "sample": "to respond to aesthetic and functional",
+   "uppercase": false
+  },
+  {
+   "confidence": "baixa",
+   "px_ref": 15.2,
+   "vw": 1.05,
+   "count": 8,
+   "sample": "needs while maintaining its peculiar form",
+   "uppercase": false
+  },
+  {
+   "confidence": "baixa",
+   "px_ref": 22.1,
+   "vw": 1.54,
+   "count": 3,
+   "sample": "Mushroom, and adapted",
+   "uppercase": false
+  },
+  {
+   "confidence": "baixa",
+   "px_ref": 24.4,
+   "vw": 1.69,
+   "count": 5,
+   "sample": "of power going into its quirky",
+   "uppercase": false
+  },
+  {
+   "confidence": "ok",
+   "px_ref": 30.4,
+   "vw": 2.11,
+   "count": 5,
+   "sample": "Mushroom charger has 15W transmitter",
+   "uppercase": false
+  },
+  {
+   "confidence": "ok",
+   "px_ref": 33.1,
+   "vw": 2.3,
+   "count": 2,
+   "sample": "an choke for both routine",
+   "uppercase": false
+  },
+  {
+   "confidence": "baixa",
+   "px_ref": 41.0,
+   "vw": 2.85,
+   "count": 1,
+   "sample": "Preorder now on Kickstarter for $129",
+   "uppercase": false
+  },
+  {
+   "confidence": "baixa",
+   "px_ref": 106.3,
+   "vw": 7.38,
+   "count": 1,
+   "sample": "mushroom",
+   "uppercase": false
+  },
+  {
+   "confidence": "baixa",
+   "px_ref": 261.3,
+   "vw": 18.15,
+   "count": 1,
+   "sample": "roncent",
+   "uppercase": false
+  }
+ ],
+ "body_text": {
+  "blocks": 6,
+  "font_px_ref_median": 16.3,
+  "note": "texto corrido medido pelo passo entre linhas (pitch / 1.45); use isto, e não type_scale, para o corpo"
+ },
+ "layout": {
+  "left_guides_pct": [
+   {
+    "pct": 17.0,
+    "count": 13
+   },
+   {
+    "pct": 16.0,
+    "count": 4
+   },
+   {
+    "pct": 90.0,
+    "count": 3
+   },
+   {
+    "pct": 18.0,
+    "count": 2
+   },
+   {
+    "pct": 22.0,
+    "count": 2
+   }
+  ],
+  "right_guides_pct": [
+   {
+    "pct": 36.0,
+    "count": 5
+   },
+   {
+    "pct": 35.0,
+    "count": 4
+   },
+   {
+    "pct": 96.0,
+    "count": 3
+   },
+   {
+    "pct": 31.0,
+    "count": 2
+   },
+   {
+    "pct": 33.0,
+    "count": 2
+   },
+   {
+    "pct": 37.0,
+    "count": 2
+   }
+  ],
+  "centered_lines_ratio": 0.03,
+  "note": "guias = posições x (em % da largura) onde 2+ linhas de texto começam/terminam; a menor guia esquerda frequente costuma ser a margem"
+ },
+ "motion": {
+  "events": 5,
+  "active_ratio": 0.57,
+  "duration_s": {
+   "p25": 1.27,
+   "p50": 1.6,
+   "p75": 1.8,
+   "max": 2.73
+  },
+  "easing_votes": {
+   "sine.inOut": 1
+  },
+  "css_for": {
+   "power1.out (ease-out leve)": "cubic-bezier(0.5, 1, 0.89, 1)",
+   "sine.inOut": "cubic-bezier(0.37, 0, 0.63, 1)",
+   "expo.out (lerp/inércia)": "cubic-bezier(0.16, 1, 0.3, 1)"
+  },
+  "parallax_events": 3,
+  "pin_events": 1,
+  "scroll_events": 2,
+  "cuts": 0,
+  "note": "estimativas do analyze_video.py; confirme no breakdown antes de virar token"
+ },
+ "caveats": [
+  "cores de fotos/3D entram na lista: papéis são sugestões",
+  "tamanho de fonte ±15%; convertido para viewport de referência",
+  "família tipográfica NÃO é detectada: classifique olhando os stills e escolha substituta",
+  "raio, sombra, espaçamento e componentes: medir olhando os stills (frames.py --crop para ampliar)"
+ ]
+}

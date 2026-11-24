@@ -1,0 +1,2015 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sonic.Link Design System</title>
+<!-- preview capture: the Overview's intro film reports (via postMessage) while its hero
+     frame is settled — title, phone and media cards in place, before the first flash -->
+<meta name="preview-ready-selector" content="body.ds-overview-ready">
+<meta name="preview-ready-after-ms" content="300">
+<link rel="icon" href="assets/overview/assets/cfd9be3496a748d2_sonic-link.png">
+<!-- the Overview's own stylesheets and runtimes: Inter + JetBrains Mono, base tokens,
+     Tailwind CSS runtime, <iconify-icon> and Lucide -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link href="https://fonts.gstatic.com" rel="preconnect">
+<link rel="stylesheet" href="assets/overview/assets/86d6b05f58559b7d_css2.css">
+<link rel="stylesheet" href="assets/overview/assets/css/base.css">
+<script src="assets/overview/assets/176e894661aa9cdc_3.4.17"></script>
+<script src="assets/overview/assets/851bed7af266f96a_iconify-icon.min.js"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+/* ================================================================ catalog shell
+   Routing and layout only. The navbar is the Overview's own header markup
+   (Tailwind classes, same runtime); specimens reuse the Overview's HTML. */
+html, body { height: 100%; margin: 0; }
+body { overflow: hidden; }
+#overview-frame { position: fixed; inset: 0; width: 100%; height: 100%; border: 0; display: block; z-index: 0; background: #000; }
+#ds-nav [aria-disabled="true"] { opacity: .35; pointer-events: none; }
+#ds-nav .ds-link.is-on { color: #fff; }
+#view-components { display: none; }
+/* ------------------------------------------------------------ components view
+   Everything below is scoped to the Components view; the Overview iframe is untouched. */
+#view-components { position: fixed; inset: 0; z-index: 10; }
+body.is-components #view-components { display: block; }
+body.is-components #overview-frame { pointer-events: none; }   /* the live page background, parked behind */
+/* legibility: one dark scrim over the live background; it thins while Backgrounds
+   is the current group so the prism field reads close to full strength */
+#ds-scrim { position: fixed; inset: 0; pointer-events: none; background: rgba(0,0,0,.62); transition: background .7s ease; }
+body.ds-scene-clear #ds-scrim { background: rgba(0,0,0,.14); }
+#ds-shell { position: absolute; top: 100px; right: 0; bottom: 0; left: 0; max-width: 84rem; margin: 0 auto;
+  display: grid; grid-template-columns: 236px minmax(0, 1fr); }
+/* sidebar: its own dark glass, the navbar pill's surface */
+#ds-side { min-height: 0; overflow-y: auto; padding: 4px 12px 32px 24px; }
+#ds-side nav { position: relative; display: flex; flex-direction: column; gap: 2px; padding: 10px; border-radius: 19px;
+  background: rgba(24,24,27,.86); border: 1px solid rgba(255,255,255,.06);
+  -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px); box-shadow: 0 25px 50px -12px rgba(0,0,0,.6); }
+#ds-side a { display: flex; align-items: baseline; gap: 10px; padding: 8px 10px; border-radius: 10px;
+  font: 400 11px/1.35 'JetBrains Mono', monospace; letter-spacing: .08em; text-transform: uppercase;
+  color: #a1a1aa; transition: color .3s, background-color .3s; }
+#ds-side a b { font-weight: 400; color: #71717a; }
+#ds-side a:hover { color: #fff; background: rgba(255,255,255,.05); }
+#ds-side a.is-current { color: #fff; background: rgba(99,102,241,.14); }
+#ds-side a.is-current b { color: #818cf8; }
+#ds-main { position: relative; min-height: 0; overflow-y: auto; overflow-x: hidden; padding: 4px 32px 160px 20px; }
+#ds-main .ds-group { padding: 0 0 104px; }
+.ds-group-head { display: flex; align-items: center; gap: 14px; margin: 0 0 34px; }
+.ds-group-head > div { background: rgba(24,24,27,.8); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+.ds-group-head h2, .ds-spec-title, .ds-sub, .ds-famname { text-shadow: 0 1px 14px rgba(0,0,0,.9), 0 0 3px rgba(0,0,0,.8); }
+.ds-spec { margin: 0 0 56px; }
+.ds-spec:last-child { margin-bottom: 0; }
+.ds-spec-title { margin: 0 0 16px; font: 500 11px/1.4 'JetBrains Mono', monospace; letter-spacing: .14em; text-transform: uppercase; color: #e4e4e7; }
+.ds-live { position: relative; }
+/* captions carry their own dark glass so metadata stays legible on any background */
+.ds-cap { display: inline-block; max-width: 100%; margin-top: 14px; padding: 9px 13px; border-radius: 12px;
+  background: rgba(10,10,12,.74); border: 1px solid rgba(255,255,255,.06); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+.ds-meta { display: block; font: 400 11px/1.55 'JetBrains Mono', ui-monospace, monospace; color: #c4c4cc; overflow-wrap: anywhere; }
+.ds-note { margin: 6px 0 0; max-width: 78ch; font-size: 12.5px; line-height: 1.6; color: #a1a1aa; }
+.ds-note code { font: 11px 'JetBrains Mono', monospace; color: #e4e4e7; }
+.ds-note-solo { display: inline-block; margin-top: 22px; padding: 9px 13px; border-radius: 12px; background: rgba(10,10,12,.74); border: 1px solid rgba(255,255,255,.06); }
+.ds-sub { margin: 40px 0 16px; font: 400 11px/1.4 'JetBrains Mono', monospace; letter-spacing: .14em; text-transform: uppercase; color: #a1a1aa; }
+.ds-sub:first-child { margin-top: 0; }
+.ds-row { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; }
+.ds-top { align-items: flex-start; }
+.ds-w-sm { width: 100%; max-width: 24rem; }
+.ds-w-md { width: 100%; max-width: 40rem; }
+.ds-w-lg { width: 100%; max-width: 48rem; }
+.ds-pad-top { padding-top: 16px; }
+
+/* typography: role | live sample | declared size */
+.ds-types { border-radius: 19px; background: rgba(10,10,12,.55); border: 1px solid rgba(255,255,255,.05); padding: 0 24px; }
+.ds-type { display: grid; grid-template-columns: 190px minmax(0, 1fr) 180px; gap: 28px; align-items: center; padding: 24px 0; border-top: 1px solid rgba(255,255,255,.07); }
+.ds-type:first-child { border-top: 0; }
+.ds-type .role { font-size: 13px; font-weight: 500; color: #fff; }
+.ds-type .face { margin-top: 3px; font-size: 12px; color: #a1a1aa; }
+.ds-type .ds-meta { margin-top: 6px; color: #71717a; font-size: 10.5px; }
+.ds-type .sample { min-width: 0; }
+#ds-main .ds-type .sample [data-fit] { font-size: clamp(52px, 6.6vw, 112px); }
+.ds-type .sizes { text-align: right; font: 400 11.5px/1.5 'JetBrains Mono', monospace; color: #d4d4d8; }
+
+/* colours */
+.ds-colors { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 18px 24px; }
+.ds-sw { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 14px; align-items: start; padding: 10px; border-radius: 16px; background: rgba(10,10,12,.6); border: 1px solid rgba(255,255,255,.04); }
+.ds-chip { position: relative; height: 72px; border-radius: 12px; overflow: hidden; display: grid; place-items: center; background: #0a0a0a; border: 1px solid rgba(255,255,255,.08); }
+.ds-chip .fill { position: absolute; inset: 0; }
+.ds-chip .edge { position: absolute; inset: 16px; }
+.ds-chip .aa { position: relative; font-size: 26px; font-weight: 300; line-height: 1; white-space: nowrap; }
+.ds-sw strong { display: block; font-size: 12.5px; font-weight: 500; color: #fff; }
+.ds-sw .val, .ds-sw .tok { display: block; margin-top: 3px; font: 11px/1.45 'JetBrains Mono', monospace; overflow-wrap: anywhere; }
+.ds-sw .val { color: #d4d4d8; }
+.ds-sw .tok { color: #818cf8; }
+.ds-sw p { margin: 4px 0 0; font-size: 11.5px; line-height: 1.45; color: #a1a1aa; }
+.ds-famname { margin: 0 0 10px; font-size: 12.5px; font-weight: 500; color: #fff; }
+.ds-family { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; margin-bottom: 22px; }
+.ds-family > div { padding: 10px; border-radius: 16px; background: rgba(10,10,12,.6); border: 1px solid rgba(255,255,255,.04); }
+.ds-family .ds-chip { height: 62px; }
+.ds-family small { display: block; margin-top: 8px; font: 10px 'JetBrains Mono', monospace; letter-spacing: .14em; text-transform: uppercase; color: #a1a1aa; }
+.ds-family code { display: block; margin-top: 3px; font: 11px/1.45 'JetBrains Mono', monospace; color: #d4d4d8; overflow-wrap: anywhere; }
+
+/* backgrounds */
+.ds-window { height: min(60vh, 560px); border-radius: 2rem; border: 1px solid rgba(255,255,255,.12); box-shadow: inset 0 0 0 1px rgba(255,255,255,.03); }
+.ds-film { width: 100%; }
+.ds-film-inner { display: flex; justify-content: center; }
+
+/* surfaces */
+.ds-surfaces { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 24px; }
+.ds-surface { margin: 0; display: flex; flex-direction: column; gap: 12px; }
+.ds-surface-box { height: 150px; display: flex; align-items: stretch; justify-content: center; }
+.ds-surface-box > * { flex: 1 1 auto; }
+.ds-surface-box > .self-center { flex: 0 0 auto; }
+.ds-surface figcaption { padding: 9px 12px; border-radius: 12px; background: rgba(10,10,12,.74); border: 1px solid rgba(255,255,255,.06); }
+.ds-surface strong { display: block; font-size: 12.5px; font-weight: 500; color: #fff; }
+.ds-surface .ds-meta { margin-top: 3px; }
+
+/* icons: five to a row, identifier under each */
+.ds-icons { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 30px 16px; padding: 26px 20px; border-radius: 19px; background: rgba(10,10,12,.55); border: 1px solid rgba(255,255,255,.05); }
+.ds-icon { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; min-width: 0; }
+.ds-icon .stage { height: 44px; display: flex; align-items: center; justify-content: center; }
+.ds-icon code { display: block; font: 11px/1.4 'JetBrains Mono', monospace; color: #e4e4e7; overflow-wrap: anywhere; }
+.ds-icon small { display: block; margin-top: 2px; font-size: 10.5px; line-height: 1.35; color: #71717a; overflow-wrap: anywhere; }
+
+/* live components taken out of their page positions */
+.ds-nodes { display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; }
+.ds-media { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; }
+#ds-main footer { max-width: 100%; }
+
+@media (max-width: 1100px) {
+  .ds-type { grid-template-columns: 150px minmax(0, 1fr); }
+  .ds-type .sizes { grid-column: 2; text-align: left; }
+}
+@media (max-width: 820px) {
+  #ds-shell { top: 70px; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); }
+  #ds-side { padding: 0 16px 10px; overflow: visible; }
+  #ds-side nav { flex-direction: row; overflow-x: auto; border-radius: 9999px; padding: 5px; scrollbar-width: none; }
+  #ds-side nav::-webkit-scrollbar { display: none; }
+  #ds-side a { flex: 0 0 auto; white-space: nowrap; padding: 7px 12px; border-radius: 9999px; }
+  #ds-main { padding: 12px 16px 120px; }
+  #ds-main .ds-group { padding-bottom: 80px; }
+  .ds-types { padding: 0 16px; }
+  .ds-type { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .ds-type .sizes { grid-column: auto; }
+  .ds-icons { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .ds-window { height: 340px; }
+}
+
+</style>
+</head>
+<body class="min-h-screen overflow-x-hidden antialiased selection:bg-[#6366F1]/30 selection:text-white text-zinc-400 relative">
+
+<!-- navigation: the Overview's navbar pill (brand block + mono link row), links routed to the two views -->
+<header id="ds-nav" class="fixed md:top-8 z-50 flex pointer-events-auto pr-4 pl-4 top-4 right-0 left-0 justify-center">
+<nav class="flex items-center w-full md:w-auto max-w-4xl justify-between md:justify-center bg-[#18181B]/80 border-white/5 border rounded-full py-2 pr-2 pl-4 md:pl-6 shadow-2xl shadow-black/50 backdrop-blur-xl transition-all">
+<a class="flex items-center gap-2 pr-2 md:pr-6 md:border-r border-white/10 py-1" href="#overview">
+<iconify-icon class="text-[#6366F1] text-lg" icon="solar:headphones-linear" stroke-width="1.5"></iconify-icon>
+<span class="uppercase block cursor-pointer text-xs font-normal text-white tracking-tighter font-sans">SONIC.LINK</span>
+</a>
+<div class="flex gap-4 md:gap-6 pl-3 pr-3 md:px-6 items-center">
+<a class="ds-link hover:text-white transition-colors cursor-pointer text-xs text-zinc-500 tracking-widest font-mono" id="nav-overview" href="#overview">Overview</a>
+<a class="ds-link hover:text-white transition-colors cursor-pointer text-xs text-zinc-500 tracking-widest font-mono" id="nav-components" href="#components">Components</a>
+</div>
+</nav>
+</header>
+
+<iframe id="overview-frame" title="Overview" src="assets/overview/design-system.html"></iframe>
+
+<div id="view-components">
+<div id="ds-scrim" aria-hidden="true"></div>
+<div id="ds-shell">
+<aside id="ds-side"><nav>
+<a href="#components-typography"><b>01</b>Typography</a>
+<a href="#components-colors"><b>02</b>Colors</a>
+<a href="#components-backgrounds"><b>03</b>Backgrounds</a>
+<a href="#components-surfaces"><b>04</b>Surfaces</a>
+<a href="#components-icons"><b>05</b>Icons</a>
+<a href="#components-actions"><b>06</b>Actions</a>
+<a href="#components-navigation"><b>07</b>Navigation</a>
+<a href="#components-inputs"><b>08</b>Inputs and controls</a>
+<a href="#components-cards"><b>09</b>Cards</a>
+<a href="#components-data"><b>10</b>Data display</a>
+<a href="#components-media"><b>11</b>Media</a>
+<a href="#components-content"><b>12</b>Content groups</a>
+<a href="#components-studio"><b>13</b>Studio workspace</a>
+</nav></aside>
+<main id="ds-main">
+<section class="ds-group" id="components-typography">
+<header class="ds-group-head"><div class="px-3 py-1 rounded-full border border-white/10 bg-white/5 text-xs font-mono text-zinc-400 tracking-widest">01</div><h2 class="text-3xl font-normal text-white tracking-tight">Typography</h2></header>
+<div class="ds-types"><div class="ds-type"><div class="ds-type-l"><div class="role">Display 1</div><div class="face">Barlow Condensed → Impact · 700</div><code class="ds-meta">#resolveTitle p · leading-[.78] tracking-tight</code></div><div class="sample"><p data-fit class="tracking-tight text-white text-[clamp(4.5rem,16vw,14rem)] leading-[.78]" style="font-family: 'Barlow Condensed', Impact, sans-serif; font-weight: 700;">Sonic.Link</p></div><div class="sizes">clamp(4.5rem, 16vw, 14rem)</div></div>
+<div class="ds-type"><div class="ds-type-l"><div class="role">Display 2</div><div class="face">Barlow Condensed → Impact · 700</div><code class="ds-meta">#mainTitle .titleChunk · animated per chunk</code></div><div class="sample"><div class="flex flex-wrap gap-[clamp(.45rem,2vw,2rem)]"><span data-fit class="inline-block tracking-tight text-white text-[clamp(4.7rem,13.5vw,13rem)] leading-[.78]" style='font-family: "Barlow Condensed", Impact, sans-serif; font-weight: 700;'>Design</span> <span data-fit class="inline-block tracking-tight text-white text-[clamp(4.7rem,13.5vw,13rem)] leading-[.78]" style='font-family: "Barlow Condensed", Impact, sans-serif; font-weight: 700;'>System.</span></div></div><div class="sizes">clamp(4.7rem, 13.5vw, 13rem)</div></div>
+<div class="ds-type"><div class="ds-type-l"><div class="role">Display ghost</div><div class="face">Barlow Condensed → Impact · 600</div><code class="ds-meta">#introWord p · text-white/20</code></div><div class="sample"><p data-fit class="tracking-tight text-white/20 text-[clamp(5rem,17vw,13rem)] leading-none" style="font-family: 'Barlow Condensed', Impact, sans-serif; font-weight: 600;">Sonic.Link</p></div><div class="sizes">clamp(5rem, 17vw, 13rem)</div></div>
+<div class="ds-type"><div class="ds-type-l"><div class="role">Screen title</div><div class="face">Barlow Condensed → Impact · 700</div><code class="ds-meta">#phone h2 · text-5xl sm:text-6xl</code></div><div class="sample"><h2 class="tracking-tight text-white text-5xl leading-none sm:text-6xl" style="font-family: 'Barlow Condensed', Impact, sans-serif; font-weight: 700;">Dolorem</h2></div><div class="sizes">3.75rem | 3rem</div></div>
+<div class="ds-type"><div class="ds-type-l"><div class="role">Heading 1</div><div class="face">Inter · 300</div><code class="ds-meta">architecture h2 · text-4xl md:text-5xl font-light</code></div><div class="sample"><h2 class="text-4xl md:text-5xl font-light tracking-tight text-white leading-tight">Lorem Ipsum<br class="hidden md:block"/>Dolor Sit</h2></div><div class="sizes">3rem | 2.25rem</div></div>
+<div class="ds-type"><div class="ds-type-l"><div class="role">Numeral</div><div class="face">Inter · 300</div><code class="ds-meta">pricing price · text-4xl font-light</code></div><div class="sample"><div class="flex items-baseline gap-1"><span class="text-4xl font-light text-white">R$149</span><span class="text-zinc-500 text-xs font-mono">/CICLO</span></div></div><div class="sizes">2.25rem</div></div>
+<div class="ds-type"><div class="ds-type-l"><div class="role">Heading 2</div><div class="face">Inter · 400</div><code class="ds-meta">section h2 · text-3xl font-normal</code></div><div class="sample"><h2 class="text-3xl font-normal text-white tracking-tight">Lorem Ipsum Dolor</h2></div><div class="sizes">1.875rem</div></div>
+<div class="ds-type"><div class="ds-type-l"><div class="role">Tile title</div><div class="face">Inter · 500 · uppercase</div><code class="ds-meta">feature h2 · text-2xl lg:text-3xl uppercase</code></div><div class="sample"><h2 class="text-2xl lg:text-3xl font-medium tracking-tight uppercase flex items-center gap-2 mb-2 text-white">Lorem Ipsum <i data-lucide="arrow-up-right" class="text-[#6366F1] opacity-80 w-5 h-5"></i></h2></div><div class="sizes">1.875rem | 1.5rem</div></div>
+<div class="ds-type"><div class="ds-type-l"><div class="role">Heading 3</div><div class="face">Inter · 400</div><code class="ds-meta">architecture card h3 · text-2xl</code></div><div class="sample"><h3 class="text-2xl font-normal tracking-tight text-white">Lorem Ipsum Dolor Sit</h3></div><div class="sizes">1.5rem</div></div>
+<div class="ds-type"><div class="ds-type-l"><div class="role">Heading 4</div><div class="face">Inter · 400</div><code class="ds-meta">node card h3 · text-lg · studio header h2</code></div><div class="sample"><h3 class="text-lg font-normal text-white tracking-tight">Lorem Ipsum</h3></div><div class="sizes">1.125rem</div></div>
+<div class="ds-type"><div class="ds-type-l"><div class="role">Lead</div><div class="face">Inter · 300</div><code class="ds-meta">section lead · text-sm md:text-base font-light</code></div><div class="sample"><p class="text-zinc-400 text-sm md:text-base font-light leading-relaxed max-w-lg">Nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat duis aute irure dolor in reprehenderit.</p></div><div class="sizes">1rem | 0.875rem</div></div>
+<div class="ds-type"><div class="ds-type-l"><div class="role">Text 1</div><div class="face">Inter · 300</div><code class="ds-meta">card p · text-sm font-light leading-relaxed</code></div><div class="sample"><p class="text-sm font-light text-zinc-400 leading-relaxed">Excepteur sint occaecat cupidatat non proident sunt in culpa qui officia deserunt mollit anim.</p></div><div class="sizes">0.875rem</div></div>
+<div class="ds-type"><div class="ds-type-l"><div class="role">Card title</div><div class="face">Inter · 400</div><code class="ds-meta">card h4 / name · text-sm font-normal</code></div><div class="sample"><h4 class="text-sm font-normal text-white tracking-tight">Dolor Sit Amet</h4></div><div class="sizes">0.875rem</div></div>
+<div class="ds-type"><div class="ds-type-l"><div class="role">Text 2</div><div class="face">Inter · 300</div><code class="ds-meta">small card p · text-xs font-light</code></div><div class="sample"><p class="text-xs font-light text-zinc-400 leading-relaxed">Laboris nisi ut aliquip ex ea commodo consequat duis aute irure.</p></div><div class="sizes">0.75rem</div></div>
+<div class="ds-type"><div class="ds-type-l"><div class="role">Film caption</div><div class="face">Inter · 400 · uppercase</div><code class="ds-meta">#resolveTitle p + p · tracking-[.32rem]</code></div><div class="sample"><p class="text-xs font-normal uppercase tracking-[.32rem] text-lime-100/80 sm:text-sm">Neon waveforms, condensed type and indigo glass</p></div><div class="sizes">0.875rem | 0.75rem</div></div>
+<div class="ds-type"><div class="ds-type-l"><div class="role">Mono label</div><div class="face">JetBrains Mono · 400</div><code class="ds-meta">.font-mono text-xs tracking-widest</code></div><div class="sample"><span class="font-mono text-xs text-[#6366F1] tracking-widest uppercase">Líder de Sessão</span></div><div class="sizes">0.75rem</div></div>
+<div class="ds-type"><div class="ds-type-l"><div class="role">Nav link</div><div class="face">JetBrains Mono · 400</div><code class="ds-meta">header nav button · font-mono text-zinc-500</code></div><div class="sample"><button class="hover:text-white transition-colors cursor-pointer text-xs text-zinc-500 tracking-widest font-mono">Música</button></div><div class="sizes">0.75rem</div></div>
+<div class="ds-type"><div class="ds-type-l"><div class="role">Wordmark</div><div class="face">Inter · 400 · uppercase</div><code class="ds-meta">brand span · tracking-tighter</code></div><div class="sample"><span class="uppercase block text-xs font-normal text-white tracking-tighter font-sans">SONIC.LINK</span></div><div class="sizes">0.75rem</div></div>
+<div class="ds-type"><div class="ds-type-l"><div class="role">Micro label</div><div class="face">Inter · 500 · uppercase</div><code class="ds-meta">studio group label · text-[10px] tracking-wider</code></div><div class="sample"><h3 class="text-[10px] font-medium uppercase tracking-wider text-zinc-500">Workspace</h3></div><div class="sizes">10px</div></div></div>
+<p class="ds-note ds-note-solo">Barlow Condensed is declared inline but never loaded by the source, so the display styles render in its <code>Impact</code> fallback, exactly as on the Overview. Display rows are scaled to the column here; the right column lists the declared size.</p>
+</section>
+
+<section class="ds-group" id="components-colors">
+<header class="ds-group-head"><div class="px-3 py-1 rounded-full border border-white/10 bg-white/5 text-xs font-mono text-zinc-400 tracking-widest">02</div><h2 class="text-3xl font-normal text-white tracking-tight">Colors</h2></header>
+<h3 class="ds-sub">Brand and Accent</h3><div class="ds-colors"><div class="ds-sw"><div class="ds-chip"><span class="fill" style="background:#6366F1;"></span></div><div><strong>Primary indigo</strong><code class="val">#6366F1</code><code class="tok">bg-[#6366F1] · text-[#6366F1]</code><p>CTAs, active meters, mono accents, icon tint</p></div></div><div class="ds-sw"><div class="ds-chip"><span class="fill" style="background:#18181B;"></span><span class="edge" style="inset:26px;border-radius:9999px;background:#6366F1;box-shadow:0 0 12px rgba(99,102,241,0.4)"></span></div><div><strong>Indigo glow</strong><code class="val">rgba(99,102,241,0.4)</code><code class="tok">shadow-[0_0_12px_rgba(99,102,241,0.4)]</code><p>Halo under the primary pill CTA and meter fills</p></div></div><div class="ds-sw"><div class="ds-chip"><span class="fill" style="background:#18181B;"></span><span class="aa" style="color:#818cf8;">Aa</span></div><div><strong>Indigo 400</strong><code class="val">#818cf8</code><code class="tok">text-indigo-400 · hover:bg-indigo-400</code><p>Studio accent text and icons; primary hover</p></div></div><div class="ds-sw"><div class="ds-chip"><span class="fill" style="background:#000;"></span><span class="edge" style="inset:30px 14px;border-radius:9999px;background:#bef264"></span></div><div><strong>Lime 300</strong><code class="val">#bef264</code><code class="tok">bg-lime-300</code><p>Film chips, rail dot and frame brackets</p></div></div><div class="ds-sw"><div class="ds-chip"><span class="fill" style="background:#000;"></span><span class="edge" style="inset:26px;border-radius:9999px;background:#f0abfc"></span></div><div><strong>Fuchsia 300</strong><code class="val">#f0abfc</code><code class="tok">bg-fuchsia-300</code><p>Phone avatar, bracket tint</p></div></div><div class="ds-sw"><div class="ds-chip"><span class="fill" style="background:linear-gradient(90deg, rgb(184,255,66), rgb(219,92,255), rgb(26,184,255));"></span></div><div><strong>Waveform ribbons</strong><code class="val">vec3(.72,1,.26) · vec3(.86,.36,1) · vec3(.1,.72,1)</code><code class="tok">#webglLayer fragment shader</code><p>Lime, violet and cyan ribbons of the film shader</p></div></div></div>
+<h3 class="ds-sub">Surfaces</h3><div class="ds-colors"><div class="ds-sw"><div class="ds-chip"><span class="fill" style="background:#000000;"></span></div><div><strong>Page</strong><code class="val">#000000</code><code class="tok">body · bg-[#000000]</code><p>Body and footer background</p></div></div><div class="ds-sw"><div class="ds-chip"><span class="fill" style="background:#0a0a0a;"></span></div><div><strong>App canvas</strong><code class="val">#0a0a0a</code><code class="tok">bg-[#0a0a0a]</code><p>Studio window, inputs, list rows</p></div></div><div class="ds-sw"><div class="ds-chip"><span class="fill" style="background:#0f0f11;"></span></div><div><strong>App panel</strong><code class="val">#0f0f11</code><code class="tok">bg-[#0f0f11]</code><p>Studio title bar, sidebars, inspector</p></div></div><div class="ds-sw"><div class="ds-chip"><span class="fill" style="background:rgba(24,24,27,0.9);backdrop-filter:blur(24px)"></span></div><div><strong>Glass card</strong><code class="val">rgba(24,24,27,0.9)</code><code class="tok">bg-[#18181B]/90 backdrop-blur-xl</code><p>Node, testimonial, pricing and FAQ cards (/80–/95)</p></div></div><div class="ds-sw"><div class="ds-chip"><span class="fill" style="background:rgba(24,24,27,0.8);backdrop-filter:blur(24px)"></span></div><div><strong>Glass navbar</strong><code class="val">rgba(24,24,27,0.8)</code><code class="tok">bg-[#18181B]/80</code><p>Navbar pill</p></div></div><div class="ds-sw"><div class="ds-chip"><span class="fill" style="background:rgba(0,0,0,0.4);"></span></div><div><strong>Canvas well</strong><code class="val">rgba(0,0,0,0.4)</code><code class="tok">bg-black/40</code><p>Behind the architecture canvases</p></div></div><div class="ds-sw"><div class="ds-chip"><span class="fill" style="background:#27272a;"></span></div><div><strong>Control</strong><code class="val">#27272a</code><code class="tok">bg-zinc-800</code><p>Slider track, secondary button, avatar</p></div></div><div class="ds-sw"><div class="ds-chip"><span class="fill" style="background:rgba(255,255,255,0.05);"></span></div><div><strong>Ghost fill</strong><code class="val">rgba(255,255,255,0.05)</code><code class="tok">bg-white/5</code><p>Ghost buttons, eyebrow pills</p></div></div></div>
+<h3 class="ds-sub">Text and Icons</h3><div class="ds-colors"><div class="ds-sw"><div class="ds-chip"><span class="fill" style="background:#18181B;"></span><span class="aa" style="color:#ffffff;">Aa</span></div><div><strong>Primary text</strong><code class="val">#ffffff</code><code class="tok">text-white</code><p>Headings, names, values</p></div></div><div class="ds-sw"><div class="ds-chip"><span class="fill" style="background:#18181B;"></span><span class="aa" style="color:#f4f4f5;">Aa</span></div><div><strong>Studio heading</strong><code class="val">#f4f4f5</code><code class="tok">text-zinc-100</code><p>Studio titles and input text</p></div></div><div class="ds-sw"><div class="ds-chip"><span class="fill" style="background:#18181B;"></span><span class="aa" style="color:#d4d4d8;">Aa</span></div><div><strong>Strong body</strong><code class="val">#d4d4d8</code><code class="tok">text-zinc-300</code><p>Testimonials, studio body</p></div></div><div class="ds-sw"><div class="ds-chip"><span class="fill" style="background:#18181B;"></span><span class="aa" style="color:#a1a1aa;">Aa</span></div><div><strong>Body</strong><code class="val">#a1a1aa</code><code class="tok">text-zinc-400</code><p>Paragraphs and default body color</p></div></div><div class="ds-sw"><div class="ds-chip"><span class="fill" style="background:#18181B;"></span><span class="aa" style="color:#71717a;">Aa</span></div><div><strong>Muted</strong><code class="val">#71717a</code><code class="tok">text-zinc-500</code><p>Mono labels, nav links, footer links</p></div></div><div class="ds-sw"><div class="ds-chip"><span class="fill" style="background:#18181B;"></span><span class="aa" style="color:#52525b;">Aa</span></div><div><strong>Faint</strong><code class="val">#52525b</code><code class="tok">text-zinc-600 · placeholder-zinc-600</code><p>Log numbers, placeholders</p></div></div><div class="ds-sw"><div class="ds-chip"><span class="fill" style="background:#000;"></span><span class="aa" style="color:rgba(236,252,203,0.8);">Aa</span></div><div><strong>Film caption</strong><code class="val">rgba(236,252,203,0.8)</code><code class="tok">text-lime-100/80</code><p>Resolve subtitle in the film</p></div></div><div class="ds-sw"><div class="ds-chip"><span class="fill" style="background:#000;"></span><span class="aa" style="color:rgba(255,255,255,0.2);">Aa</span></div><div><strong>Ghost display</strong><code class="val">rgba(255,255,255,0.2)</code><code class="tok">text-white/20</code><p>Intro word behind the film title</p></div></div></div>
+<h3 class="ds-sub">Borders</h3><div class="ds-colors"><div class="ds-sw"><div class="ds-chip"><span class="fill" style="background:#18181B;"></span><span class="edge" style="border:1px solid rgba(255,255,255,0.05);border-radius:12px"></span></div><div><strong>Hairline</strong><code class="val">rgba(255,255,255,0.05)</code><code class="tok">border-white/5</code><p>Default card and pill edge</p></div></div><div class="ds-sw"><div class="ds-chip"><span class="fill" style="background:#18181B;"></span><span class="edge" style="border:1px solid rgba(255,255,255,0.1);border-radius:12px"></span></div><div><strong>Divider</strong><code class="val">rgba(255,255,255,0.1)</code><code class="tok">border-white/10</code><p>Section rules, hover edge, media frames</p></div></div><div class="ds-sw"><div class="ds-chip"><span class="fill" style="background:#0a0a0a;"></span><span class="edge" style="border:1px solid #27272a;border-radius:8px"></span></div><div><strong>Studio line</strong><code class="val">#27272a</code><code class="tok">border-zinc-800</code><p>Studio window, panels, inputs</p></div></div><div class="ds-sw"><div class="ds-chip"><span class="fill" style="background:#0a0a0a;"></span><span class="edge" style="border:1px solid #3f3f46;border-radius:8px"></span></div><div><strong>Studio strong</strong><code class="val">#3f3f46</code><code class="tok">border-zinc-700</code><p>Avatar ring, badge edge, control hover</p></div></div><div class="ds-sw"><div class="ds-chip"><span class="fill" style="background:#18181B;"></span><span class="edge" style="border:1px solid rgba(99,102,241,0.3);border-radius:12px;box-shadow:0 0 30px rgba(99,102,241,0.15)"></span></div><div><strong>Featured edge</strong><code class="val">rgba(99,102,241,0.3)</code><code class="tok">border-[#6366F1]/30</code><p>Highlighted pricing card</p></div></div><div class="ds-sw"><div class="ds-chip"><span class="fill" style="background:#18181B;"></span><span class="edge" style="inset:18px;border-radius:14px;padding:1px;background:linear-gradient(to bottom, rgba(255,255,255,0.1), transparent)"><span style="display:block;height:100%;border-radius:13px;background:#18181B"></span></span></div><div><strong>Gradient hairline</strong><code class="val">from-white/10 to-transparent</code><code class="tok">bg-gradient-to-b from-white/10</code><p>p-[1px] wrapper around node and glass cards</p></div></div></div>
+<h3 class="ds-sub">Semantic</h3><div class="ds-colors"><div class="ds-sw"><div class="ds-chip"><span class="fill" style="background:#0a0a0a;"></span><span class="aa" style="color:#34d399;font-size:12px;letter-spacing:.2em;font-weight:500">SYNC</span></div><div><strong>Connected text</strong><code class="val">#34d399</code><code class="tok">text-emerald-400</code><p>DAW sync, Sys.Online labels</p></div></div><div class="ds-sw"><div class="ds-chip"><span class="fill" style="background:#0a0a0a;"></span><span class="edge" style="inset:33px;border-radius:9999px;background:#10b981;box-shadow:0 0 8px rgba(16,185,129,0.8)"></span></div><div><strong>Online dot</strong><code class="val">#10b981</code><code class="tok">bg-emerald-500</code><p>Live status dot with glow</p></div></div></div>
+<h3 class="ds-sub">Interactive States</h3><p class="ds-famname">Primary button</p><div class="ds-family"><div><div class="ds-chip"><span class="fill" style="background:#6366F1;"></span></div><small>Default</small><code>#6366F1</code></div><div><div class="ds-chip"><span class="fill" style="background:#818cf8;"></span></div><small>Hover</small><code>hover:bg-indigo-400</code></div></div><p class="ds-famname">Ghost button</p><div class="ds-family"><div><div class="ds-chip"><span class="fill" style="background:#18181B;"></span><span class="edge" style="inset:22px 14px;border-radius:8px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.05)"></span></div><small>Default</small><code>bg-white/5 border-white/5</code></div><div><div class="ds-chip"><span class="fill" style="background:#18181B;"></span><span class="edge" style="inset:22px 14px;border-radius:8px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.1)"></span></div><small>Hover</small><code>hover:bg-white/10</code></div></div><p class="ds-famname">Mono link</p><div class="ds-family"><div><div class="ds-chip"><span class="fill" style="background:#18181B;"></span><span class="aa" style="color:#71717a;font-size:12px;letter-spacing:.1em;font-family:JetBrains Mono,monospace">Música</span></div><small>Default</small><code>text-zinc-500</code></div><div><div class="ds-chip"><span class="fill" style="background:#18181B;"></span><span class="aa" style="color:#ffffff;font-size:12px;letter-spacing:.1em;font-family:JetBrains Mono,monospace">Música</span></div><small>Hover</small><code>hover:text-white</code></div><div><div class="ds-chip"><span class="fill" style="background:#000;"></span><span class="aa" style="color:#6366F1;font-size:14px;font-weight:300">Blog</span></div><small>Hover · footer</small><code>hover:text-[#6366F1]</code></div></div><p class="ds-famname">Studio nav item</p><div class="ds-family"><div><div class="ds-chip"><span class="fill" style="background:#0f0f11;"></span><span class="aa" style="color:#a1a1aa;font-size:12px">Estúdio</span></div><small>Default</small><code>text-zinc-400</code></div><div><div class="ds-chip"><span class="fill" style="background:#0f0f11;"></span><span class="edge" style="inset:24px 12px;border-radius:6px;background:rgba(39,39,42,0.5)"></span><span class="aa" style="color:#a1a1aa;font-size:12px;position:relative">Estúdio</span></div><small>Hover</small><code>hover:bg-zinc-800/50</code></div><div><div class="ds-chip"><span class="fill" style="background:#0f0f11;"></span><span class="edge" style="inset:24px 12px;border-radius:6px;background:rgba(99,102,241,0.1)"></span><span class="aa" style="color:#818cf8;font-size:12px;position:relative">Coprodutor IA</span></div><small>Selected</small><code>bg-indigo-500/10 text-indigo-400</code></div></div><p class="ds-famname">Field</p><div class="ds-family"><div><div class="ds-chip"><span class="fill" style="background:#0a0a0a;"></span><span class="edge" style="inset:26px 12px;border:1px solid #27272a;border-radius:6px"></span></div><small>Default</small><code>border-zinc-800</code></div><div><div class="ds-chip"><span class="fill" style="background:#0a0a0a;"></span><span class="edge" style="inset:26px 12px;border:1px solid rgba(99,102,241,0.5);border-radius:6px"></span></div><small>Focus</small><code>focus:border-indigo-500/50</code></div></div><p class="ds-famname">List row</p><div class="ds-family"><div><div class="ds-chip"><span class="fill" style="background:#18181B;"></span><span class="aa" style="color:#ffffff;font-size:12px;font-weight:500">Core_Synth</span></div><small>Default</small><code>text-white</code></div><div><div class="ds-chip"><span class="fill" style="background:#18181B;"></span><span class="edge" style="inset:22px 10px;border-radius:8px;background:rgba(255,255,255,0.05)"></span><span class="aa" style="color:#6366F1;font-size:12px;font-weight:500;position:relative">Core_Synth</span></div><small>Hover</small><code>hover:bg-white/5 · group-hover:text-[#6366F1]</code></div></div>
+<h3 class="ds-sub">Overlays</h3><div class="ds-colors"><div class="ds-sw"><div class="ds-chip"><img alt="" src="assets/overview/assets/6a7bb45fc2ab1366_fa51902b-c2a4-4c33-a96e-a8f1ef.jpg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.44;filter:blur(.25rem)"><span class="fill" style="background:radial-gradient(circle at 50% 56%, rgba(197,255,92,.22), transparent 18%), radial-gradient(circle at 63% 45%, rgba(210,111,255,.32), transparent 25%), linear-gradient(to bottom, rgba(0,0,0,.2), rgba(0,0,0,.12) 38%, rgba(0,0,0,.76));"></span></div><div><strong>Film wash</strong><code class="val">lime .22 · violet .32 · black .76</code><code class="tok">#filmStage &gt; div (inline style)</code><p>Colour wash over the film stage</p></div></div><div class="ds-sw"><div class="ds-chip"><img alt="" src="assets/overview/assets/b8e8b4eb9b1254cc_photo-1724525647065-f948fc102e.jpg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.2;mix-blend-mode:luminosity"><span class="fill" style="background:linear-gradient(to top, #000, rgba(0,0,0,.5), transparent);"></span></div><div><strong>Tile fade</strong><code class="val">from-black via-black/50</code><code class="tok">bg-gradient-to-t from-black via-black/50 to-transparent</code><p>Photo feature tiles</p></div></div><div class="ds-sw"><div class="ds-chip"><img alt="" src="assets/overview/assets/d11b714c5007bc5d_3c92c955-4639-430a-bead-f54dfa.webp" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;mix-blend-mode:screen;opacity:.7;filter:grayscale(1) sepia(1) hue-rotate(240deg) saturate(3) brightness(0.9)"><span class="fill" style="background:repeating-linear-gradient(transparent, transparent 2px, #000 2px, #000 4px);opacity:.2"></span></div><div><strong>Scanlines + duotone</strong><code class="val">grayscale sepia hue-rotate(240deg)</code><code class="tok">img filter + repeating-linear-gradient</code><p>Indigo duotone photos with CRT lines</p></div></div><div class="ds-sw"><div class="ds-chip"><img alt="" src="assets/overview/assets/997bfe1766283ecf_c920d31f-46c8-4f39-957b-9a8d8e.jpg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"><span class="fill" style="background:rgba(192,38,211,.25);mix-blend-mode:screen"></span></div><div><strong>Media tint</strong><code class="val">fuchsia-600/25 · screen</code><code class="tok">bg-fuchsia-600/25 mix-blend-screen</code><p>Per-card tints: fuchsia, orange, lime, yellow, cyan</p></div></div><div class="ds-sw"><div class="ds-chip"><span class="fill" style="background:#000;"></span><span class="fill" style="background:radial-gradient(circle at center, #6366F1, transparent 60%);opacity:.3;filter:blur(18px)"></span></div><div><strong>Indigo bloom</strong><code class="val">#6366F1 → transparent 60%</code><code class="tok">opacity-30 blur-[120px]</code><p>Fixed 800px glow behind the page</p></div></div><div class="ds-sw"><div class="ds-chip"><span class="fill" style="background:#000;"></span><span class="fill" style="background:radial-gradient(circle at 1px 1px, #ffffff 1px, transparent 0) 0 0 / 12px 12px;opacity:.18"></span></div><div><strong>Dot grid</strong><code class="val">#ffffff 1px / 32px</code><code class="tok">opacity-[0.08]</code><p>Fixed page texture at 8%</p></div></div></div>
+</section>
+
+<section class="ds-group" id="components-backgrounds">
+<header class="ds-group-head"><div class="px-3 py-1 rounded-full border border-white/10 bg-white/5 text-xs font-mono text-zinc-400 tracking-widest">03</div><h2 class="text-3xl font-normal text-white tracking-tight">Backgrounds</h2></header>
+<article class="ds-spec ">
+<h3 class="ds-spec-title">Prism field · page background</h3>
+<div class="ds-live ">
+<div class="ds-window" aria-label="Live page background"></div>
+</div>
+<div class="ds-cap"><code class="ds-meta">#prism-container (OGL prism, opacity-60 mix-blend-screen) · dot grid · 800px indigo bloom · structural grid · watermark h1</code><p class="ds-note">This window looks straight through to the live background of the whole Components view: the Overview parked on its fixed layers. The raymarched prism (OGL, <code>rotate</code>, glow 1, scale 3.6) sits under a 32px dot grid at 8%, an indigo radial bloom blurred 120px, the max-w-7xl structural grid at 20% and the 2% watermark.</p></div>
+</article>
+
+<article class="ds-spec ">
+<h3 class="ds-spec-title">Halftone backdrop · hero section</h3>
+<div class="ds-live ">
+<div class="ds-box relative overflow-hidden rounded-[1.4rem] sm:rounded-[2rem] bg-black" style="height:360px"><div aria-hidden="true" class="absolute inset-0 opacity-30" style="background-image: radial-gradient(circle, rgba(255, 255, 255, 0.45) 0px, rgba(255, 255, 255, 0.45) 0.055rem, transparent 0.075rem); background-size: 0.7rem 0.7rem; mask-image: linear-gradient(rgba(0, 0, 0, 0.95), rgba(0, 0, 0, 0.15) 19%, rgba(0, 0, 0, 0.12) 81%, rgba(0, 0, 0, 0.85));"></div></div>
+</div>
+<div class="ds-cap"><code class="ds-meta">section &gt; div[aria-hidden] · radial-gradient 0.7rem dots · mask-image fade</code><p class="ds-note">Dot screen behind the film stage; the mask fades it out through the middle band.</p></div>
+</article>
+
+<article class="ds-spec ">
+<h3 class="ds-spec-title">Film stage · WebGL waveform</h3>
+<div class="ds-live ds-film-live">
+<div class="ds-film" data-film><div class="ds-film-inner"><div class="relative h-[91vh] w-[96vw] overflow-hidden rounded-[1.4rem] border border-white/10 bg-black shadow-2xl sm:rounded-[2rem] md:h-[89vh] md:w-[95vw]" id="filmStage" style="box-shadow: rgba(0, 0, 0, 0.48) 0px 2rem 8rem, rgba(255, 255, 255, 0.08) 0px 0px 0px 0.0625rem inset;">
+<canvas aria-hidden="true" class="absolute inset-0 h-full w-full opacity-90" id="webglLayer"></canvas>
+<img alt="" class="absolute inset-0 h-full w-full scale-125 object-cover opacity-0 blur-xl" id="abstractBase" src="assets/overview/assets/6a7bb45fc2ab1366_fa51902b-c2a4-4c33-a96e-a8f1ef.jpg"/>
+<div aria-hidden="true" class="absolute inset-0" style="background: radial-gradient(circle at 50% 56%, rgba(197,255,92,.22), transparent 18%), radial-gradient(circle at 63% 45%, rgba(210,111,255,.32), transparent 25%), linear-gradient(to bottom, rgba(0,0,0,.2), rgba(0,0,0,.12) 38%, rgba(0,0,0,.76));"></div>
+<div aria-hidden="true" class="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black via-black/70 to-transparent"></div>
+<div aria-hidden="true" class="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-black via-black/75 to-transparent"></div>
+<div aria-hidden="true" class="absolute inset-4 rounded-[1rem] border border-white/[.08] sm:inset-5 md:inset-7" style="box-shadow: inset 0 0 0 .0625rem rgba(255,255,255,.035);"></div>
+<div aria-hidden="true" class="absolute left-4 top-4 h-8 w-8 border-l border-t border-lime-200/60 border-t-lime-200/60 sm:left-5 sm:top-5 md:left-7 md:top-7"></div>
+<div aria-hidden="true" class="absolute right-4 top-4 h-8 w-8 border-r border-t border-fuchsia-200/50 border-t-fuchsia-200/50 sm:right-5 sm:top-5 md:right-7 md:top-7"></div>
+<div aria-hidden="true" class="absolute bottom-4 left-4 h-8 w-8 border-b border-l border-b-lime-200/40 border-l-lime-200/40 sm:bottom-5 sm:left-5 md:bottom-7 md:left-7"></div>
+<div aria-hidden="true" class="absolute bottom-4 right-4 h-8 w-8 border-b border-r border-b-fuchsia-200/40 border-r-fuchsia-200/40 sm:bottom-5 sm:right-5 md:bottom-7 md:right-7"></div>
+<div aria-hidden="true" class="absolute left-[8%] top-0 h-full w-px bg-white/[.07]">
+<span class="absolute -left-1 top-[13%] h-2 w-2 bg-white/30"></span>
+<span class="absolute -left-1 bottom-[16%] h-2 w-2 bg-lime-200/40"></span>
+</div>
+<div aria-hidden="true" class="absolute right-[8%] top-0 h-full w-px bg-white/[.07]">
+<span class="absolute -left-1 top-[24%] h-2 w-2 bg-fuchsia-200/40"></span>
+<span class="absolute -left-1 bottom-[22%] h-2 w-2 bg-white/25"></span>
+</div>
+<div aria-hidden="true" class="absolute left-0 top-[50%] h-px w-full bg-white/[.055]"></div>
+<div class="absolute inset-x-4 top-[4%] z-10 text-center opacity-0 sm:top-[3%]" id="introWord">
+<p class="tracking-tight text-white/20 text-[clamp(5rem,17vw,13rem)] leading-none" style="font-family: 'Barlow Condensed', Impact, sans-serif; font-weight: 600;">Sonic.Link</p>
+</div>
+<div class="absolute left-1/2 top-[17%] z-20 flex flex-wrap w-[92%] -translate-x-1/2 items-center justify-center gap-[clamp(.45rem,2vw,2rem)] text-center opacity-0 sm:top-[18%] md:top-[17%]" id="mainTitle">
+<span class="titleChunk inline-block tracking-tight text-white text-[clamp(4.7rem,13.5vw,13rem)] leading-[.78]" style='font-family: "Barlow Condensed", Impact, sans-serif; font-weight: 700;'>Design</span>
+<span class="titleChunk inline-block tracking-tight text-white text-[clamp(4.7rem,13.5vw,13rem)] leading-[.78]" style='font-family: "Barlow Condensed", Impact, sans-serif; font-weight: 700;'>System.</span>
+</div>
+<div class="absolute left-1/2 top-[14%] z-20 w-[92%] -translate-x-1/2 text-center opacity-0" id="altTitle">
+<p class="tracking-tight text-white text-[clamp(5rem,15vw,14rem)] leading-[.76]" style="font-family: 'Barlow Condensed', Impact, sans-serif; font-weight: 700;">Lorem Ipsum</p>
+</div>
+<div class="absolute left-1/2 top-1/2 z-50 w-[92%] -translate-x-1/2 -translate-y-1/2 text-center opacity-0" id="resolveTitle">
+<p class="tracking-tight text-white text-[clamp(4.5rem,16vw,14rem)] leading-[.78]" style="font-family: 'Barlow Condensed', Impact, sans-serif; font-weight: 700;">Sonic.Link</p>
+<p class="mx-auto mt-3 max-w-2xl text-xs font-normal uppercase tracking-[.32rem] text-lime-100/80 sm:text-sm">Neon waveforms, condensed type and indigo glass</p>
+</div>
+<div class="absolute left-1/2 top-[34%] z-30 h-[49vh] min-h-[20rem] w-[min(25rem,58vw)] -translate-x-1/2 opacity-0 sm:top-[31%] md:w-[min(27rem,30vw)]" id="phoneWrap" style="perspective: 80rem;">
+<div class="relative mx-auto h-full w-full overflow-hidden rounded-[2.25rem] border border-white/15 bg-black shadow-2xl" id="phone" style="box-shadow: rgba(154, 134, 202, 0.45) 0px 0px 0px 0.45rem, rgba(0, 0, 0, 0.68) 0px 2rem 5rem, rgba(214, 126, 255, 0.28) 0px 0px 3rem;">
+<div class="absolute inset-x-[18%] top-0 z-20 h-6 rounded-b-2xl bg-black"></div>
+<div class="absolute inset-0 bg-black"></div>
+<div aria-hidden="true" class="absolute inset-0 opacity-35" style="background: radial-gradient(circle at 82% 12%, rgba(212,132,255,.45), transparent 16%), radial-gradient(circle at 12% 72%, rgba(196,255,96,.22), transparent 22%);"></div>
+<div class="relative z-10 flex h-full flex-col p-5 sm:p-6">
+<div class="flex items-center justify-between text-xs font-medium text-white/80">
+<span>9:41</span>
+<div class="flex items-center gap-1">
+<svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" style="width:.95rem;height:.95rem" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M2 20h.01"/><path d="M7 20v-4"/><path d="M12 20v-8"/><path d="M17 20V8"/><path d="M22 4v16"/></svg>
+<svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" style="width:.95rem;height:.95rem" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><rect height="8" rx="2" width="20" x="2" y="14"/><path d="M6.01 18H6"/><path d="M10.01 18H10"/><path d="M15 10v4"/><path d="M17.84 7.17a4 4 0 0 0-5.66 0"/><path d="M20.66 4.34a8 8 0 0 0-11.31 0"/></svg>
+<svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" style="width:.95rem;height:.95rem" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M15 7h1a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-2"/><path d="M6 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h1"/><path d="m11 7-3 5h4l-3 5"/><line x1="22" x2="22" y1="11" y2="13"/></svg>
+</div>
+</div>
+<div class="mt-6 flex items-start justify-between">
+<h2 class="tracking-tight text-white text-5xl leading-none sm:text-6xl" style="font-family: 'Barlow Condensed', Impact, sans-serif; font-weight: 700;">Dolorem</h2>
+<div class="grid h-9 w-9 place-items-center rounded-full bg-fuchsia-300 text-sm font-medium text-black">P</div>
+</div>
+<div class="mt-7 flex gap-2 overflow-hidden">
+<span class="rounded-full bg-lime-300 px-4 py-2 text-xs font-medium text-black">Tudo</span>
+<span class="rounded-full bg-white/12 px-4 py-2 text-xs font-medium text-white/70">Artistas</span>
+<span class="rounded-full bg-white/12 px-4 py-2 text-xs font-medium text-white/70">Mixes</span>
+<span class="rounded-full bg-white/12 px-4 py-2 text-xs font-medium text-white/70">Ao Vivo</span>
+</div>
+<p class="mt-5 text-xl font-medium tracking-tight text-white sm:text-2xl" style="font-family: 'Barlow Condensed', Impact, sans-serif;">Lorem Ipsum</p>
+<div class="mt-3 grid grid-cols-2 gap-3">
+<div class="h-24 rounded-2xl border border-white/10 bg-white/[.06] p-3">
+<svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" style="width:1.5rem;height:1.5rem;color:rgba(190,255,93,.9)" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+<p class="mt-5 text-xs font-medium uppercase tracking-widest text-white/55">Neon soul</p>
+</div>
+<div class="h-24 rounded-2xl border border-white/10 bg-white/[.06] p-3">
+<svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" style="width:1.5rem;height:1.5rem;color:rgba(233,171,255,.9)" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+<p class="mt-5 text-xs font-medium uppercase tracking-widest text-white/55">Drive noturno</p>
+</div>
+</div>
+<div class="mt-auto rounded-3xl border border-white/10 bg-white/[.07] p-4">
+<p class="text-xs font-medium uppercase tracking-widest text-white/40">Lorem ipsum dolor sit</p>
+<div class="mt-3 flex items-center gap-3">
+<img alt="" class="h-10 w-10 rounded-full object-cover" src="assets/overview/assets/95767b6c354c4ac2_4f5668c5-fc4a-44e0-bc5e-a66418.jpg"/>
+<div>
+<p class="text-sm font-medium text-white">Mira Vale</p>
+<p class="text-xs text-white/45">Sala ao vivo aberta</p>
+</div>
+<svg class="ml-auto" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" style="width:1.5rem;height:1.5rem;color:rgba(190,255,93,.8)" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div aria-label="Sequência animada de imagens de memórias musicais" class="absolute inset-0 z-40 pointer-events-none" id="cardsLayer">
+<figure class="mediaCard absolute left-[8%] top-[55%] h-[21vh] w-[20rem] max-w-[36vw] overflow-hidden rounded-xl border border-white/10 opacity-0 shadow-2xl sm:left-[11%] sm:top-[55%]" style="box-shadow: rgba(0, 0, 0, 0.62) 0px 1.5rem 4rem, rgba(219, 45, 255, 0.2) 0px 0px 2rem;">
+<img alt="Artista sob luz magenta de clube" class="h-full w-full object-cover" src="assets/overview/assets/997bfe1766283ecf_c920d31f-46c8-4f39-957b-9a8d8e.jpg"/>
+<div class="absolute inset-0 bg-fuchsia-600/25 mix-blend-screen"></div>
+</figure>
+<figure class="mediaCard absolute left-[29%] top-[50%] h-[14vh] w-[17rem] max-w-[31vw] overflow-hidden rounded-xl border border-white/10 opacity-0 shadow-2xl" style="box-shadow: rgba(0, 0, 0, 0.55) 0px 1.5rem 4rem;">
+<img alt="Retrato de estúdio em movimento com tom quente" class="h-full w-full object-cover" src="assets/overview/assets/ba37297dc82d7afa_36420201-a4f1-4395-ad84-184870.webp"/>
+<div class="absolute inset-0 bg-orange-400/20 mix-blend-screen"></div>
+</figure>
+<figure class="mediaCard absolute left-1/2 top-[59%] h-[22vh] w-[30rem] max-w-[45vw] -translate-x-1/2 overflow-hidden rounded-xl border border-white/10 opacity-0 shadow-2xl" style="box-shadow: rgba(0, 0, 0, 0.62) 0px 1.5rem 4rem, rgba(197, 255, 90, 0.18) 0px 0px 2.5rem;">
+<img alt="Mãos formando um coração em um show" class="h-full w-full object-cover" src="assets/overview/assets/9711424e0ee784ea_6e1fbf28-831e-4d42-a71f-a33bc9.webp"/>
+<div class="absolute inset-0 bg-lime-300/20 mix-blend-screen"></div>
+</figure>
+<figure class="mediaCard absolute right-[23%] top-[48%] h-[16vh] w-[17rem] max-w-[30vw] overflow-hidden rounded-xl border border-white/10 opacity-0 shadow-2xl" style="box-shadow: rgba(0, 0, 0, 0.55) 0px 1.5rem 4rem;">
+<img alt="Performer sob iluminação amarela de estúdio" class="h-full w-full object-cover" src="assets/overview/assets/2272b61025cfc711_c7cfb2bf-d3f2-4dfc-aa1e-e0ef5c.webp"/>
+<div class="absolute inset-0 bg-yellow-300/30 mix-blend-screen"></div>
+</figure>
+<figure class="mediaCard absolute right-[8%] top-[51%] h-[23vh] w-[21rem] max-w-[37vw] overflow-hidden rounded-xl border border-white/10 opacity-0 shadow-2xl sm:right-[11%]" style="box-shadow: rgba(0, 0, 0, 0.62) 0px 1.5rem 4rem, rgba(44, 193, 255, 0.18) 0px 0px 2rem;">
+<img alt="Produtor trabalhando com fones de ouvido" class="h-full w-full object-cover" src="assets/overview/assets/0e521e754a166df8_b4a03f35-290f-42a3-b369-97df97.webp"/>
+<div class="absolute inset-0 bg-cyan-400/20 mix-blend-screen"></div>
+</figure>
+</div>
+<div aria-hidden="true" class="bg-white opacity-0 z-[70] absolute top-0 right-0 bottom-0 left-0" id="flash"></div>
+<div class="absolute bottom-6 left-1/2 z-[80] flex -translate-x-1/2 items-center gap-3 rounded-full border border-white/10 bg-black/35 px-4 py-2 opacity-0 backdrop-blur-md" id="metaRail">
+<span class="h-1.5 w-1.5 rounded-full bg-lime-300"></span>
+<span class="text-xs font-medium uppercase tracking-[.22rem] text-white/60">Lorem ipsum dolor · 24 seg</span>
+</div>
+<div class="absolute left-7 top-7 z-[80] hidden items-center gap-2 text-xs font-medium uppercase tracking-[.28rem] text-white/45 sm:flex" id="sequenceLabel">
+<span class="h-px w-8 bg-white/25"></span>
+<span>Resolução</span>
+</div>
+</div></div></div>
+</div>
+<div class="ds-cap"><code class="ds-meta">#filmStage · canvas#webglLayer (WebGL ribbons) · #abstractBase · washes · brackets · GSAP timeline (repeat -1)</code><p class="ds-note">The Overview hero running live: shader ribbons in lime, violet and cyan, the colour wash, top and bottom fades, frame, corner brackets and guide lines, with the 20-second GSAP film (intro word, title chunks, phone, media cards, flashes, resolve title) playing on top. Scaled to the column with <code>zoom</code> so its vw/vh sizing keeps the Overview proportions.</p></div>
+</article>
+
+</section>
+
+<section class="ds-group" id="components-surfaces">
+<header class="ds-group-head"><div class="px-3 py-1 rounded-full border border-white/10 bg-white/5 text-xs font-mono text-zinc-400 tracking-widest">04</div><h2 class="text-3xl font-normal text-white tracking-tight">Surfaces</h2></header>
+<div class="ds-surfaces"><figure class="ds-surface"><div class="ds-surface-box"><div class="p-[1px] rounded-[20px] bg-gradient-to-b from-white/10 to-transparent shadow-2xl shadow-black/80 h-full"><div class="h-full rounded-[19px] bg-[#18181B]/90 backdrop-blur-xl border border-white/5"></div></div></div><figcaption><strong>Glass card</strong><code class="ds-meta">p-[1px] from-white/10 › rounded-[19px] bg-[#18181B]/90 backdrop-blur-xl border-white/5</code></figcaption></figure>
+<figure class="ds-surface"><div class="ds-surface-box"><div class="p-[1px] rounded-[24px] bg-gradient-to-b from-[#6366F1]/30 via-white/5 to-transparent shadow-2xl shadow-black h-full"><div class="h-full rounded-[23px] bg-[#18181B]/95 backdrop-blur-2xl border border-white/5 relative overflow-hidden"><div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(99,102,241,0.05),transparent_80%)]"></div></div></div></div><figcaption><strong>Accent glass card</strong><code class="ds-meta">from-[#6366F1]/30 via-white/5 › rounded-[23px] bg-[#18181B]/95</code></figcaption></figure>
+<figure class="ds-surface"><div class="ds-surface-box"><div class="h-14 w-full self-center bg-[#18181B]/80 border-white/5 border rounded-full shadow-2xl shadow-black/50 backdrop-blur-xl"></div></div><figcaption><strong>Navbar pill</strong><code class="ds-meta">bg-[#18181B]/80 border-white/5 rounded-full backdrop-blur-xl</code></figcaption></figure>
+<figure class="ds-surface"><div class="ds-surface-box"><div class="h-full rounded-2xl bg-zinc-900/90 border border-white/5"></div></div><figcaption><strong>Feature tile</strong><code class="ds-meta">rounded-2xl bg-zinc-900/90 border-white/5</code></figcaption></figure>
+<figure class="ds-surface"><div class="ds-surface-box"><div class="h-full rounded-[19px] bg-[#18181B]/95 backdrop-blur-xl border border-[#6366F1]/30 relative overflow-hidden shadow-[0_0_30px_rgba(99,102,241,0.15)]"><div class="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-[#6366F1] to-transparent"></div></div></div><figcaption><strong>Featured pricing</strong><code class="ds-meta">border-[#6366F1]/30 shadow-[0_0_30px_rgba(99,102,241,0.15)] + top rule</code></figcaption></figure>
+<figure class="ds-surface"><div class="ds-surface-box"><div class="h-full overflow-hidden shadow-2xl bg-[#0a0a0a] border border-zinc-800 rounded-xl flex flex-col"><div class="flex bg-[#0f0f11] border-zinc-800 border-b items-center h-11 px-4 shrink-0"><div class="flex gap-2 w-20 items-center"><div class="w-3 h-3 rounded-full bg-zinc-700/80 border border-zinc-600/50"></div><div class="w-3 h-3 rounded-full bg-zinc-700/80 border border-zinc-600/50"></div><div class="w-3 h-3 rounded-full bg-zinc-700/80 border border-zinc-600/50"></div></div></div></div></div><figcaption><strong>Studio window</strong><code class="ds-meta">bg-[#0a0a0a] border-zinc-800 rounded-xl · title bar bg-[#0f0f11] h-11</code></figcaption></figure>
+<figure class="ds-surface"><div class="ds-surface-box"><div class="h-full rounded-[19px] bg-[#18181B]/90 border border-white/5 overflow-hidden p-0"><div class="h-full relative bg-black/40"><div class="absolute top-6 right-6 w-2 h-2 border-t border-r border-[#6366F1]/30 opacity-50"></div><div class="absolute bottom-6 left-6 w-2 h-2 border-b border-l border-[#6366F1]/30 opacity-50"></div></div></div></div><figcaption><strong>Canvas well</strong><code class="ds-meta">bg-black/40 + indigo corner ticks</code></figcaption></figure>
+<figure class="ds-surface"><div class="ds-surface-box"><div class="h-full bg-[#18181B]/95 backdrop-blur-xl border border-white/5 rounded-[1.5rem] shadow-2xl shadow-black/80"></div></div><figcaption><strong>Menu sheet</strong><code class="ds-meta">bg-[#18181B]/95 rounded-[1.5rem] shadow-black/80</code></figcaption></figure>
+<figure class="ds-surface"><div class="ds-surface-box"><div class="self-center h-8 w-40 rounded-full border border-white/10 bg-white/5"></div></div><figcaption><strong>Pill</strong><code class="ds-meta">rounded-full border-white/10 bg-white/5</code></figcaption></figure>
+<figure class="ds-surface"><div class="ds-surface-box"><div class="self-center h-9 w-40 rounded-full border border-white/10 bg-black/35 backdrop-blur-md"></div></div><figcaption><strong>Glass chip</strong><code class="ds-meta">bg-black/35 backdrop-blur-md (#metaRail)</code></figcaption></figure></div>
+</section>
+
+<section class="ds-group" id="components-icons">
+<header class="ds-group-head"><div class="px-3 py-1 rounded-full border border-white/10 bg-white/5 text-xs font-mono text-zinc-400 tracking-widest">05</div><h2 class="text-3xl font-normal text-white tracking-tight">Icons</h2></header>
+<h3 class="ds-sub">Iconify · Solar linear</h3><div class="ds-icons"><figure class="ds-icon"><div class="stage"><iconify-icon class="text-[#6366F1] text-lg" icon="solar:soundwave-linear" stroke-width="1.5"></iconify-icon></div><figcaption><code>solar:soundwave-linear</code><small>text-[#6366F1] text-lg</small></figcaption></figure><figure class="ds-icon"><div class="stage"><iconify-icon class="text-zinc-400" icon="solar:arrow-right-linear" stroke-width="1.5"></iconify-icon></div><figcaption><code>solar:arrow-right-linear</code><small>text-zinc-400</small></figcaption></figure><figure class="ds-icon"><div class="stage"><iconify-icon class="text-zinc-500" icon="solar:pulse-linear" stroke-width="1.5"></iconify-icon></div><figcaption><code>solar:pulse-linear</code><small>text-zinc-500</small></figcaption></figure><figure class="ds-icon"><div class="stage"><iconify-icon class="text-zinc-500 text-xl" icon="solar:history-linear" stroke-width="1.5"></iconify-icon></div><figcaption><code>solar:history-linear</code><small>text-zinc-500 text-xl</small></figcaption></figure><figure class="ds-icon"><div class="stage"><iconify-icon class="text-zinc-300 text-xs" icon="solar:maximize-square-linear" stroke-width="1.5"></iconify-icon></div><figcaption><code>solar:maximize-square-linear</code><small>text-zinc-300 text-xs</small></figcaption></figure><figure class="ds-icon"><div class="stage"><iconify-icon class="text-[#6366F1] text-xl" icon="solar:cpu-linear" stroke-width="1.5"></iconify-icon></div><figcaption><code>solar:cpu-linear</code><small>text-[#6366F1] text-xl</small></figcaption></figure><figure class="ds-icon"><div class="stage"><iconify-icon class="text-[#6366F1] text-lg" icon="solar:check-circle-linear" stroke-width="1.5"></iconify-icon></div><figcaption><code>solar:check-circle-linear</code><small>text-[#6366F1] text-lg</small></figcaption></figure><figure class="ds-icon"><div class="stage"><iconify-icon class="text-white/5 text-4xl" icon="solar:chat-round-line-linear" stroke-width="1.5" style="color:rgba(255,255,255,.35)"></iconify-icon></div><figcaption><code>solar:chat-round-line-linear</code><small>text-white/5 text-4xl (shown at /35)</small></figcaption></figure><figure class="ds-icon"><div class="stage"><iconify-icon class="text-zinc-500 text-xl" icon="solar:mask-happly-linear" stroke-width="1.5"></iconify-icon></div><figcaption><code>solar:mask-happly-linear</code><small>text-zinc-500 text-xl</small></figcaption></figure><figure class="ds-icon"><div class="stage"><iconify-icon class="text-zinc-500 text-xl" icon="solar:user-circle-linear" stroke-width="1.5"></iconify-icon></div><figcaption><code>solar:user-circle-linear</code><small>text-zinc-500 text-xl</small></figcaption></figure><figure class="ds-icon"><div class="stage"><iconify-icon class="text-zinc-500 text-xl" icon="solar:map-arrow-up-linear" stroke-width="1.5"></iconify-icon></div><figcaption><code>solar:map-arrow-up-linear</code><small>text-zinc-500 text-xl</small></figcaption></figure></div><h3 class="ds-sub">Lucide</h3><div class="ds-icons"><figure class="ds-icon"><div class="stage"><i data-lucide="menu" class="w-[18px] h-[18px] text-zinc-400"></i></div><figcaption><code>menu</code><small>w-[18px] h-[18px] text-zinc-400</small></figcaption></figure><figure class="ds-icon"><div class="stage"><i data-lucide="audio-waveform" class="w-3.5 h-3.5 text-indigo-400"></i></div><figcaption><code>audio-waveform</code><small>w-3.5 h-3.5 text-indigo-400</small></figcaption></figure><figure class="ds-icon"><div class="stage"><i data-lucide="settings" class="w-4 h-4 text-zinc-400"></i></div><figcaption><code>settings</code><small>w-4 h-4 text-zinc-400</small></figcaption></figure><figure class="ds-icon"><div class="stage"><i data-lucide="search" class="text-zinc-500 w-3.5 h-3.5"></i></div><figcaption><code>search</code><small>text-zinc-500 w-3.5 h-3.5</small></figcaption></figure><figure class="ds-icon"><div class="stage"><i data-lucide="mic" class="w-3.5 h-3.5 text-zinc-400"></i></div><figcaption><code>mic</code><small>w-3.5 h-3.5 text-zinc-400</small></figcaption></figure><figure class="ds-icon"><div class="stage"><i data-lucide="sparkles" class="w-3.5 h-3.5 text-indigo-400"></i></div><figcaption><code>sparkles</code><small>w-3.5 h-3.5 text-indigo-400</small></figcaption></figure><figure class="ds-icon"><div class="stage"><i data-lucide="library" class="w-3.5 h-3.5 text-zinc-400"></i></div><figcaption><code>library</code><small>w-3.5 h-3.5 text-zinc-400</small></figcaption></figure><figure class="ds-icon"><div class="stage"><i data-lucide="box" class="w-3.5 h-3.5 text-zinc-400"></i></div><figcaption><code>box</code><small>w-3.5 h-3.5 text-zinc-400</small></figcaption></figure><figure class="ds-icon"><div class="stage"><i data-lucide="zap" class="text-indigo-400 w-3 h-3"></i></div><figcaption><code>zap</code><small>text-indigo-400 w-3 h-3</small></figcaption></figure><figure class="ds-icon"><div class="stage"><i data-lucide="file-audio" class="text-zinc-500 w-3 h-3"></i></div><figcaption><code>file-audio</code><small>text-zinc-500 w-3 h-3</small></figcaption></figure><figure class="ds-icon"><div class="stage"><i data-lucide="download" class="w-3 h-3 text-zinc-300"></i></div><figcaption><code>download</code><small>w-3 h-3 text-zinc-300</small></figcaption></figure><figure class="ds-icon"><div class="stage"><i data-lucide="layers" class="text-xl text-[#6366F1] w-6 h-6"></i></div><figcaption><code>layers</code><small>text-xl text-[#6366F1] w-6 h-6</small></figcaption></figure><figure class="ds-icon"><div class="stage"><i data-lucide="activity" class="text-[#6366F1] w-3.5 h-3.5"></i></div><figcaption><code>activity</code><small>text-[#6366F1] w-3.5 h-3.5</small></figcaption></figure><figure class="ds-icon"><div class="stage"><i data-lucide="music" class="text-xl text-[#6366F1] w-6 h-6"></i></div><figcaption><code>music</code><small>text-xl text-[#6366F1] w-6 h-6</small></figcaption></figure><figure class="ds-icon"><div class="stage"><i data-lucide="sliders-horizontal" class="w-2.5 h-2.5 text-zinc-400"></i></div><figcaption><code>sliders-horizontal</code><small>w-2.5 h-2.5 text-zinc-400</small></figcaption></figure><figure class="ds-icon"><div class="stage"><i data-lucide="paperclip" class="w-4 h-4 text-zinc-400"></i></div><figcaption><code>paperclip</code><small>w-4 h-4 text-zinc-400</small></figcaption></figure><figure class="ds-icon"><div class="stage"><i data-lucide="arrow-up" class="w-4 h-4 text-white"></i></div><figcaption><code>arrow-up</code><small>w-4 h-4 text-white</small></figcaption></figure><figure class="ds-icon"><div class="stage"><i data-lucide="rotate-ccw" class="w-3 h-3 text-zinc-500"></i></div><figcaption><code>rotate-ccw</code><small>w-3 h-3 text-zinc-500</small></figcaption></figure><figure class="ds-icon"><div class="stage"><i data-lucide="chevron-down" class="text-zinc-500 w-3.5 h-3.5"></i></div><figcaption><code>chevron-down</code><small>text-zinc-500 w-3.5 h-3.5</small></figcaption></figure><figure class="ds-icon"><div class="stage"><i data-lucide="cpu" class="text-xl text-[#6366F1] w-6 h-6"></i></div><figcaption><code>cpu</code><small>text-xl text-[#6366F1] w-6 h-6</small></figcaption></figure><figure class="ds-icon"><div class="stage"><i data-lucide="arrow-up-right" class="text-[#6366F1] opacity-80 w-5 h-5"></i></div><figcaption><code>arrow-up-right</code><small>text-[#6366F1] opacity-80 w-5 h-5</small></figcaption></figure><figure class="ds-icon"><div class="stage"><i data-lucide="database" class="text-zinc-500 w-5 h-5"></i></div><figcaption><code>database</code><small>text-zinc-500 w-5 h-5</small></figcaption></figure><figure class="ds-icon"><div class="stage"><i data-lucide="share-2" class="text-[#6366F1] w-3.5 h-3.5"></i></div><figcaption><code>share-2</code><small>text-[#6366F1] w-3.5 h-3.5</small></figcaption></figure><figure class="ds-icon"><div class="stage"><i data-lucide="server" class="text-zinc-500 w-3 h-3"></i></div><figcaption><code>server</code><small>text-zinc-500 w-3 h-3</small></figcaption></figure></div><h3 class="ds-sub">Inline SVG · phone mockup</h3><div class="ds-icons"><figure class="ds-icon"><div class="stage"><span class="text-white/80"><svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" style="width:.95rem;height:.95rem" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M2 20h.01"/><path d="M7 20v-4"/><path d="M12 20v-8"/><path d="M17 20V8"/><path d="M22 4v16"/></svg></span></div><figcaption><code>signal</code><small>stroke 2 · currentColor</small></figcaption></figure><figure class="ds-icon"><div class="stage"><span class="text-white/80"><svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" style="width:.95rem;height:.95rem" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><rect height="8" rx="2" width="20" x="2" y="14"/><path d="M6.01 18H6"/><path d="M10.01 18H10"/><path d="M15 10v4"/><path d="M17.84 7.17a4 4 0 0 0-5.66 0"/><path d="M20.66 4.34a8 8 0 0 0-11.31 0"/></svg></span></div><figcaption><code>router (wifi)</code><small>stroke 2 · currentColor</small></figcaption></figure><figure class="ds-icon"><div class="stage"><span class="text-white/80"><svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" style="width:.95rem;height:.95rem" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M15 7h1a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-2"/><path d="M6 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h1"/><path d="m11 7-3 5h4l-3 5"/><line x1="22" x2="22" y1="11" y2="13"/></svg></span></div><figcaption><code>battery-charging</code><small>stroke 2 · currentColor</small></figcaption></figure><figure class="ds-icon"><div class="stage"><span class=""><svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" style="width:1.5rem;height:1.5rem;color:rgba(190,255,93,.9)" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span></div><figcaption><code>music</code><small>stroke 2 · currentColor</small></figcaption></figure><figure class="ds-icon"><div class="stage"><span class=""><svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" style="width:1.5rem;height:1.5rem;color:rgba(233,171,255,.9)" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg></span></div><figcaption><code>circle-play</code><small>stroke 2 · currentColor</small></figcaption></figure><figure class="ds-icon"><div class="stage"><span class=""><svg class="ml-auto" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" style="width:1.5rem;height:1.5rem;color:rgba(190,255,93,.8)" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span></div><figcaption><code>activity</code><small>stroke 2 · currentColor</small></figcaption></figure></div><p class="ds-note ds-note-solo">The navbar and footer brand mark asks for <code>solar:headphones-linear</code>, which the Solar set does not contain; it renders empty on the Overview and is kept that way.</p>
+</section>
+
+<section class="ds-group" id="components-actions">
+<header class="ds-group-head"><div class="px-3 py-1 rounded-full border border-white/10 bg-white/5 text-xs font-mono text-zinc-400 tracking-widest">06</div><h2 class="text-3xl font-normal text-white tracking-tight">Actions</h2></header>
+<article class="ds-spec ">
+<h3 class="ds-spec-title">Primary pill</h3>
+<div class="ds-live ">
+<div class="ds-row"><button class="hover:bg-indigo-400 transition-colors text-xs font-medium text-white tracking-tight bg-[#6366F1] rounded-full pt-1.5 pr-4 pb-1.5 pl-4 shadow-[0_0_12px_rgba(99,102,241,0.4)]">Cadastrar</button><button class="hover:bg-indigo-400 transition-colors text-[10px] font-medium text-white tracking-tight bg-[#6366F1] rounded-full pt-1.5 pr-3 pb-1.5 pl-3 shadow-[0_0_12px_rgba(99,102,241,0.4)]">Cadastrar</button></div>
+</div>
+<div class="ds-cap"><code class="ds-meta">header nav · bg-[#6366F1] rounded-full shadow-[0_0_12px_rgba(99,102,241,0.4)] · hover:bg-indigo-400</code><p class="ds-note">Desktop (text-xs) and mobile (text-[10px]) sizes.</p></div>
+</article>
+
+<article class="ds-spec ">
+<h3 class="ds-spec-title">Primary block</h3>
+<div class="ds-live ">
+<div class="ds-row"><button class="relative z-10 bg-[#6366F1] hover:bg-indigo-400 text-white px-8 py-4 rounded font-medium text-sm tracking-wide uppercase transition-all hover:scale-105 hover:shadow-[0_0_30px_rgba(99,102,241,0.3)] duration-300">Lorem Ipsum Dolor</button></div>
+</div>
+<div class="ds-cap"><code class="ds-meta">features uptime card · px-8 py-4 rounded uppercase · hover:scale-105 hover:shadow-[0_0_30px_rgba(99,102,241,0.3)]</code></div>
+</article>
+
+<article class="ds-spec ">
+<h3 class="ds-spec-title">Full-width pair</h3>
+<div class="ds-live ">
+<div class="ds-w-sm flex flex-col gap-3"><button class="w-full py-3 rounded-lg bg-[#6366F1] text-white text-sm tracking-tight hover:bg-[#6366F1]/90 transition-colors shadow-[0_0_15px_rgba(99,102,241,0.3)]">Lorem Ipsum Dolor</button><button class="w-full py-3 rounded-lg bg-white/5 border border-white/10 text-white text-sm tracking-tight hover:bg-white/10 transition-colors">Lorem</button><button class="w-full mt-2 py-3 rounded-xl bg-[#6366F1] text-white text-sm font-medium tracking-tight shadow-[0_0_15px_rgba(99,102,241,0.3)] hover:bg-indigo-400 transition-colors">Cadastrar</button></div>
+</div>
+<div class="ds-cap"><code class="ds-meta">pricing buttons · py-3 rounded-lg · primary hover:bg-[#6366F1]/90 · ghost bg-white/5 border-white/10 hover:bg-white/10 · #mobile-menu CTA rounded-xl</code></div>
+</article>
+
+<article class="ds-spec ">
+<h3 class="ds-spec-title">Ghost with arrow</h3>
+<div class="ds-live ">
+<div class="ds-w-sm"><button class="w-full py-2.5 rounded-lg bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/10 transition-all flex items-center justify-center gap-2 text-white">
+<span class="font-sans font-normal text-sm tracking-tight">Lorem Ipsum Dolor</span>
+<iconify-icon class="text-zinc-400" icon="solar:arrow-right-linear" stroke-width="1.5"></iconify-icon>
+</button></div>
+</div>
+<div class="ds-cap"><code class="ds-meta">node card · py-2.5 rounded-lg bg-white/5 border-white/5 · hover:bg-white/10 hover:border-white/10 · solar:arrow-right-linear</code></div>
+</article>
+
+<article class="ds-spec ">
+<h3 class="ds-spec-title">Studio buttons</h3>
+<div class="ds-live ">
+<div class="ds-row"><button class="w-40 text-center text-[10px] py-1.5 bg-zinc-800 hover:bg-zinc-700 rounded-md text-zinc-200 transition-colors border border-zinc-700/50">Lorem Ipsum</button><button class="w-24 py-1.5 bg-zinc-800/50 hover:bg-zinc-800 rounded border border-zinc-700/50 text-[10px] font-medium text-zinc-300 transition-colors flex items-center justify-center gap-1.5">
+<i data-lucide="download" class="w-3 h-3"></i>WAV
+</button><button class="w-24 py-1.5 bg-zinc-800/50 hover:bg-zinc-800 rounded border border-zinc-700/50 text-[10px] font-medium text-zinc-300 transition-colors flex items-center justify-center gap-1.5">
+<i data-lucide="layers" class="w-3 h-3"></i>MIDI
+</button></div>
+</div>
+<div class="ds-cap"><code class="ds-meta">studio · text-[10px] bg-zinc-800 rounded-md border-zinc-700/50 · WAV/MIDI bg-zinc-800/50 hover:bg-zinc-800</code></div>
+</article>
+
+<article class="ds-spec ">
+<h3 class="ds-spec-title">Icon buttons</h3>
+<div class="ds-live ">
+<div class="ds-row"><button class="w-9 h-9 rounded-full bg-zinc-100 hover:bg-white flex items-center justify-center text-black shrink-0 transition-colors shadow-sm">
+<svg class="lucide lucide-play ml-0.5" fill="currentColor" height="16" stroke="none" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+</button><button class="p-1.5 rounded-lg text-white transition-colors bg-indigo-500 hover:bg-indigo-400 flex items-center justify-center h-8 w-8 shadow-sm">
+<i data-lucide="arrow-up" class="w-4 h-4"></i>
+</button><div class="flex items-center gap-2 bg-[#0f0f11] rounded-md px-1"><button class="p-1.5 rounded-md hover:bg-zinc-800 transition-colors text-zinc-400">
+<i data-lucide="settings" class="w-4 h-4"></i>
+</button><button class="p-2 rounded-md hover:bg-zinc-800 transition-colors text-zinc-400">
+<i data-lucide="paperclip" class="w-4 h-4"></i>
+</button></div><button class="text-zinc-400 hover:text-white transition-colors p-1.5 mr-0.5 rounded-full hover:bg-white/5 flex items-center justify-center">
+<i data-lucide="menu" class="w-[18px] h-[18px]"></i>
+</button><button class="text-zinc-500 hover:text-zinc-300 transition-colors"><i data-lucide="rotate-ccw" class="w-3 h-3"></i></button><div class="w-6 h-6 rounded-md bg-white/5 backdrop-blur border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors cursor-pointer">
+<iconify-icon class="text-zinc-300 text-xs" icon="solar:maximize-square-linear" stroke-width="1.5"></iconify-icon>
+</div></div>
+</div>
+<div class="ds-cap"><code class="ds-meta">play w-9 h-9 bg-zinc-100 · send h-8 w-8 bg-indigo-500 · settings/attach hover:bg-zinc-800 · menu hover:bg-white/5 · reset · expand w-6 h-6 bg-white/5</code></div>
+</article>
+
+</section>
+
+<section class="ds-group" id="components-navigation">
+<header class="ds-group-head"><div class="px-3 py-1 rounded-full border border-white/10 bg-white/5 text-xs font-mono text-zinc-400 tracking-widest">07</div><h2 class="text-3xl font-normal text-white tracking-tight">Navigation</h2></header>
+<article class="ds-spec ">
+<h3 class="ds-spec-title">Navbar pill</h3>
+<div class="ds-live ">
+<header class="flex justify-center">
+<nav class="flex items-center w-full md:w-auto max-w-4xl justify-between md:justify-center bg-[#18181B]/80 border-white/5 border rounded-full py-2 pr-2 pl-4 md:pl-6 shadow-2xl shadow-black/50 backdrop-blur-xl transition-all">
+<div class="flex items-center gap-2 pr-2 md:pr-6 md:border-r border-white/10 py-1">
+<iconify-icon class="text-[#6366F1] text-lg" icon="solar:headphones-linear" stroke-width="1.5"></iconify-icon>
+<span class="uppercase block cursor-pointer text-xs font-normal text-white tracking-tighter font-sans" role="button">SONIC.LINK</span>
+</div>
+<div class="hidden md:flex gap-6 px-6 items-center">
+<button class="hover:text-white transition-colors cursor-pointer text-xs text-zinc-500 tracking-widest font-mono" role="button">Música</button>
+<button class="hover:text-white transition-colors cursor-pointer text-xs text-zinc-500 tracking-widest font-mono" role="button">Modelos</button>
+<button class="hover:text-white transition-colors text-xs text-zinc-500 tracking-widest font-mono" role="button">Estúdio</button>
+</div>
+<div class="hidden md:flex items-center gap-4 pl-6 border-l border-white/10">
+<button class="hover:text-white transition-colors cursor-pointer text-xs text-zinc-400 tracking-widest font-mono" role="button">Entrar</button>
+<button class="hover:bg-indigo-400 transition-colors text-xs font-medium text-white tracking-tight bg-[#6366F1] rounded-full pt-1.5 pr-4 pb-1.5 pl-4 shadow-[0_0_12px_rgba(99,102,241,0.4)]" role="button">Cadastrar</button>
+</div>
+<div class="flex md:hidden items-center gap-3">
+<button class="hover:bg-indigo-400 transition-colors text-[10px] font-medium text-white tracking-tight bg-[#6366F1] rounded-full pt-1.5 pr-3 pb-1.5 pl-3 shadow-[0_0_12px_rgba(99,102,241,0.4)]" role="button">Cadastrar</button>
+<div class="w-px h-4 bg-white/10"></div>
+<button class="text-zinc-400 hover:text-white transition-colors p-1.5 mr-0.5 rounded-full hover:bg-white/5 flex items-center justify-center">
+<i data-lucide="menu" class="w-[18px] h-[18px]"></i>
+</button>
+</div>
+</nav>
+
+</header>
+</div>
+<div class="ds-cap"><code class="ds-meta">header &gt; nav · bg-[#18181B]/80 rounded-full backdrop-blur-xl · fixed top-4 md:top-8</code><p class="ds-note">Brand block, mono links (hidden below md), auth block; below md the CTA and menu button take over.</p></div>
+</article>
+
+<article class="ds-spec ">
+<h3 class="ds-spec-title">Mobile menu sheet</h3>
+<div class="ds-live ">
+<div class="bg-[#18181B]/95 backdrop-blur-xl border border-white/5 rounded-[1.5rem] p-6 shadow-2xl shadow-black/80 flex flex-col gap-5 relative max-w-sm">
+<div class="flex flex-col gap-4">
+<button class="text-left text-xs text-zinc-400 hover:text-white font-mono tracking-widest transition-colors">Música</button>
+<button class="text-left text-xs text-zinc-400 hover:text-white font-mono tracking-widest transition-colors">Modelos</button>
+<button class="text-left text-xs text-zinc-400 hover:text-white font-mono tracking-widest transition-colors">Estúdio</button>
+</div>
+<div class="w-full h-px bg-white/10"></div>
+<div class="flex flex-col gap-3">
+<button class="text-left text-xs text-zinc-400 hover:text-white font-mono tracking-widest transition-colors">Entrar</button>
+<button class="w-full mt-2 py-3 rounded-xl bg-[#6366F1] text-white text-sm font-medium tracking-tight shadow-[0_0_15px_rgba(99,102,241,0.3)] hover:bg-indigo-400 transition-colors">Cadastrar</button>
+</div>
+</div>
+</div>
+<div class="ds-cap"><code class="ds-meta">#mobile-menu · bg-[#18181B]/95 rounded-[1.5rem] · toggled by the menu button (md:hidden)</code></div>
+</article>
+
+<article class="ds-spec ">
+<h3 class="ds-spec-title">Sidebar list</h3>
+<div class="ds-live ">
+<div class="w-64 max-w-full bg-[#0f0f11] border border-zinc-800 rounded-xl py-2"><nav class="px-3 space-y-5 py-2">
+<div>
+<h3 class="px-2 mb-2 text-[10px] font-medium uppercase tracking-wider text-zinc-500">Workspace</h3>
+<ul class="space-y-0.5">
+<li>
+<a class="flex items-center gap-2.5 px-2 py-1.5 rounded-md hover:bg-zinc-800/50 transition-colors text-xs text-zinc-400" href="#">
+<i data-lucide="mic" class="w-3.5 h-3.5"></i>Estúdio
+</a>
+</li>
+<li>
+<a class="flex items-center gap-2.5 px-2 py-1.5 rounded-md text-xs font-normal bg-indigo-500/10 text-indigo-400" href="#">
+<i data-lucide="sparkles" class="w-3.5 h-3.5"></i>Coprodutor IA
+</a>
+</li>
+<li>
+<a class="flex items-center gap-2.5 px-2 py-1.5 rounded-md hover:bg-zinc-800/50 transition-colors text-xs text-zinc-400" href="#">
+<i data-lucide="library" class="w-3.5 h-3.5"></i>Meus Stems
+</a>
+</li>
+<li>
+<a class="flex items-center gap-2.5 px-2 py-1.5 rounded-md hover:bg-zinc-800/50 transition-colors text-xs text-zinc-400" href="#">
+<i data-lucide="box" class="w-3.5 h-3.5"></i>Modelos de Voz
+</a>
+</li>
+</ul>
+</div>
+<div>
+<h3 class="px-2 mb-2 text-[10px] font-medium uppercase tracking-wider text-zinc-500">Gerações Recentes</h3>
+<ul class="space-y-0.5 text-xs">
+<li>
+<a class="block truncate px-2 py-1.5 rounded-md hover:bg-zinc-800/50 transition-colors text-zinc-400" href="#">Linha de baixo dark techno (130 BPM)</a>
+</li>
+<li>
+<a class="block truncate px-2 py-1.5 rounded-md hover:bg-zinc-800/50 transition-colors text-zinc-400" href="#">Vocal chops etéreos em Dó Menor</a>
+</li>
+<li>
+<a class="block truncate px-2 py-1.5 rounded-md hover:bg-zinc-800/50 transition-colors text-zinc-400" href="#">Loop de breakbeat vintage</a>
+</li>
+<li>
+<a class="block truncate px-2 py-1.5 rounded-md hover:bg-zinc-800/50 transition-colors text-zinc-400" href="#">Crescendo de cordas cinematográficas</a>
+</li>
+</ul>
+</div>
+</nav></div>
+</div>
+<div class="ds-cap"><code class="ds-meta">studio aside nav · a.rounded-md hover:bg-zinc-800/50 · selected bg-indigo-500/10 text-indigo-400</code><p class="ds-note">Shown inside its own bg-[#0f0f11] panel.</p></div>
+</article>
+
+<article class="ds-spec ">
+<h3 class="ds-spec-title">Tabs</h3>
+<div class="ds-live ">
+<div class="w-64 max-w-full bg-[#0f0f11] border border-zinc-800 rounded-xl overflow-hidden"><div class="flex border-b border-zinc-800">
+<button class="flex-1 py-3 text-[10px] font-medium tracking-wider text-zinc-200 relative hover:bg-zinc-800/30 transition-colors">
+PARÂMETROS
+<span class="absolute left-0 bottom-0 h-px w-full bg-indigo-500"></span>
+</button>
+<button class="flex-1 py-3 text-[10px] font-medium tracking-wider text-zinc-500 hover:bg-zinc-800/30 hover:text-zinc-300 transition-colors">STEMS</button>
+</div></div>
+</div>
+<div class="ds-cap"><code class="ds-meta">inspector tabs · text-[10px] tracking-wider · active text-zinc-200 + span h-px bg-indigo-500</code></div>
+</article>
+
+<article class="ds-spec ">
+<h3 class="ds-spec-title">Footer</h3>
+<div class="ds-live ">
+<footer class="bg-[#000000] w-full z-20 border-white/10 border-t pt-16 pb-8 relative rounded-[19px] px-6 md:px-10">
+<div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+<div class="col-span-1 md:col-span-1 flex flex-col gap-4">
+<div class="flex items-center gap-2">
+<iconify-icon class="text-[#6366F1] text-2xl" icon="solar:headphones-linear" stroke-width="1.5"></iconify-icon>
+<span class="font-sans text-sm tracking-tighter uppercase text-white font-normal">SONIC.LINK</span>
+</div>
+<p class="text-zinc-400 text-xs font-light leading-relaxed">Enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo.</p>
+</div>
+<div class="col-span-1 md:col-span-3 grid grid-cols-2 md:grid-cols-3 gap-8">
+<div class="flex flex-col gap-4">
+<h4 class="text-white text-xs font-mono uppercase tracking-widest">Protocolo</h4>
+<a class="text-zinc-500 text-sm hover:text-[#6366F1] transition-colors font-light" href="#">Documentação</a>
+<a class="text-zinc-500 text-sm hover:text-[#6366F1] transition-colors font-light" href="#">Telemetria</a>
+<a class="text-zinc-500 text-sm hover:text-[#6366F1] transition-colors font-light" href="#">Status da Rede</a>
+</div>
+<div class="flex flex-col gap-4">
+<h4 class="text-white text-xs font-mono uppercase tracking-widest">Empresa</h4>
+<a class="text-zinc-500 text-sm hover:text-[#6366F1] transition-colors font-light" href="#">Sobre a Sonic</a>
+<a class="text-zinc-500 text-sm hover:text-[#6366F1] transition-colors font-light" href="#">Carreiras</a>
+<a class="text-zinc-500 text-sm hover:text-[#6366F1] transition-colors font-light" href="#">Blog</a>
+</div>
+<div class="flex flex-col gap-4">
+<h4 class="text-white text-xs font-mono uppercase tracking-widest">Jurídico</h4>
+<a class="text-zinc-500 text-sm hover:text-[#6366F1] transition-colors font-light" href="#">Política de Privacidade</a>
+<a class="text-zinc-500 text-sm hover:text-[#6366F1] transition-colors font-light" href="#">Termos de Sincronização</a>
+<a class="text-zinc-500 text-sm hover:text-[#6366F1] transition-colors font-light" href="#">Conformidade</a>
+</div>
+</div>
+</div>
+<div class="max-w-6xl mx-auto border-t border-white/5 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+<span class="font-sans text-xs tracking-tighter text-zinc-500 font-light uppercase">Sonic // Sincronia de Áudio © 2024</span>
+<div class="flex items-center gap-4">
+<a class="text-zinc-500 hover:text-[#6366F1] transition-colors" href="#">
+<iconify-icon class="text-xl" icon="solar:mask-happly-linear"></iconify-icon>
+</a>
+<a class="text-zinc-500 hover:text-[#6366F1] transition-colors" href="#">
+<iconify-icon class="text-xl" icon="solar:user-circle-linear"></iconify-icon>
+</a>
+<a class="text-zinc-500 hover:text-[#6366F1] transition-colors" href="#">
+<iconify-icon class="text-xl" icon="solar:map-arrow-up-linear"></iconify-icon>
+</a>
+</div>
+</div>
+</footer>
+</div>
+<div class="ds-cap"><code class="ds-meta">footer · bg-[#000000] border-t border-white/10 · links hover:text-[#6366F1]</code></div>
+</article>
+
+</section>
+
+<section class="ds-group" id="components-inputs">
+<header class="ds-group-head"><div class="px-3 py-1 rounded-full border border-white/10 bg-white/5 text-xs font-mono text-zinc-400 tracking-widest">08</div><h2 class="text-3xl font-normal text-white tracking-tight">Inputs and controls</h2></header>
+<article class="ds-spec ">
+<h3 class="ds-spec-title">Search field</h3>
+<div class="ds-live ">
+<div class="w-64 max-w-full bg-[#0f0f11] border border-zinc-800 rounded-xl pt-3"><div class="px-5 pb-3">
+<div class="relative">
+<input class="w-full rounded-md bg-[#0a0a0a] text-xs placeholder-zinc-600 py-1.5 pl-7 pr-3 border border-zinc-800 focus:outline-none transition-all focus:border-indigo-500/50 text-zinc-200 shadow-inner" placeholder="Buscar na biblioteca..." type="text"/>
+<i data-lucide="search" class="lucide-search absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-500 w-3.5 h-3.5"></i>
+</div>
+</div></div>
+</div>
+<div class="ds-cap"><code class="ds-meta">input · bg-[#0a0a0a] border-zinc-800 rounded-md pl-7 · focus:border-indigo-500/50 · lucide search</code></div>
+</article>
+
+<article class="ds-spec ">
+<h3 class="ds-spec-title">Prompt composer</h3>
+<div class="ds-live ">
+<div class="ds-w-md bg-[#0a0a0a] rounded-xl p-5"><div class="flex items-center gap-2 bg-zinc-900/80 backdrop-blur-md rounded-xl px-3 border border-zinc-800 transition-colors focus-within:border-indigo-500/50 shadow-sm">
+<button class="p-2 rounded-md hover:bg-zinc-800 transition-colors text-zinc-400">
+<i data-lucide="paperclip" class="w-4 h-4"></i>
+</button>
+<input class="flex-1 bg-transparent border-none focus:ring-0 focus:outline-none text-sm placeholder-zinc-500 text-zinc-100 py-3.5" placeholder="Descreva o som que você quer criar..." type="text"/>
+<button class="p-1.5 rounded-lg text-white transition-colors bg-indigo-500 hover:bg-indigo-400 flex items-center justify-center h-8 w-8 shadow-sm">
+<i data-lucide="arrow-up" class="w-4 h-4"></i>
+</button>
+</div></div>
+</div>
+<div class="ds-cap"><code class="ds-meta">bg-zinc-900/80 backdrop-blur-md rounded-xl border-zinc-800 · focus-within:border-indigo-500/50</code></div>
+</article>
+
+<article class="ds-spec ">
+<h3 class="ds-spec-title">Inspector controls</h3>
+<div class="ds-live ">
+<div class="w-64 max-w-full bg-[#0f0f11] border border-zinc-800 rounded-xl p-5"><div class="space-y-5">
+<div class="space-y-2">
+<div class="flex justify-between text-[10px] font-medium">
+<span class="text-zinc-400">Criatividade</span>
+<span class="text-indigo-400 font-mono">0.85</span>
+</div>
+<div class="h-1 w-full bg-zinc-800 rounded-full overflow-hidden flex relative">
+<div class="absolute h-full bg-indigo-500 w-[85%] rounded-full"></div>
+<div class="absolute w-2 h-2 bg-white rounded-full left-[85%] top-1/2 -translate-y-1/2 -ml-1 shadow-sm"></div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-[10px] font-medium">
+<span class="text-zinc-400">Saturação</span>
+<span class="text-indigo-400 font-mono">42%</span>
+</div>
+<div class="h-1 w-full bg-zinc-800 rounded-full overflow-hidden flex relative">
+<div class="absolute h-full bg-indigo-500 w-[42%] rounded-full"></div>
+<div class="absolute w-2 h-2 bg-white rounded-full left-[42%] top-1/2 -translate-y-1/2 -ml-1 shadow-sm"></div>
+</div>
+</div>
+<div class="space-y-2 pt-2">
+<span class="text-[10px] font-medium text-zinc-400">Tonalidade</span>
+<button class="w-full flex items-center justify-between bg-[#0a0a0a] border border-zinc-800 rounded-md p-2 text-xs text-zinc-300 hover:border-zinc-700 transition-colors shadow-sm">
+<span class="font-normal tracking-wide">Dó Menor</span>
+<i data-lucide="chevron-down" class="text-zinc-500 w-3.5 h-3.5"></i>
+</button>
+</div>
+<div class="flex items-center justify-between pt-3">
+<span class="text-[10px] font-medium text-zinc-400">Calor Analógico</span>
+<div class="w-8 h-4 bg-indigo-500 rounded-full relative cursor-pointer flex items-center px-[2px]">
+<div class="w-3 h-3 bg-white rounded-full translate-x-4 shadow-sm transition-transform"></div>
+</div>
+</div>
+</div></div>
+</div>
+<div class="ds-cap"><code class="ds-meta">slider h-1 bg-zinc-800 · fill bg-indigo-500 · thumb w-2 h-2 bg-white · select bg-[#0a0a0a] · toggle w-8 h-4 bg-indigo-500</code><p class="ds-note">Range sliders, select trigger and on-state toggle, as laid out in the inspector.</p></div>
+</article>
+
+<article class="ds-spec ">
+<h3 class="ds-spec-title">Glass toggle and check</h3>
+<div class="ds-live ">
+<div class="ds-row"><div class="w-60 p-5 rounded-[19px] bg-[#18181B]/95 backdrop-blur-xl border border-white/5"><div class="border-white/5 flex justify-between items-center relative z-10">
+<span class="font-mono text-xs text-zinc-500">QUANTIZE</span>
+<div class="w-8 h-4 rounded-full bg-black border border-white/10 relative cursor-pointer group/toggle transition-colors hover:border-white/20">
+<div class="absolute top-[1px] right-[1px] w-3 h-3 rounded-full bg-[#6366F1] shadow-[0_0_5px_rgba(99,102,241,0.8)] transition-transform group-hover/toggle:scale-110"></div>
+</div>
+</div></div><div class="w-60 p-5 rounded-[15px] bg-[#18181B]/90 backdrop-blur-xl border border-white/5"><label class="flex items-center gap-3 cursor-pointer group/chk select-none">
+<div class="w-4 h-4 rounded-[4px] border border-white/10 bg-black flex items-center justify-center transition-colors group-hover/chk:border-white/30">
+<div class="w-2 h-2 rounded-[2px] bg-[#6366F1] shadow-[0_0_5px_rgba(99,102,241,0.8)] transition-transform group-active/chk:scale-90"></div>
+</div>
+<span class="font-mono text-xs text-zinc-400 group-hover/chk:text-zinc-300 transition-colors">VERIFICAR HASH</span>
+</label></div></div>
+</div>
+<div class="ds-cap"><code class="ds-meta">QUANTIZE toggle w-8 h-4 bg-black border-white/10 · checkbox w-4 h-4 rounded-[4px] · indigo glow 0 0 5px</code></div>
+</article>
+
+<article class="ds-spec ">
+<h3 class="ds-spec-title">Filter chips</h3>
+<div class="ds-live ">
+<div class="bg-black rounded-2xl p-5 w-fit max-w-full"><div class="flex flex-wrap gap-2">
+<span class="rounded-full bg-lime-300 px-4 py-2 text-xs font-medium text-black">Tudo</span>
+<span class="rounded-full bg-white/12 px-4 py-2 text-xs font-medium text-white/70">Artistas</span>
+<span class="rounded-full bg-white/12 px-4 py-2 text-xs font-medium text-white/70">Mixes</span>
+<span class="rounded-full bg-white/12 px-4 py-2 text-xs font-medium text-white/70">Ao Vivo</span>
+</div></div>
+</div>
+<div class="ds-cap"><code class="ds-meta">phone chips · rounded-full px-4 py-2 text-xs · selected bg-lime-300 text-black · default bg-white/12 text-white/70</code></div>
+</article>
+
+</section>
+
+<section class="ds-group" id="components-cards">
+<header class="ds-group-head"><div class="px-3 py-1 rounded-full border border-white/10 bg-white/5 text-xs font-mono text-zinc-400 tracking-widest">09</div><h2 class="text-3xl font-normal text-white tracking-tight">Cards</h2></header>
+<article class="ds-spec ">
+<h3 class="ds-spec-title">Node cards</h3>
+<div class="ds-live ">
+<div class="ds-nodes"><article class="relative w-full md:w-80 z-30 group transition-transform duration-500 hover:-translate-y-2">
+<div class="p-[1px] rounded-[24px] bg-gradient-to-b from-[#6366F1]/30 via-white/5 to-transparent shadow-2xl shadow-black">
+<div class="absolute inset-0 bg-[#6366F1]/10 blur-3xl -z-10 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+<div class="p-6 rounded-[23px] bg-[#18181B]/95 backdrop-blur-2xl border border-white/5 relative overflow-hidden flex flex-col gap-6">
+<div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(99,102,241,0.05),transparent_80%)] pointer-events-none"></div>
+<div class="flex justify-between items-start relative z-10 px-1">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-black shadow-[inset_0_1px_2px_rgba(255,255,255,0.05)] flex items-center justify-center border border-white/5">
+<iconify-icon class="text-[#6366F1] text-lg" icon="solar:soundwave-linear" stroke-width="1.5"></iconify-icon>
+</div>
+<span class="font-mono text-xs text-[#6366F1] tracking-widest">MIXER_M9</span>
+</div>
+<div class="px-2 py-0.5 rounded border border-[#6366F1]/20 bg-[#6366F1]/10 text-xs font-mono text-white tracking-widest">SINCRONIZADO</div>
+</div>
+<div class="w-full h-32 rounded-xl bg-black border border-white/5 overflow-hidden relative z-10">
+<img alt="Estrutura" class="w-full h-full object-cover mix-blend-screen opacity-70" src="assets/overview/assets/d11b714c5007bc5d_3c92c955-4639-430a-bead-f54dfa.webp" style="filter: grayscale(1) sepia(1) hue-rotate(240deg) saturate(3) brightness(0.9);"/>
+<div class="absolute inset-0 opacity-20 pointer-events-none" style="background-image: repeating-linear-gradient(transparent, transparent 2px, #000 2px, #000 4px);"></div>
+</div>
+<div class="relative z-10">
+<button class="w-full py-2.5 rounded-lg bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/10 transition-all flex items-center justify-center gap-2 text-white">
+<span class="font-sans font-normal text-sm tracking-tight">Lorem Ipsum Dolor</span>
+<iconify-icon class="text-zinc-400" icon="solar:arrow-right-linear" stroke-width="1.5"></iconify-icon>
+</button>
+</div>
+</div>
+</div>
+</article>
+<article class="relative w-full md:w-64 group transition-transform duration-500 hover:-translate-y-2 z-20">
+<div class="p-[1px] rounded-[20px] bg-gradient-to-b from-white/10 to-transparent shadow-2xl shadow-black/80">
+<div class="h-auto md:h-80 rounded-[19px] bg-[#18181B]/90 backdrop-blur-xl border border-white/5 relative overflow-hidden flex flex-col">
+<div class="px-5 py-4 border-b border-white/5 flex justify-between items-center bg-white/[0.01]">
+<span class="font-mono text-xs tracking-widest text-zinc-500 uppercase">AUD.LOAD</span>
+<iconify-icon class="text-zinc-500" icon="solar:pulse-linear" stroke-width="1.5"></iconify-icon>
+</div>
+<div class="p-5 flex-1 flex flex-col gap-5">
+<div class="w-full h-24 rounded-lg overflow-hidden border border-white/5 relative bg-black">
+<img alt="Dados Abstratos" class="w-full h-full object-cover mix-blend-luminosity opacity-60" src="assets/overview/assets/4247739027a64670_df8f0c8a-835c-4e5e-b48c-140108.webp" style="filter: grayscale(1) sepia(1) hue-rotate(240deg) saturate(3);"/>
+<div class="absolute inset-0 bg-gradient-to-t from-[#18181B] to-transparent"></div>
+</div>
+<div class="space-y-2">
+<h3 class="text-lg font-normal text-white tracking-tight">Lorem Ipsum</h3>
+<p class="text-xs font-light text-zinc-400 leading-relaxed">Laboris nisi ut aliquip ex ea commodo consequat duis aute irure.</p>
+</div>
+<div class="mt-auto pt-2">
+<div class="flex justify-between items-end mb-2">
+<span class="font-mono text-xs text-[#6366F1] font-normal">SYNCH</span>
+<span class="font-mono text-xs text-white">92%</span>
+</div>
+<div class="h-1 w-full bg-black rounded-full border border-white/5 relative overflow-hidden">
+<div class="absolute inset-y-0 left-0 w-[92%] bg-[#6366F1] rounded-full shadow-[0_0_8px_rgba(99,102,241,0.8)]"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</article>
+<article class="relative w-full md:w-60 group transition-transform duration-500 hover:-translate-y-2 z-20">
+<div class="p-[1px] rounded-[20px] bg-gradient-to-b from-white/10 to-transparent shadow-2xl shadow-black/80">
+<div class="p-5 rounded-[19px] bg-[#18181B]/95 backdrop-blur-xl border border-white/5 relative overflow-hidden">
+<div class="flex items-center gap-4 relative z-10">
+<div class="w-12 h-12 rounded-full p-[1px] bg-gradient-to-b from-white/20 to-transparent flex-shrink-0">
+<div class="w-full h-full rounded-full overflow-hidden bg-black">
+<img alt="DJ" class="w-full h-full object-cover mix-blend-luminosity opacity-80" src="assets/overview/assets/2a6a616171120ca0_f19460d3-0d95-499d-97fe-733c3a.webp" style="filter: grayscale(1) sepia(1) hue-rotate(240deg) saturate(2);"/>
+</div>
+</div>
+<div>
+<h3 class="text-sm font-normal text-white tracking-tight">DJ Apex</h3>
+<p class="font-mono text-xs text-[#6366F1] tracking-widest uppercase mt-1">Líder de Sessão</p>
+</div>
+</div>
+<div class="mt-5 pt-4 border-t border-white/5 flex justify-between items-center relative z-10">
+<span class="font-mono text-xs text-zinc-500">QUANTIZE</span>
+<div class="w-8 h-4 rounded-full bg-black border border-white/10 relative cursor-pointer group/toggle transition-colors hover:border-white/20">
+<div class="absolute top-[1px] right-[1px] w-3 h-3 rounded-full bg-[#6366F1] shadow-[0_0_5px_rgba(99,102,241,0.8)] transition-transform group-hover/toggle:scale-110"></div>
+</div>
+</div>
+</div>
+</div>
+</article>
+<article class="relative w-full md:w-60 group transition-transform duration-500 hover:-translate-y-2 z-20">
+<div class="p-[1px] rounded-[16px] bg-gradient-to-b from-white/10 to-transparent shadow-2xl shadow-black/80">
+<div class="p-5 rounded-[15px] bg-[#18181B]/90 backdrop-blur-xl border border-white/5 relative">
+<div class="flex justify-between items-start mb-4">
+<iconify-icon class="text-zinc-500 text-xl" icon="solar:history-linear" stroke-width="1.5"></iconify-icon>
+<span class="font-mono text-xs text-zinc-600 uppercase">Registro . 108</span>
+</div>
+<h4 class="text-sm font-normal text-white mb-2 tracking-tight">Dolor Sit Amet</h4>
+<p class="text-xs font-light text-zinc-400 leading-relaxed mb-5">Consequat duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat.</p>
+<label class="flex items-center gap-3 cursor-pointer group/chk select-none">
+<div class="w-4 h-4 rounded-[4px] border border-white/10 bg-black flex items-center justify-center transition-colors group-hover/chk:border-white/30">
+<div class="w-2 h-2 rounded-[2px] bg-[#6366F1] shadow-[0_0_5px_rgba(99,102,241,0.8)] transition-transform group-active/chk:scale-90"></div>
+</div>
+<span class="font-mono text-xs text-zinc-400 group-hover/chk:text-zinc-300 transition-colors">VERIFICAR HASH</span>
+</label>
+</div>
+</div>
+</article>
+<article class="relative w-full md:w-52 group transition-transform duration-500 hover:-translate-y-2 z-20">
+<div class="p-[1px] rounded-[20px] bg-gradient-to-br from-white/10 to-transparent shadow-2xl shadow-black/80">
+<div class="h-52 rounded-[19px] bg-[#18181B]/80 backdrop-blur-md p-1.5 border border-white/5">
+<div class="w-full h-full rounded-[14px] overflow-hidden relative border border-white/5 bg-black group-hover:border-white/10 transition-colors">
+<img alt="Recurso Abstrato" class="w-full h-full object-cover mix-blend-luminosity opacity-50 transition-opacity duration-500 group-hover:opacity-70" src="assets/overview/assets/4f54518ab53e3f79_0a6468da-a7f7-450b-a982-3a9af5.webp" style="filter: grayscale(1) sepia(1) hue-rotate(240deg) saturate(2);"/>
+<div class="absolute inset-0 bg-gradient-to-t from-[#18181B] via-transparent to-transparent opacity-90"></div>
+<div class="absolute bottom-3 left-3 right-3 flex justify-between items-end">
+<div>
+<div class="font-mono text-xs text-[#6366F1] mb-1 tracking-widest">NÓ</div>
+<div class="text-xs font-normal text-white tracking-tight">Track.Schematic</div>
+</div>
+<div class="w-6 h-6 rounded-md bg-white/5 backdrop-blur border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors cursor-pointer">
+<iconify-icon class="text-zinc-300 text-xs" icon="solar:maximize-square-linear" stroke-width="1.5"></iconify-icon>
+</div>
+</div>
+</div>
+</div>
+</div>
+</article>
+<article class="relative w-full md:w-56 group transition-transform duration-500 hover:-translate-y-2 z-20">
+<div class="p-[1px] rounded-[16px] bg-gradient-to-b from-white/10 to-transparent shadow-2xl shadow-black/80">
+<div class="p-5 rounded-[15px] bg-[#18181B]/90 backdrop-blur-xl border border-white/5 relative">
+<div class="flex items-center gap-3 mb-5">
+<div class="w-10 h-10 rounded-full bg-black border border-white/5 shadow-[inset_0_1px_2px_rgba(255,255,255,0.05)] flex items-center justify-center">
+<iconify-icon class="text-[#6366F1] text-xl" icon="solar:cpu-linear" stroke-width="1.5"></iconify-icon>
+</div>
+<div>
+<h4 class="text-sm font-normal text-white tracking-tight">Lorem Ipsum</h4>
+<p class="font-mono text-[10px] text-[#6366F1] uppercase tracking-widest mt-0.5">Sys.Active</p>
+</div>
+</div>
+<div class="space-y-4">
+<div>
+<div class="flex justify-between items-end mb-2">
+<span class="font-mono text-xs text-zinc-400">THREADS</span>
+<span class="font-mono text-xs text-white">128</span>
+</div>
+<div class="h-1 w-full bg-black rounded-full border border-white/5 relative overflow-hidden">
+<div class="absolute inset-y-0 left-0 w-[64%] bg-zinc-500 rounded-full"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between items-end mb-2">
+<span class="font-mono text-xs text-[#6366F1]">LOAD</span>
+<span class="font-mono text-xs text-white">88%</span>
+</div>
+<div class="h-1 w-full bg-black rounded-full border border-white/5 relative overflow-hidden">
+<div class="absolute inset-y-0 left-0 w-[88%] bg-[#6366F1] rounded-full shadow-[0_0_8px_rgba(99,102,241,0.8)]"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</article></div>
+</div>
+<div class="ds-cap"><code class="ds-meta">article.group hover:-translate-y-2 · p-[1px] gradient hairline › bg-[#18181B]/90–95 backdrop-blur-xl · widths md:w-80 | w-64 | w-60 | w-56 | w-52</code><p class="ds-note">The six floating cards of the node cluster (accent mixer, load, profile, log, image node, engine), unpinned from their absolute cluster positions.</p></div>
+</article>
+
+<article class="ds-spec ">
+<h3 class="ds-spec-title">Architecture cards</h3>
+<div class="ds-live ">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+<article class="md:col-span-7 bg-[#18181B]/90 backdrop-blur-xl border border-white/5 rounded-[19px] overflow-hidden relative group hover:border-white/10 transition-colors duration-700 flex flex-col md:flex-row shadow-2xl shadow-black/80">
+<div class="absolute inset-0 bg-gradient-to-br from-[#6366F1]/[0.05] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+<div class="p-8 md:p-12 md:w-1/2 flex flex-col justify-between relative z-10">
+<header class="mb-12">
+<div class="flex items-center gap-3 mb-6">
+<i data-lucide="cpu" class="text-xl text-[#6366F1] w-6 h-6"></i>
+<span class="text-xs font-mono tracking-widest text-zinc-500 uppercase">GEN-01</span>
+</div>
+<h3 class="text-2xl font-normal tracking-tight text-white mb-4">Lorem Ipsum Dolor Sit</h3>
+<p class="text-sm font-light text-zinc-400 leading-relaxed">Do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat duis aute irure dolor in reprehenderit.</p>
+</header>
+<div class="mt-auto hidden md:block">
+<div class="inline-flex items-center gap-2 text-xs font-mono text-[#6366F1] bg-[#6366F1]/10 border border-[#6366F1]/20 px-2.5 py-1.5 rounded-md">
+<span class="w-1 h-1 rounded-full bg-[#6366F1]"></span>Modelo Ativo
+</div>
+</div>
+</div>
+<div class="h-64 md:h-auto md:w-1/2 relative bg-black/40 border-t md:border-t-0 md:border-l border-white/5">
+<canvas class="absolute inset-0 w-full h-full" id="canvas-core" style="touch-action: none;"></canvas>
+<div class="absolute top-6 right-6 w-2 h-2 border-t border-r border-[#6366F1]/30 opacity-50"></div>
+<div class="absolute bottom-6 left-6 w-2 h-2 border-b border-l border-[#6366F1]/30 opacity-50"></div>
+</div>
+</article>
+<article class="md:col-span-5 bg-[#18181B]/90 backdrop-blur-xl border border-white/5 rounded-[19px] overflow-hidden relative group hover:border-white/10 transition-colors duration-700 flex flex-col shadow-2xl shadow-black/80">
+<div class="absolute inset-0 bg-gradient-to-b from-[#6366F1]/[0.05] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+<div class="h-64 relative bg-black/40 border-b border-white/5">
+<canvas class="absolute inset-0 w-full h-full" id="canvas-network" style="touch-action: none;"></canvas>
+<div class="absolute top-6 left-6 w-2 h-2 border-t border-l border-[#6366F1]/30 opacity-50"></div>
+<div class="absolute bottom-6 right-6 w-2 h-2 border-b border-r border-[#6366F1]/30 opacity-50"></div>
+</div>
+<div class="p-8 md:p-12 relative z-10 flex-1 flex flex-col justify-center">
+<div class="flex items-center gap-3 mb-6">
+<i data-lucide="layers" class="text-xl text-[#6366F1] w-6 h-6"></i>
+<span class="text-xs font-mono tracking-widest text-zinc-500 uppercase">STM-02</span>
+</div>
+<h3 class="text-2xl font-normal tracking-tight text-white mb-4">Consectetur Elit</h3>
+<p class="text-sm font-light text-zinc-400 leading-relaxed">Dolore magna aliqua ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat duis aute irure dolor.</p>
+</div>
+</article>
+<article class="md:col-span-12 bg-[#18181B]/90 backdrop-blur-xl border border-white/5 rounded-[19px] overflow-hidden relative group hover:border-white/10 transition-colors duration-700 flex flex-col md:flex-row shadow-2xl shadow-black/80">
+<div class="absolute inset-0 bg-gradient-to-r from-[#6366F1]/[0.05] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+<div class="p-8 md:p-12 md:w-5/12 lg:w-1/3 flex flex-col justify-center relative z-10">
+<div class="flex items-center gap-3 mb-6">
+<i data-lucide="music" class="text-xl text-[#6366F1] w-6 h-6"></i>
+<span class="text-xs font-mono tracking-widest text-zinc-500 uppercase">THY-03</span>
+</div>
+<h3 class="text-2xl font-normal tracking-tight text-white mb-4">Adipiscing Elit Sed Do</h3>
+<p class="text-sm font-light text-zinc-400 leading-relaxed">Veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla.</p>
+</div>
+<div class="h-64 md:h-80 md:w-7/12 lg:w-2/3 relative bg-black/40 border-t md:border-t-0 md:border-l border-white/5 overflow-hidden">
+<div class="hidden md:block absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-[#18181B] to-transparent z-10"></div>
+<canvas class="absolute inset-0 w-full h-full" id="canvas-orbit" style="touch-action: none;"></canvas>
+<div class="absolute top-6 right-6 w-2 h-2 border-t border-r border-[#6366F1]/30 opacity-50 z-20"></div>
+</div>
+</article>
+</div>
+</div>
+<div class="ds-cap"><code class="ds-meta">article.bg-[#18181B]/90 rounded-[19px] · md:col-span-7 | 5 | 12 · canvas#canvas-core · #canvas-network · #canvas-orbit (canvas-visuals.js)</code><p class="ds-note">Live 2D canvases: rotating hexagon rings, circuit traces and orbiting fragments; hover lifts an indigo gradient wash.</p></div>
+</article>
+
+<article class="ds-spec ">
+<h3 class="ds-spec-title">Photo feature tiles</h3>
+<div class="ds-live ">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6">
+<article class="ui-element relative rounded-2xl bg-zinc-900/90 border border-white/5 overflow-hidden group aspect-[4/3] md:aspect-auto md:h-64 flex flex-col justify-end p-6 lg:p-8 hover:border-white/10 transition-colors">
+<img alt="Plano de fundo" class="absolute inset-0 w-full h-full object-cover opacity-20 group-hover:opacity-30 transition-opacity mix-blend-luminosity duration-700" src="assets/overview/assets/b8e8b4eb9b1254cc_photo-1724525647065-f948fc102e.jpg"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
+<div class="relative z-10 w-full flex justify-between items-start absolute top-6 left-6 right-6">
+<div class="w-6 h-6 rounded-full bg-[#6366F1]/20 flex items-center justify-center">
+<i data-lucide="cpu" class="text-[#6366F1] w-3.5 h-3.5"></i>
+</div>
+</div>
+<div class="relative z-10 mt-auto">
+<h2 class="text-2xl lg:text-3xl font-medium tracking-tight uppercase flex items-center gap-2 mb-2 text-white">
+Lorem Ipsum <i data-lucide="arrow-up-right" class="text-[#6366F1] opacity-80 w-5 h-5"></i>
+</h2>
+<p class="text-zinc-400 text-sm lg:text-base leading-relaxed max-w-[90%]">Ut aliquip ex ea commodo consequat duis aute irure dolor in reprehenderit.</p>
+</div>
+</article>
+<article class="ui-element relative rounded-2xl bg-zinc-900/90 border border-white/5 overflow-hidden group aspect-[4/3] md:aspect-auto md:h-64 flex flex-col justify-end p-6 lg:p-8 hover:border-white/10 transition-colors">
+<img alt="Plano de fundo" class="absolute inset-0 w-full h-full object-cover opacity-20 group-hover:opacity-30 transition-opacity mix-blend-luminosity duration-700" src="assets/overview/assets/ad866fefa5d5725d_photo-1640906152676-dace6710d2.jpg"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
+<div class="relative z-10 w-full flex justify-between items-start absolute top-6 left-6 right-6">
+<div class="w-6 h-6 rounded-full bg-[#6366F1]/20 flex items-center justify-center">
+<i data-lucide="box" class="text-[#6366F1] w-3.5 h-3.5"></i>
+</div>
+</div>
+<div class="relative z-10 mt-auto">
+<h2 class="text-2xl lg:text-3xl font-medium tracking-tight uppercase flex items-center gap-2 mb-2 text-white">
+Dolor Sit <i data-lucide="database" class="text-zinc-500 w-5 h-5"></i>
+</h2>
+<p class="text-zinc-400 text-sm lg:text-base leading-relaxed max-w-[90%]">Aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat.</p>
+</div>
+</article>
+<article class="ui-element relative rounded-2xl bg-zinc-900/90 border border-white/5 overflow-hidden group aspect-[4/3] md:aspect-auto md:h-64 flex flex-col justify-end p-6 lg:p-8 hover:border-white/10 transition-colors">
+<img alt="Plano de fundo" class="absolute inset-0 w-full h-full object-cover opacity-20 group-hover:opacity-30 transition-opacity mix-blend-luminosity duration-700" src="assets/overview/assets/2569af18f9b6f65d_photo-1629946832022-c327f74956.jpg"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
+<div class="relative z-10 w-full flex justify-between items-start absolute top-6 left-6 right-6">
+<div class="w-6 h-6 rounded-full bg-[#6366F1]/20 flex items-center justify-center">
+<i data-lucide="share-2" class="text-[#6366F1] w-3.5 h-3.5"></i>
+</div>
+</div>
+<div class="relative z-10 mt-auto">
+<h2 class="text-2xl lg:text-3xl font-medium tracking-tight uppercase flex items-center gap-2 mb-2 text-white">
+Consectetur Elit <i data-lucide="arrow-up-right" class="text-[#6366F1] opacity-80 w-5 h-5"></i>
+</h2>
+<p class="text-zinc-400 text-sm lg:text-base leading-relaxed max-w-[90%]">Amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore.</p>
+</div>
+</article>
+</div>
+</div>
+<div class="ds-cap"><code class="ds-meta">article.ui-element rounded-2xl bg-zinc-900/90 · img opacity-20 mix-blend-luminosity → group-hover:opacity-30</code></div>
+</article>
+
+<article class="ds-spec ">
+<h3 class="ds-spec-title">List and status tiles</h3>
+<div class="ds-live ">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 gap-x-4 gap-y-4">
+<article class="ui-element lg:col-span-5 relative rounded-2xl bg-zinc-900/90 border border-white/5 p-6 lg:p-8 flex flex-col">
+<div class="flex items-center gap-2 mb-6">
+<div class="w-4 h-[2px] bg-[#6366F1]"></div>
+<h3 class="text-sm font-medium tracking-wide uppercase text-white flex items-center gap-1">Lorem Ipsum <i data-lucide="arrow-up-right" class="text-[#6366F1] w-3 h-3"></i></h3>
+</div>
+<div class="grid grid-cols-[32px_1fr_40px_60px] gap-4 mb-4 text-[10px] font-normal text-zinc-500 uppercase tracking-widest px-2">
+<span></span>
+<span>Sistemas</span>
+<span class="text-right">Ping</span>
+<span class="text-right">Classe</span>
+</div>
+<div class="flex flex-col gap-3">
+<div class="list-item-animate grid grid-cols-[32px_1fr_40px_60px] gap-4 items-center group hover:bg-white/5 p-2 rounded-lg transition-colors cursor-pointer">
+<div class="w-8 h-8 rounded-full bg-white text-black flex items-center justify-center text-xs font-medium">1</div>
+<div class="truncate">
+<p class="text-sm font-medium text-white truncate group-hover:text-[#6366F1] transition-colors">Core_Synthesis_Engine</p>
+<p class="text-xs text-zinc-500 truncate">System.Active</p>
+</div>
+<div class="text-xs font-medium text-white text-right">12ms</div>
+<div class="text-xs font-medium text-[#6366F1] text-right">Synth</div>
+</div>
+<div class="list-item-animate grid grid-cols-[32px_1fr_40px_60px] gap-4 items-center group hover:bg-white/5 p-2 rounded-lg transition-colors cursor-pointer">
+<div class="w-8 h-8 rounded-full bg-white text-black flex items-center justify-center text-xs font-medium">2</div>
+<div class="truncate">
+<p class="text-sm font-medium text-white truncate group-hover:text-[#6366F1] transition-colors">Latent_Diffusion_v2</p>
+<p class="text-xs text-zinc-500 truncate">Processing</p>
+</div>
+<div class="text-xs font-medium text-white text-right">8ms</div>
+<div class="text-xs font-medium text-[#6366F1] text-right">Model</div>
+</div>
+<div class="list-item-animate grid grid-cols-[32px_1fr_40px_60px] gap-4 items-center group hover:bg-white/5 p-2 rounded-lg transition-colors cursor-pointer">
+<div class="w-8 h-8 rounded-full bg-white text-black flex items-center justify-center text-xs font-medium">3</div>
+<div class="truncate">
+<p class="text-sm font-medium text-white truncate group-hover:text-[#6366F1] transition-colors">Spatial_Audio_Matrix</p>
+<p class="text-xs text-zinc-500 truncate">System.Active</p>
+</div>
+<div class="text-xs font-medium text-white text-right">1ms</div>
+<div class="text-xs font-medium text-[#6366F1] text-right">Route</div>
+</div>
+<div class="list-item-animate grid grid-cols-[32px_1fr_40px_60px] gap-4 items-center group hover:bg-white/5 p-2 rounded-lg transition-colors cursor-pointer">
+<div class="w-8 h-8 rounded-full bg-white text-black flex items-center justify-center text-xs font-medium">4</div>
+<div class="truncate">
+<p class="text-sm font-medium text-white truncate group-hover:text-[#6366F1] transition-colors">Neural_Stem_Splitter</p>
+<p class="text-xs text-zinc-500 truncate">Processing</p>
+</div>
+<div class="text-xs font-medium text-white text-right">15ms</div>
+<div class="text-xs font-medium text-[#6366F1] text-right">Stem</div>
+</div>
+<div class="list-item-animate grid grid-cols-[32px_1fr_40px_60px] gap-4 items-center group hover:bg-white/5 p-2 rounded-lg transition-colors cursor-pointer">
+<div class="w-8 h-8 rounded-full bg-white text-black flex items-center justify-center text-xs font-medium">5</div>
+<div class="truncate">
+<p class="text-sm font-medium text-white truncate group-hover:text-[#6366F1] transition-colors">Waveform_Analyzer</p>
+<p class="text-xs text-zinc-500 truncate">System.Active</p>
+</div>
+<div class="text-xs font-medium text-white text-right">4ms</div>
+<div class="text-xs font-medium text-[#6366F1] text-right">Core</div>
+</div>
+</div>
+</article>
+<article class="ui-element lg:col-span-7 overflow-hidden group min-h-[400px] flex bg-zinc-900/90 border-white/5 border rounded-2xl relative items-center justify-center">
+<img alt="Rack de Servidores" class="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-luminosity transform scale-105 group-hover:scale-100 transition-transform duration-1000 ease-out" src="assets/overview/assets/2569af18f9b6f65d_photo-1629946832022-c327f74956.jpg" style="filter: sepia(1) hue-rotate(240deg) saturate(2);"/>
+<div class="bg-gradient-to-t from-black/80 via-black/20 to-black/60 absolute inset-0 flex flex-col justify-between p-6 md:p-8 pointer-events-none">
+<div class="flex justify-between items-start w-full">
+<div class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.8)]"></span>
+<span class="text-[10px] font-mono tracking-widest text-emerald-400 uppercase">Sys.Online</span>
+</div>
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-black/50 backdrop-blur-md border border-white/10 text-[10px] font-mono text-zinc-400 uppercase tracking-widest">
+<i data-lucide="server" class="text-zinc-500 w-3 h-3"></i>Node_US_E1
+</div>
+</div>
+<div class="flex justify-between items-end w-full">
+<div class="flex flex-col gap-1">
+<span class="text-3xl font-light text-white tracking-tight">99.9%</span>
+<span class="text-[10px] font-mono text-zinc-500 uppercase tracking-widest">SLA de Disponibilidade</span>
+</div>
+<div class="flex flex-col gap-1 items-end text-right">
+<div class="flex items-center gap-1.5 text-white">
+<i data-lucide="activity" class="text-[#6366F1] w-3.5 h-3.5"></i>
+<span class="text-xl font-normal tracking-tight">4.2 TB/s</span>
+</div>
+<span class="text-[10px] font-mono text-zinc-500 uppercase tracking-widest">Vazão</span>
+</div>
+</div>
+</div>
+<button class="relative z-10 bg-[#6366F1] hover:bg-indigo-400 text-white px-8 py-4 rounded font-medium text-sm tracking-wide uppercase transition-all hover:scale-105 hover:shadow-[0_0_30px_rgba(99,102,241,0.3)] duration-300">Lorem Ipsum Dolor</button>
+</article>
+</div>
+</div>
+<div class="ds-cap"><code class="ds-meta">lg:col-span-5 list card · lg:col-span-7 image status card with scale-105 → group-hover:scale-100</code></div>
+</article>
+
+<article class="ds-spec ">
+<h3 class="ds-spec-title">Testimonial cards</h3>
+<div class="ds-live ">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="p-8 rounded-[19px] bg-[#18181B]/90 backdrop-blur-xl border border-white/5 relative shadow-2xl shadow-black/80">
+<iconify-icon class="absolute top-8 right-8 text-white/5 text-4xl" icon="solar:chat-round-line-linear"></iconify-icon>
+<p class="text-zinc-300 text-sm font-light leading-relaxed mb-8 relative z-10">"Tempor incididunt ut labore et dolore magna aliqua ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat duis aute irure dolor in reprehenderit in."</p>
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full p-[1px] bg-gradient-to-b from-white/20 to-transparent flex-shrink-0">
+<div class="w-full h-full rounded-full overflow-hidden bg-black">
+<img alt="Operador" class="w-full h-full object-cover mix-blend-luminosity opacity-80" src="assets/overview/assets/585a27183f42ba3e_917d6f93-fb36-439a-8c48-884b67.jpg" style="filter: grayscale(1) sepia(1) hue-rotate(240deg) saturate(2);"/>
+</div>
+</div>
+<div>
+<div class="text-white text-sm font-normal tracking-tight">Sarah Vance</div>
+<div class="text-[#6366F1] font-mono text-[10px] uppercase tracking-widest mt-1">Produtora Líder</div>
+</div>
+</div>
+</div>
+<div class="p-8 rounded-[19px] bg-[#18181B]/90 backdrop-blur-xl border border-white/5 relative shadow-2xl shadow-black/80">
+<iconify-icon class="absolute top-8 right-8 text-white/5 text-4xl" icon="solar:chat-round-line-linear"></iconify-icon>
+<p class="text-zinc-300 text-sm font-light leading-relaxed mb-8 relative z-10">"Enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat duis aute irure dolor in reprehenderit in voluptate velit esse cillum."</p>
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full p-[1px] bg-gradient-to-b from-white/20 to-transparent flex-shrink-0">
+<div class="w-full h-full rounded-full overflow-hidden bg-black">
+<img alt="Operador" class="w-full h-full object-cover mix-blend-luminosity opacity-80" src="assets/overview/assets/26ecdbdc59109db9_3a9a24d2-3644-4299-9ddf-51f6d3.webp" style="filter: grayscale(1) sepia(1) hue-rotate(240deg) saturate(2);"/>
+</div>
+</div>
+<div>
+<div class="text-white text-sm font-normal tracking-tight">Elias Thorne</div>
+<div class="text-[#6366F1] font-mono text-[10px] uppercase tracking-widest mt-1">Arquiteto de Áudio</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="ds-cap"><code class="ds-meta">p-8 rounded-[19px] bg-[#18181B]/90 · quote icon text-white/5 text-4xl · avatar p-[1px] ring</code></div>
+</article>
+
+<article class="ds-spec ">
+<h3 class="ds-spec-title">Pricing cards</h3>
+<div class="ds-live ">
+<div class="ds-pad-top"><div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="p-8 rounded-[19px] bg-[#18181B]/90 backdrop-blur-xl border border-white/5 flex flex-col shadow-2xl shadow-black/80">
+<div class="font-mono text-xs text-zinc-500 uppercase tracking-widest mb-2">Conexão Base</div>
+<div class="flex items-baseline gap-1 mb-8">
+<span class="text-4xl font-light text-white">R$49</span>
+<span class="text-zinc-500 text-xs font-mono">/CICLO</span>
+</div>
+<ul class="flex flex-col gap-4 mb-8 flex-1">
+<li class="flex items-center gap-3 text-sm text-zinc-400 font-light">
+<iconify-icon class="text-[#6366F1] text-lg" icon="solar:check-circle-linear"></iconify-icon>Lorem ipsum dolor sit
+</li>
+<li class="flex items-center gap-3 text-sm text-zinc-400 font-light">
+<iconify-icon class="text-[#6366F1] text-lg" icon="solar:check-circle-linear"></iconify-icon>Amet consectetur
+</li>
+<li class="flex items-center gap-3 text-sm text-zinc-400 font-light">
+<iconify-icon class="text-[#6366F1] text-lg" icon="solar:check-circle-linear"></iconify-icon>Adipiscing elit
+</li>
+</ul>
+<button class="w-full py-3 rounded-lg bg-white/5 border border-white/10 text-white text-sm tracking-tight hover:bg-white/10 transition-colors">Lorem</button>
+</div>
+<div class="p-8 rounded-[19px] bg-[#18181B]/95 backdrop-blur-xl border border-[#6366F1]/30 flex flex-col relative overflow-hidden transform md:-translate-y-4 shadow-[0_0_30px_rgba(99,102,241,0.15)]">
+<div class="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-[#6366F1] to-transparent"></div>
+<div class="font-mono text-xs text-[#6366F1] uppercase tracking-widest mb-2 flex justify-between items-center">
+<span>Nó Nexus</span>
+<span class="px-2 py-0.5 rounded border border-[#6366F1]/20 bg-[#6366F1]/10 text-[10px] text-white">POPULAR</span>
+</div>
+<div class="flex items-baseline gap-1 mb-8">
+<span class="text-4xl font-light text-white">R$149</span>
+<span class="text-zinc-500 text-xs font-mono">/CICLO</span>
+</div>
+<ul class="flex flex-col gap-4 mb-8 flex-1">
+<li class="flex items-center gap-3 text-sm text-zinc-300 font-light">
+<iconify-icon class="text-[#6366F1] text-lg" icon="solar:check-circle-linear"></iconify-icon>Lorem ipsum dolor
+</li>
+<li class="flex items-center gap-3 text-sm text-zinc-300 font-light">
+<iconify-icon class="text-[#6366F1] text-lg" icon="solar:check-circle-linear"></iconify-icon>Sit amet consectetur
+</li>
+<li class="flex items-center gap-3 text-sm text-zinc-300 font-light">
+<iconify-icon class="text-[#6366F1] text-lg" icon="solar:check-circle-linear"></iconify-icon>Adipiscing elit sed do eiusmod
+</li>
+<li class="flex items-center gap-3 text-sm text-zinc-300 font-light">
+<iconify-icon class="text-[#6366F1] text-lg" icon="solar:check-circle-linear"></iconify-icon>Tempor incididunt ut
+</li>
+</ul>
+<button class="w-full py-3 rounded-lg bg-[#6366F1] text-white text-sm tracking-tight hover:bg-[#6366F1]/90 transition-colors shadow-[0_0_15px_rgba(99,102,241,0.3)]">Lorem Ipsum Dolor</button>
+</div>
+<div class="p-8 rounded-[19px] bg-[#18181B]/90 backdrop-blur-xl border border-white/5 flex flex-col shadow-2xl shadow-black/80">
+<div class="font-mono text-xs text-zinc-500 uppercase tracking-widest mb-2">Overlord</div>
+<div class="flex items-baseline gap-1 mb-8">
+<span class="text-4xl font-light text-white">R$499</span>
+<span class="text-zinc-500 text-xs font-mono">/CICLO</span>
+</div>
+<ul class="flex flex-col gap-4 mb-8 flex-1">
+<li class="flex items-center gap-3 text-sm text-zinc-400 font-light">
+<iconify-icon class="text-[#6366F1] text-lg" icon="solar:check-circle-linear"></iconify-icon>Lorem ipsum dolor
+</li>
+<li class="flex items-center gap-3 text-sm text-zinc-400 font-light">
+<iconify-icon class="text-[#6366F1] text-lg" icon="solar:check-circle-linear"></iconify-icon>Sit amet consectetur adip
+</li>
+<li class="flex items-center gap-3 text-sm text-zinc-400 font-light">
+<iconify-icon class="text-[#6366F1] text-lg" icon="solar:check-circle-linear"></iconify-icon>Sed do eiusmod tempor labore
+</li>
+</ul>
+<button class="w-full py-3 rounded-lg bg-white/5 border border-white/10 text-white text-sm tracking-tight hover:bg-white/10 transition-colors">Dolor Sit Amet</button>
+</div>
+</div></div>
+</div>
+<div class="ds-cap"><code class="ds-meta">standard bg-[#18181B]/90 border-white/5 · featured border-[#6366F1]/30 md:-translate-y-4 + POPULAR badge</code></div>
+</article>
+
+<article class="ds-spec ">
+<h3 class="ds-spec-title">FAQ cards</h3>
+<div class="ds-live ">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl w-full">
+<div class="p-8 rounded-[19px] bg-[#18181B]/90 backdrop-blur-xl border border-white/5 relative shadow-2xl shadow-black/80 hover:border-white/10 transition-colors">
+<h3 class="text-white text-sm font-normal mb-3 tracking-tight">Lorem ipsum dolor sit?</h3>
+<p class="text-zinc-400 text-xs font-light leading-relaxed">Ex ea commodo consequat duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur excepteur sint occaecat cupidatat non proident sunt.</p>
+</div>
+<div class="p-8 rounded-[19px] bg-[#18181B]/90 backdrop-blur-xl border border-white/5 relative shadow-2xl shadow-black/80 hover:border-white/10 transition-colors">
+<h3 class="text-white text-sm font-normal mb-3 tracking-tight">Consectetur adipiscing elit sed?</h3>
+<p class="text-zinc-400 text-xs font-light leading-relaxed">Dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur excepteur sint occaecat cupidatat non proident sunt in culpa.</p>
+</div>
+<div class="p-8 rounded-[19px] bg-[#18181B]/90 backdrop-blur-xl border border-white/5 relative shadow-2xl shadow-black/80 hover:border-white/10 transition-colors">
+<h3 class="text-white text-sm font-normal mb-3 tracking-tight">Sed do eiusmod tempor incididunt?</h3>
+<p class="text-zinc-400 text-xs font-light leading-relaxed">Adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+</div>
+<div class="p-8 rounded-[19px] bg-[#18181B]/90 backdrop-blur-xl border border-white/5 relative shadow-2xl shadow-black/80 hover:border-white/10 transition-colors">
+<h3 class="text-white text-sm font-normal mb-3 tracking-tight">Ut labore et dolore magna aliqua ut enim?</h3>
+<p class="text-zinc-400 text-xs font-light leading-relaxed">Ut labore et dolore magna aliqua ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat duis aute.</p>
+</div>
+</div>
+</div>
+<div class="ds-cap"><code class="ds-meta">p-8 rounded-[19px] bg-[#18181B]/90 · hover:border-white/10</code></div>
+</article>
+
+<article class="ds-spec ">
+<h3 class="ds-spec-title">Upsell card</h3>
+<div class="ds-live ">
+<div class="w-64 max-w-full bg-[#0f0f11] border border-zinc-800 rounded-xl"><div class="p-3 bg-zinc-900/50 m-3 rounded-lg border border-zinc-800/80">
+<h4 class="text-xs font-medium text-zinc-200 mb-1.5 flex items-center gap-1.5">
+<i data-lucide="zap" class="text-indigo-400 w-3 h-3"></i>Lorem Ipsum
+</h4>
+<p class="text-[10px] text-zinc-500 mb-2 leading-relaxed">Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor.</p>
+<button class="w-full text-center text-[10px] py-1.5 bg-zinc-800 hover:bg-zinc-700 rounded-md text-zinc-200 transition-colors border border-zinc-700/50">Lorem Ipsum</button>
+</div></div>
+</div>
+<div class="ds-cap"><code class="ds-meta">studio · p-3 bg-zinc-900/50 rounded-lg border-zinc-800/80</code></div>
+</article>
+
+</section>
+
+<section class="ds-group" id="components-data">
+<header class="ds-group-head"><div class="px-3 py-1 rounded-full border border-white/10 bg-white/5 text-xs font-mono text-zinc-400 tracking-widest">10</div><h2 class="text-3xl font-normal text-white tracking-tight">Data display</h2></header>
+<article class="ds-spec ">
+<h3 class="ds-spec-title">Meters</h3>
+<div class="ds-live ">
+<div class="ds-row ds-top"><div class="w-64 p-5 rounded-[19px] bg-[#18181B]/90 backdrop-blur-xl border border-white/5"><div class="">
+<div class="flex justify-between items-end mb-2">
+<span class="font-mono text-xs text-[#6366F1] font-normal">SYNCH</span>
+<span class="font-mono text-xs text-white">92%</span>
+</div>
+<div class="h-1 w-full bg-black rounded-full border border-white/5 relative overflow-hidden">
+<div class="absolute inset-y-0 left-0 w-[92%] bg-[#6366F1] rounded-full shadow-[0_0_8px_rgba(99,102,241,0.8)]"></div>
+</div>
+</div></div><div class="w-56 p-5 rounded-[15px] bg-[#18181B]/90 backdrop-blur-xl border border-white/5"><div class="space-y-4">
+<div>
+<div class="flex justify-between items-end mb-2">
+<span class="font-mono text-xs text-zinc-400">THREADS</span>
+<span class="font-mono text-xs text-white">128</span>
+</div>
+<div class="h-1 w-full bg-black rounded-full border border-white/5 relative overflow-hidden">
+<div class="absolute inset-y-0 left-0 w-[64%] bg-zinc-500 rounded-full"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between items-end mb-2">
+<span class="font-mono text-xs text-[#6366F1]">LOAD</span>
+<span class="font-mono text-xs text-white">88%</span>
+</div>
+<div class="h-1 w-full bg-black rounded-full border border-white/5 relative overflow-hidden">
+<div class="absolute inset-y-0 left-0 w-[88%] bg-[#6366F1] rounded-full shadow-[0_0_8px_rgba(99,102,241,0.8)]"></div>
+</div>
+</div>
+</div></div></div>
+</div>
+<div class="ds-cap"><code class="ds-meta">h-1 bg-black rounded-full border-white/5 · fill bg-[#6366F1] shadow-[0_0_8px_rgba(99,102,241,0.8)] · neutral bg-zinc-500</code></div>
+</article>
+
+<article class="ds-spec ">
+<h3 class="ds-spec-title">Audio clip</h3>
+<div class="ds-live ">
+<div class="bg-[#0a0a0a] rounded-xl p-5 w-fit max-w-full"><div class="rounded-xl overflow-hidden border border-zinc-800/80 bg-[#0f0f11] p-3.5 flex flex-col gap-4 shadow-md w-full max-w-md">
+<div class="flex items-center justify-between">
+<span class="text-xs font-medium text-zinc-200 flex items-center gap-2">
+<i data-lucide="file-audio" class="text-zinc-500 w-3 h-3"></i>techno_bassline_130bpm.wav
+</span>
+<span class="text-[10px] text-zinc-500 font-mono tracking-wider">0:00 / 0:07</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="w-9 h-9 rounded-full bg-zinc-100 hover:bg-white flex items-center justify-center text-black shrink-0 transition-colors shadow-sm">
+<svg class="lucide lucide-play ml-0.5" fill="currentColor" height="16" stroke="none" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+</button>
+<div class="flex-1 h-8 flex items-center gap-[2px]">
+<div class="w-1 h-3 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-5 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-8 bg-indigo-500 rounded-full"></div>
+<div class="w-1 h-6 bg-indigo-500 rounded-full"></div>
+<div class="w-1 h-4 bg-indigo-500 rounded-full"></div>
+<div class="w-1 h-2 bg-indigo-500 rounded-full"></div>
+<div class="w-1 h-7 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-5 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-3 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-6 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-8 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-5 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-3 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-2 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-4 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-7 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-6 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-3 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-2 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-5 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-8 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-6 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-4 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-3 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-5 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-7 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-8 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-4 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-2 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-3 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-6 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-4 bg-indigo-500/30 rounded-full"></div>
+</div>
+</div>
+<div class="flex gap-2 mt-1">
+<button class="flex-1 py-1.5 bg-zinc-800/50 hover:bg-zinc-800 rounded border border-zinc-700/50 text-[10px] font-medium text-zinc-300 transition-colors flex items-center justify-center gap-1.5">
+<i data-lucide="download" class="w-3 h-3"></i>WAV
+</button>
+<button class="flex-1 py-1.5 bg-zinc-800/50 hover:bg-zinc-800 rounded border border-zinc-700/50 text-[10px] font-medium text-zinc-300 transition-colors flex items-center justify-center gap-1.5">
+<i data-lucide="layers" class="w-3 h-3"></i>MIDI
+</button>
+</div>
+</div></div>
+</div>
+<div class="ds-cap"><code class="ds-meta">rounded-xl bg-[#0f0f11] border-zinc-800/80 · waveform w-1 bars bg-indigo-500 (played) / bg-indigo-500/30</code></div>
+</article>
+
+<article class="ds-spec ">
+<h3 class="ds-spec-title">Tags and badges</h3>
+<div class="ds-live ">
+<div class="flex flex-col gap-5"><div class="flex gap-2">
+<span class="inline-flex items-center gap-1.5 bg-zinc-900 rounded border border-zinc-800 px-2 py-1 text-[10px] text-zinc-400">
+<i data-lucide="activity" class="w-2.5 h-2.5"></i>130 BPM
+</span>
+<span class="inline-flex items-center gap-1.5 bg-zinc-900 rounded border border-zinc-800 px-2 py-1 text-[10px] text-zinc-400">
+<i data-lucide="music" class="w-2.5 h-2.5"></i>Dó Menor
+</span>
+<span class="inline-flex items-center gap-1.5 bg-zinc-900 rounded border border-zinc-800 px-2 py-1 text-[10px] text-zinc-400">
+<i data-lucide="sliders-horizontal" class="w-2.5 h-2.5"></i>Techno
+</span>
+</div><div class="ds-row"><div class="px-2 py-0.5 rounded border border-[#6366F1]/20 bg-[#6366F1]/10 text-xs font-mono text-white tracking-widest">SINCRONIZADO</div><span class="px-2 py-0.5 rounded border border-[#6366F1]/20 bg-[#6366F1]/10 text-[10px] text-white">POPULAR</span><div class="inline-flex items-center gap-2 text-xs font-mono text-[#6366F1] bg-[#6366F1]/10 border border-[#6366F1]/20 px-2.5 py-1.5 rounded-md">
+<span class="w-1 h-1 rounded-full bg-[#6366F1]"></span>Modelo Ativo
+</div><span class="text-[10px] px-2 py-0.5 rounded border bg-zinc-800/50 text-zinc-400 border-zinc-700 font-mono">v4.2</span><div class="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-black/50 backdrop-blur-md border border-white/10 text-[10px] font-mono text-zinc-400 uppercase tracking-widest">
+<i data-lucide="server" class="text-zinc-500 w-3 h-3"></i>Node_US_E1
+</div></div></div>
+</div>
+<div class="ds-cap"><code class="ds-meta">tag bg-zinc-900 rounded border-zinc-800 text-[10px] · status mono badge border-[#6366F1]/20 bg-[#6366F1]/10 · version badge · node chip bg-black/50 backdrop-blur-md</code></div>
+</article>
+
+<article class="ds-spec ">
+<h3 class="ds-spec-title">Live status</h3>
+<div class="ds-live ">
+<div class="ds-row"><div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/5">
+<span class="w-1.5 h-1.5 rounded-full bg-[#6366F1] animate-pulse shadow-[0_0_8px_rgba(99,102,241,0.8)]"></span>
+<span class="text-xs font-mono tracking-widest text-zinc-400 uppercase">Lorem Ipsum</span>
+</div><div class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.8)]"></span><span class="text-[10px] font-mono tracking-widest text-emerald-400 uppercase">Sys.Online</span></div><div class="flex items-center gap-3 rounded-full border border-white/10 bg-black/35 px-4 py-2 backdrop-blur-md">
+<span class="h-1.5 w-1.5 rounded-full bg-lime-300"></span>
+<span class="text-xs font-medium uppercase tracking-[.22rem] text-white/60">Lorem ipsum dolor · 24 seg</span>
+</div></div>
+</div>
+<div class="ds-cap"><code class="ds-meta">eyebrow pill + animate-pulse dot · emerald Sys.Online dot · #metaRail glass chip (lime dot)</code></div>
+</article>
+
+<article class="ds-spec ">
+<h3 class="ds-spec-title">Connection row</h3>
+<div class="ds-live ">
+<ul class="w-64 max-w-full bg-[#0f0f11] border border-zinc-800 rounded-xl p-3 text-xs"><li class="flex items-center justify-between p-2.5 rounded-md bg-[#0a0a0a] border border-zinc-800">
+<div class="flex items-center gap-2.5">
+<div class="w-5 h-5 rounded-[4px] bg-zinc-800 flex items-center justify-center">
+<span class="text-[9px] font-bold text-zinc-300">AL</span>
+</div>
+<span class="text-zinc-300 font-normal">Ableton 11</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="text-[9px] text-emerald-400 font-medium uppercase tracking-widest">Sync</span>
+<div class="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.5)]"></div>
+</div>
+</li></ul>
+</div>
+<div class="ds-cap"><code class="ds-meta">DAW row · bg-[#0a0a0a] border-zinc-800 · Sync text-emerald-400 + glow dot</code></div>
+</article>
+
+<article class="ds-spec ">
+<h3 class="ds-spec-title">Stat pair</h3>
+<div class="ds-live ">
+<div class="ds-w-md bg-zinc-900/90 border border-white/5 rounded-2xl p-6 md:p-8"><div class="flex justify-between items-end w-full">
+<div class="flex flex-col gap-1">
+<span class="text-3xl font-light text-white tracking-tight">99.9%</span>
+<span class="text-[10px] font-mono text-zinc-500 uppercase tracking-widest">SLA de Disponibilidade</span>
+</div>
+<div class="flex flex-col gap-1 items-end text-right">
+<div class="flex items-center gap-1.5 text-white">
+<i data-lucide="activity" class="text-[#6366F1] w-3.5 h-3.5"></i>
+<span class="text-xl font-normal tracking-tight">4.2 TB/s</span>
+</div>
+<span class="text-[10px] font-mono text-zinc-500 uppercase tracking-widest">Vazão</span>
+</div>
+</div></div>
+</div>
+<div class="ds-cap"><code class="ds-meta">99.9% text-3xl font-light · 4.2 TB/s text-xl · mono captions text-[10px] text-zinc-500</code></div>
+</article>
+
+</section>
+
+<section class="ds-group" id="components-media">
+<header class="ds-group-head"><div class="px-3 py-1 rounded-full border border-white/10 bg-white/5 text-xs font-mono text-zinc-400 tracking-widest">11</div><h2 class="text-3xl font-normal text-white tracking-tight">Media</h2></header>
+<article class="ds-spec ">
+<h3 class="ds-spec-title">Phone mockup</h3>
+<div class="ds-live ">
+<div class="relative h-[49vh] min-h-[20rem] w-[min(25rem,58vw)] md:w-[min(27rem,30vw)]" style="perspective: 80rem; min-height: 34rem; min-width: min(22rem, 100%);"><div class="relative mx-auto h-full w-full overflow-hidden rounded-[2.25rem] border border-white/15 bg-black shadow-2xl" style="box-shadow: rgba(154, 134, 202, 0.45) 0px 0px 0px 0.45rem, rgba(0, 0, 0, 0.68) 0px 2rem 5rem, rgba(214, 126, 255, 0.28) 0px 0px 3rem;">
+<div class="absolute inset-x-[18%] top-0 z-20 h-6 rounded-b-2xl bg-black"></div>
+<div class="absolute inset-0 bg-black"></div>
+<div aria-hidden="true" class="absolute inset-0 opacity-35" style="background: radial-gradient(circle at 82% 12%, rgba(212,132,255,.45), transparent 16%), radial-gradient(circle at 12% 72%, rgba(196,255,96,.22), transparent 22%);"></div>
+<div class="relative z-10 flex h-full flex-col p-5 sm:p-6">
+<div class="flex items-center justify-between text-xs font-medium text-white/80">
+<span>9:41</span>
+<div class="flex items-center gap-1">
+<svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" style="width:.95rem;height:.95rem" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M2 20h.01"/><path d="M7 20v-4"/><path d="M12 20v-8"/><path d="M17 20V8"/><path d="M22 4v16"/></svg>
+<svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" style="width:.95rem;height:.95rem" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><rect height="8" rx="2" width="20" x="2" y="14"/><path d="M6.01 18H6"/><path d="M10.01 18H10"/><path d="M15 10v4"/><path d="M17.84 7.17a4 4 0 0 0-5.66 0"/><path d="M20.66 4.34a8 8 0 0 0-11.31 0"/></svg>
+<svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" style="width:.95rem;height:.95rem" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M15 7h1a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-2"/><path d="M6 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h1"/><path d="m11 7-3 5h4l-3 5"/><line x1="22" x2="22" y1="11" y2="13"/></svg>
+</div>
+</div>
+<div class="mt-6 flex items-start justify-between">
+<h2 class="tracking-tight text-white text-5xl leading-none sm:text-6xl" style="font-family: 'Barlow Condensed', Impact, sans-serif; font-weight: 700;">Dolorem</h2>
+<div class="grid h-9 w-9 place-items-center rounded-full bg-fuchsia-300 text-sm font-medium text-black">P</div>
+</div>
+<div class="mt-7 flex gap-2 overflow-hidden">
+<span class="rounded-full bg-lime-300 px-4 py-2 text-xs font-medium text-black">Tudo</span>
+<span class="rounded-full bg-white/12 px-4 py-2 text-xs font-medium text-white/70">Artistas</span>
+<span class="rounded-full bg-white/12 px-4 py-2 text-xs font-medium text-white/70">Mixes</span>
+<span class="rounded-full bg-white/12 px-4 py-2 text-xs font-medium text-white/70">Ao Vivo</span>
+</div>
+<p class="mt-5 text-xl font-medium tracking-tight text-white sm:text-2xl" style="font-family: 'Barlow Condensed', Impact, sans-serif;">Lorem Ipsum</p>
+<div class="mt-3 grid grid-cols-2 gap-3">
+<div class="h-24 rounded-2xl border border-white/10 bg-white/[.06] p-3">
+<svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" style="width:1.5rem;height:1.5rem;color:rgba(190,255,93,.9)" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+<p class="mt-5 text-xs font-medium uppercase tracking-widest text-white/55">Neon soul</p>
+</div>
+<div class="h-24 rounded-2xl border border-white/10 bg-white/[.06] p-3">
+<svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" style="width:1.5rem;height:1.5rem;color:rgba(233,171,255,.9)" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+<p class="mt-5 text-xs font-medium uppercase tracking-widest text-white/55">Drive noturno</p>
+</div>
+</div>
+<div class="mt-auto rounded-3xl border border-white/10 bg-white/[.07] p-4">
+<p class="text-xs font-medium uppercase tracking-widest text-white/40">Lorem ipsum dolor sit</p>
+<div class="mt-3 flex items-center gap-3">
+<img alt="" class="h-10 w-10 rounded-full object-cover" src="assets/overview/assets/95767b6c354c4ac2_4f5668c5-fc4a-44e0-bc5e-a66418.jpg"/>
+<div>
+<p class="text-sm font-medium text-white">Mira Vale</p>
+<p class="text-xs text-white/45">Sala ao vivo aberta</p>
+</div>
+<svg class="ml-auto" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" style="width:1.5rem;height:1.5rem;color:rgba(190,255,93,.8)" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+</div>
+</div>
+</div>
+</div></div>
+</div>
+<div class="ds-cap"><code class="ds-meta">#phoneWrap h-[49vh] min-h-[20rem] › #phone rounded-[2.25rem] · ring 0 0 0 .45rem rgba(154,134,202,.45) + violet glow</code><p class="ds-note">Shown at min-height 34rem so the flex column is not squeezed: at 49vh the overflow-hidden chip row collapses, as it does on the Overview at short viewports.</p></div>
+</article>
+
+<article class="ds-spec ">
+<h3 class="ds-spec-title">Media cards</h3>
+<div class="ds-live ">
+<div class="ds-media"><figure class="h-[21vh] w-[20rem] max-w-[36vw] overflow-hidden rounded-xl border border-white/10 shadow-2xl relative shrink-0" style="box-shadow: rgba(0, 0, 0, 0.62) 0px 1.5rem 4rem, rgba(219, 45, 255, 0.2) 0px 0px 2rem;">
+<img alt="Artista sob luz magenta de clube" class="h-full w-full object-cover" src="assets/overview/assets/997bfe1766283ecf_c920d31f-46c8-4f39-957b-9a8d8e.jpg"/>
+<div class="absolute inset-0 bg-fuchsia-600/25 mix-blend-screen"></div>
+</figure>
+<figure class="h-[14vh] w-[17rem] max-w-[31vw] overflow-hidden rounded-xl border border-white/10 shadow-2xl relative shrink-0" style="box-shadow: rgba(0, 0, 0, 0.55) 0px 1.5rem 4rem;">
+<img alt="Retrato de estúdio em movimento com tom quente" class="h-full w-full object-cover" src="assets/overview/assets/ba37297dc82d7afa_36420201-a4f1-4395-ad84-184870.webp"/>
+<div class="absolute inset-0 bg-orange-400/20 mix-blend-screen"></div>
+</figure>
+<figure class="h-[22vh] w-[30rem] max-w-[45vw] overflow-hidden rounded-xl border border-white/10 shadow-2xl relative shrink-0" style="box-shadow: rgba(0, 0, 0, 0.62) 0px 1.5rem 4rem, rgba(197, 255, 90, 0.18) 0px 0px 2.5rem;">
+<img alt="Mãos formando um coração em um show" class="h-full w-full object-cover" src="assets/overview/assets/9711424e0ee784ea_6e1fbf28-831e-4d42-a71f-a33bc9.webp"/>
+<div class="absolute inset-0 bg-lime-300/20 mix-blend-screen"></div>
+</figure>
+<figure class="h-[16vh] w-[17rem] max-w-[30vw] overflow-hidden rounded-xl border border-white/10 shadow-2xl relative shrink-0" style="box-shadow: rgba(0, 0, 0, 0.55) 0px 1.5rem 4rem;">
+<img alt="Performer sob iluminação amarela de estúdio" class="h-full w-full object-cover" src="assets/overview/assets/2272b61025cfc711_c7cfb2bf-d3f2-4dfc-aa1e-e0ef5c.webp"/>
+<div class="absolute inset-0 bg-yellow-300/30 mix-blend-screen"></div>
+</figure>
+<figure class="h-[23vh] w-[21rem] max-w-[37vw] overflow-hidden rounded-xl border border-white/10 shadow-2xl relative shrink-0" style="box-shadow: rgba(0, 0, 0, 0.62) 0px 1.5rem 4rem, rgba(44, 193, 255, 0.18) 0px 0px 2rem;">
+<img alt="Produtor trabalhando com fones de ouvido" class="h-full w-full object-cover" src="assets/overview/assets/0e521e754a166df8_b4a03f35-290f-42a3-b369-97df97.webp"/>
+<div class="absolute inset-0 bg-cyan-400/20 mix-blend-screen"></div>
+</figure></div>
+</div>
+<div class="ds-cap"><code class="ds-meta">.mediaCard rounded-xl border-white/10 · h-[14–23vh] w-[17–30rem] max-w-[30–45vw] · tint overlay mix-blend-screen · coloured glow shadows</code><p class="ds-note">The five film cards with their fuchsia, orange, lime, yellow and cyan tints; animated by the film timeline on the Overview.</p></div>
+</article>
+
+</section>
+
+<section class="ds-group" id="components-content">
+<header class="ds-group-head"><div class="px-3 py-1 rounded-full border border-white/10 bg-white/5 text-xs font-mono text-zinc-400 tracking-widest">12</div><h2 class="text-3xl font-normal text-white tracking-tight">Content groups</h2></header>
+<article class="ds-spec ">
+<h3 class="ds-spec-title">Split section header</h3>
+<div class="ds-live ">
+<div class="w-full relative z-10">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/5 mb-8">
+<span class="w-1.5 h-1.5 rounded-full bg-[#6366F1] animate-pulse shadow-[0_0_8px_rgba(99,102,241,0.8)]"></span>
+<span class="text-xs font-mono tracking-widest text-zinc-400 uppercase">Lorem Ipsum</span>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-end">
+<h2 class="text-4xl md:text-5xl font-light tracking-tight text-white leading-tight">Lorem Ipsum<br class="hidden md:block"/>Dolor Sit</h2>
+<p class="text-zinc-400 text-sm md:text-base font-light leading-relaxed max-w-lg lg:pb-2">Dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad minim veniam quis.</p>
+</div>
+</div>
+</div>
+<div class="ds-cap"><code class="ds-meta">eyebrow pill + h2 text-4xl md:text-5xl font-light + lead · grid lg:grid-cols-2 items-end</code></div>
+</article>
+
+<article class="ds-spec ">
+<h3 class="ds-spec-title">Centered section header</h3>
+<div class="ds-live ">
+<div class="flex flex-col gap-2 items-center text-center">
+<div class="px-3 py-1 rounded-full border border-white/10 bg-white/5 text-xs font-mono text-zinc-400 tracking-widest mb-2">LOREM IPSUM DOLOR</div>
+<h2 class="text-3xl font-normal text-white tracking-tight">Lorem Ipsum Dolor</h2>
+<p class="text-zinc-400 text-sm font-light">Tempor incididunt ut labore et dolore magna aliqua ut enim ad minim veniam.</p>
+</div>
+</div>
+<div class="ds-cap"><code class="ds-meta">mono pill + h2 text-3xl + p text-sm font-light · items-center text-center</code></div>
+</article>
+
+<article class="ds-spec ">
+<h3 class="ds-spec-title">Chat exchange</h3>
+<div class="ds-live ">
+<div class="ds-w-lg bg-[#0a0a0a] border border-zinc-800 rounded-xl"><div class="p-6 space-y-6">
+<div class="flex flex-col items-end gap-2 group">
+<span class="text-[10px] text-zinc-500 font-medium px-1">Você</span>
+<div class="bg-zinc-900 text-zinc-200 text-sm p-3.5 rounded-2xl rounded-tr-sm max-w-lg border border-zinc-800/80 shadow-sm leading-relaxed">Labore et dolore magna aliqua ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</div>
+</div>
+<div class="flex gap-4 items-start group">
+<div class="w-8 h-8 rounded-full bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center shrink-0 mt-1">
+<i data-lucide="sparkles" class="text-indigo-400 w-3.5 h-3.5"></i>
+</div>
+<div class="flex-1 flex flex-col items-start gap-3">
+<div class="bg-transparent text-zinc-300 text-sm max-w-xl">
+<p class="mb-3 text-zinc-300 leading-relaxed">Ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+<div class="rounded-xl overflow-hidden border border-zinc-800/80 bg-[#0f0f11] p-3.5 flex flex-col gap-4 shadow-md w-full max-w-md">
+<div class="flex items-center justify-between">
+<span class="text-xs font-medium text-zinc-200 flex items-center gap-2">
+<i data-lucide="file-audio" class="text-zinc-500 w-3 h-3"></i>techno_bassline_130bpm.wav
+</span>
+<span class="text-[10px] text-zinc-500 font-mono tracking-wider">0:00 / 0:07</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="w-9 h-9 rounded-full bg-zinc-100 hover:bg-white flex items-center justify-center text-black shrink-0 transition-colors shadow-sm">
+<svg class="lucide lucide-play ml-0.5" fill="currentColor" height="16" stroke="none" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+</button>
+<div class="flex-1 h-8 flex items-center gap-[2px]">
+<div class="w-1 h-3 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-5 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-8 bg-indigo-500 rounded-full"></div>
+<div class="w-1 h-6 bg-indigo-500 rounded-full"></div>
+<div class="w-1 h-4 bg-indigo-500 rounded-full"></div>
+<div class="w-1 h-2 bg-indigo-500 rounded-full"></div>
+<div class="w-1 h-7 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-5 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-3 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-6 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-8 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-5 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-3 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-2 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-4 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-7 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-6 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-3 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-2 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-5 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-8 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-6 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-4 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-3 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-5 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-7 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-8 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-4 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-2 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-3 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-6 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-4 bg-indigo-500/30 rounded-full"></div>
+</div>
+</div>
+<div class="flex gap-2 mt-1">
+<button class="flex-1 py-1.5 bg-zinc-800/50 hover:bg-zinc-800 rounded border border-zinc-700/50 text-[10px] font-medium text-zinc-300 transition-colors flex items-center justify-center gap-1.5">
+<i data-lucide="download" class="w-3 h-3"></i>WAV
+</button>
+<button class="flex-1 py-1.5 bg-zinc-800/50 hover:bg-zinc-800 rounded border border-zinc-700/50 text-[10px] font-medium text-zinc-300 transition-colors flex items-center justify-center gap-1.5">
+<i data-lucide="layers" class="w-3 h-3"></i>MIDI
+</button>
+</div>
+</div>
+</div>
+<div class="flex gap-2">
+<span class="inline-flex items-center gap-1.5 bg-zinc-900 rounded border border-zinc-800 px-2 py-1 text-[10px] text-zinc-400">
+<i data-lucide="activity" class="w-2.5 h-2.5"></i>130 BPM
+</span>
+<span class="inline-flex items-center gap-1.5 bg-zinc-900 rounded border border-zinc-800 px-2 py-1 text-[10px] text-zinc-400">
+<i data-lucide="music" class="w-2.5 h-2.5"></i>Dó Menor
+</span>
+<span class="inline-flex items-center gap-1.5 bg-zinc-900 rounded border border-zinc-800 px-2 py-1 text-[10px] text-zinc-400">
+<i data-lucide="sliders-horizontal" class="w-2.5 h-2.5"></i>Techno
+</span>
+</div>
+</div>
+</div>
+</div></div>
+</div>
+<div class="ds-cap"><code class="ds-meta">user bubble bg-zinc-900 rounded-2xl rounded-tr-sm · assistant avatar bg-indigo-500/10 + response, clip and tags</code></div>
+</article>
+
+</section>
+
+<section class="ds-group" id="components-studio">
+<header class="ds-group-head"><div class="px-3 py-1 rounded-full border border-white/10 bg-white/5 text-xs font-mono text-zinc-400 tracking-widest">13</div><h2 class="text-3xl font-normal text-white tracking-tight">Studio workspace</h2></header>
+<article class="ds-spec ">
+<h3 class="ds-spec-title">App window</h3>
+<div class="ds-live ">
+<main class="overflow-x-auto md:overflow-hidden shadow-2xl bg-[#0a0a0a] w-full max-w-6xl h-[700px] border border-zinc-800 rounded-xl relative flex flex-col text-zinc-300 antialiased">
+<div class="flex bg-[#0f0f11] border-zinc-800 border-b items-center h-11 px-4 shrink-0 min-w-[52rem] md:min-w-0">
+<div class="flex gap-2 w-20 items-center">
+<div class="w-3 h-3 rounded-full bg-zinc-700/80 border border-zinc-600/50"></div>
+<div class="w-3 h-3 rounded-full bg-zinc-700/80 border border-zinc-600/50"></div>
+<div class="w-3 h-3 rounded-full bg-zinc-700/80 border border-zinc-600/50"></div>
+</div>
+<div class="flex-1 text-center">
+<span class="text-xs font-normal text-zinc-500">Motor Neural.Audio</span>
+</div>
+<div class="w-20"></div>
+</div>
+<div class="flex-1 flex overflow-hidden min-w-[52rem] md:min-w-0">
+<aside class="w-64 flex flex-col bg-[#0f0f11] border-r border-zinc-800 shrink-0">
+<div class="flex items-center gap-3 px-5 py-4 border-b border-zinc-800">
+<div class="w-6 h-6 rounded flex items-center justify-center bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+<i data-lucide="audio-waveform" class="w-3.5 h-3.5"></i>
+</div>
+<h1 class="font-medium text-sm text-zinc-100 tracking-wide">Neural.Audio</h1>
+<button class="ml-auto p-1.5 rounded-md hover:bg-zinc-800 transition-colors text-zinc-400">
+<i data-lucide="settings" class="w-4 h-4"></i>
+</button>
+</div>
+<div class="flex items-center gap-3 px-5 py-3">
+<div class="w-7 h-7 rounded-full border flex items-center justify-center text-xs font-medium bg-zinc-800 border-zinc-700 text-zinc-300">AP</div>
+<span class="text-sm font-normal text-zinc-300">Produtor</span>
+</div>
+<div class="px-5 pb-3">
+<div class="relative">
+<input class="w-full rounded-md bg-[#0a0a0a] text-xs placeholder-zinc-600 py-1.5 pl-7 pr-3 border border-zinc-800 focus:outline-none transition-all focus:border-indigo-500/50 text-zinc-200 shadow-inner" placeholder="Buscar na biblioteca..." type="text"/>
+<i data-lucide="search" class="lucide-search absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-500 w-3.5 h-3.5"></i>
+</div>
+</div>
+<nav class="flex-1 overflow-y-auto px-3 space-y-5 py-2">
+<div>
+<h3 class="px-2 mb-2 text-[10px] font-medium uppercase tracking-wider text-zinc-500">Workspace</h3>
+<ul class="space-y-0.5">
+<li>
+<a class="flex items-center gap-2.5 px-2 py-1.5 rounded-md hover:bg-zinc-800/50 transition-colors text-xs text-zinc-400" href="#">
+<i data-lucide="mic" class="w-3.5 h-3.5"></i>Estúdio
+</a>
+</li>
+<li>
+<a class="flex items-center gap-2.5 px-2 py-1.5 rounded-md text-xs font-normal bg-indigo-500/10 text-indigo-400" href="#">
+<i data-lucide="sparkles" class="w-3.5 h-3.5"></i>Coprodutor IA
+</a>
+</li>
+<li>
+<a class="flex items-center gap-2.5 px-2 py-1.5 rounded-md hover:bg-zinc-800/50 transition-colors text-xs text-zinc-400" href="#">
+<i data-lucide="library" class="w-3.5 h-3.5"></i>Meus Stems
+</a>
+</li>
+<li>
+<a class="flex items-center gap-2.5 px-2 py-1.5 rounded-md hover:bg-zinc-800/50 transition-colors text-xs text-zinc-400" href="#">
+<i data-lucide="box" class="w-3.5 h-3.5"></i>Modelos de Voz
+</a>
+</li>
+</ul>
+</div>
+<div>
+<h3 class="px-2 mb-2 text-[10px] font-medium uppercase tracking-wider text-zinc-500">Gerações Recentes</h3>
+<ul class="space-y-0.5 text-xs">
+<li>
+<a class="block truncate px-2 py-1.5 rounded-md hover:bg-zinc-800/50 transition-colors text-zinc-400" href="#">Linha de baixo dark techno (130 BPM)</a>
+</li>
+<li>
+<a class="block truncate px-2 py-1.5 rounded-md hover:bg-zinc-800/50 transition-colors text-zinc-400" href="#">Vocal chops etéreos em Dó Menor</a>
+</li>
+<li>
+<a class="block truncate px-2 py-1.5 rounded-md hover:bg-zinc-800/50 transition-colors text-zinc-400" href="#">Loop de breakbeat vintage</a>
+</li>
+<li>
+<a class="block truncate px-2 py-1.5 rounded-md hover:bg-zinc-800/50 transition-colors text-zinc-400" href="#">Crescendo de cordas cinematográficas</a>
+</li>
+</ul>
+</div>
+</nav>
+<div class="p-3 bg-zinc-900/50 m-3 rounded-lg border border-zinc-800/80">
+<h4 class="text-xs font-medium text-zinc-200 mb-1.5 flex items-center gap-1.5">
+<i data-lucide="zap" class="text-indigo-400 w-3 h-3"></i>Lorem Ipsum
+</h4>
+<p class="text-[10px] text-zinc-500 mb-2 leading-relaxed">Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor.</p>
+<button class="w-full text-center text-[10px] py-1.5 bg-zinc-800 hover:bg-zinc-700 rounded-md text-zinc-200 transition-colors border border-zinc-700/50">Lorem Ipsum</button>
+</div>
+</aside>
+<section class="flex-1 flex flex-col bg-[#0a0a0a] relative">
+<header class="px-6 py-4 border-b border-zinc-800 shrink-0 bg-[#0f0f11]/80 backdrop-blur-md absolute top-0 w-full z-10">
+<h2 class="text-lg font-normal text-zinc-100 tracking-tight">Lorem Ipsum Dolor</h2>
+<p class="text-[11px] text-zinc-500 mt-0.5">Elit sed do eiusmod tempor incididunt ut labore et dolore</p>
+</header>
+<div class="flex-1 overflow-y-auto p-6 space-y-6 pt-24 pb-20">
+<div class="flex flex-col items-end gap-2 group">
+<span class="text-[10px] text-zinc-500 font-medium px-1">Você</span>
+<div class="bg-zinc-900 text-zinc-200 text-sm p-3.5 rounded-2xl rounded-tr-sm max-w-lg border border-zinc-800/80 shadow-sm leading-relaxed">Labore et dolore magna aliqua ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</div>
+</div>
+<div class="flex gap-4 items-start group">
+<div class="w-8 h-8 rounded-full bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center shrink-0 mt-1">
+<i data-lucide="sparkles" class="text-indigo-400 w-3.5 h-3.5"></i>
+</div>
+<div class="flex-1 flex flex-col items-start gap-3">
+<div class="bg-transparent text-zinc-300 text-sm max-w-xl">
+<p class="mb-3 text-zinc-300 leading-relaxed">Ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+<div class="rounded-xl overflow-hidden border border-zinc-800/80 bg-[#0f0f11] p-3.5 flex flex-col gap-4 shadow-md w-full max-w-md">
+<div class="flex items-center justify-between">
+<span class="text-xs font-medium text-zinc-200 flex items-center gap-2">
+<i data-lucide="file-audio" class="text-zinc-500 w-3 h-3"></i>techno_bassline_130bpm.wav
+</span>
+<span class="text-[10px] text-zinc-500 font-mono tracking-wider">0:00 / 0:07</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="w-9 h-9 rounded-full bg-zinc-100 hover:bg-white flex items-center justify-center text-black shrink-0 transition-colors shadow-sm">
+<svg class="lucide lucide-play ml-0.5" fill="currentColor" height="16" stroke="none" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+</button>
+<div class="flex-1 h-8 flex items-center gap-[2px]">
+<div class="w-1 h-3 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-5 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-8 bg-indigo-500 rounded-full"></div>
+<div class="w-1 h-6 bg-indigo-500 rounded-full"></div>
+<div class="w-1 h-4 bg-indigo-500 rounded-full"></div>
+<div class="w-1 h-2 bg-indigo-500 rounded-full"></div>
+<div class="w-1 h-7 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-5 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-3 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-6 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-8 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-5 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-3 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-2 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-4 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-7 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-6 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-3 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-2 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-5 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-8 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-6 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-4 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-3 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-5 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-7 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-8 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-4 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-2 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-3 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-6 bg-indigo-500/30 rounded-full"></div>
+<div class="w-1 h-4 bg-indigo-500/30 rounded-full"></div>
+</div>
+</div>
+<div class="flex gap-2 mt-1">
+<button class="flex-1 py-1.5 bg-zinc-800/50 hover:bg-zinc-800 rounded border border-zinc-700/50 text-[10px] font-medium text-zinc-300 transition-colors flex items-center justify-center gap-1.5">
+<i data-lucide="download" class="w-3 h-3"></i>WAV
+</button>
+<button class="flex-1 py-1.5 bg-zinc-800/50 hover:bg-zinc-800 rounded border border-zinc-700/50 text-[10px] font-medium text-zinc-300 transition-colors flex items-center justify-center gap-1.5">
+<i data-lucide="layers" class="w-3 h-3"></i>MIDI
+</button>
+</div>
+</div>
+</div>
+<div class="flex gap-2">
+<span class="inline-flex items-center gap-1.5 bg-zinc-900 rounded border border-zinc-800 px-2 py-1 text-[10px] text-zinc-400">
+<i data-lucide="activity" class="w-2.5 h-2.5"></i>130 BPM
+</span>
+<span class="inline-flex items-center gap-1.5 bg-zinc-900 rounded border border-zinc-800 px-2 py-1 text-[10px] text-zinc-400">
+<i data-lucide="music" class="w-2.5 h-2.5"></i>Dó Menor
+</span>
+<span class="inline-flex items-center gap-1.5 bg-zinc-900 rounded border border-zinc-800 px-2 py-1 text-[10px] text-zinc-400">
+<i data-lucide="sliders-horizontal" class="w-2.5 h-2.5"></i>Techno
+</span>
+</div>
+</div>
+</div>
+</div>
+<div class="p-5 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a] to-transparent absolute bottom-0 w-full shrink-0">
+<div class="flex items-center gap-2 bg-zinc-900/80 backdrop-blur-md rounded-xl px-3 border border-zinc-800 transition-colors focus-within:border-indigo-500/50 shadow-sm">
+<button class="p-2 rounded-md hover:bg-zinc-800 transition-colors text-zinc-400">
+<i data-lucide="paperclip" class="w-4 h-4"></i>
+</button>
+<input class="flex-1 bg-transparent border-none focus:ring-0 focus:outline-none text-sm placeholder-zinc-500 text-zinc-100 py-3.5" placeholder="Descreva o som que você quer criar..." type="text"/>
+<button class="p-1.5 rounded-lg text-white transition-colors bg-indigo-500 hover:bg-indigo-400 flex items-center justify-center h-8 w-8 shadow-sm">
+<i data-lucide="arrow-up" class="w-4 h-4"></i>
+</button>
+</div>
+</div>
+</section>
+<aside class="bg-[#0f0f11] flex flex-col overflow-hidden w-64 border-zinc-800 border-l shrink-0">
+<header class="px-5 py-4 border-b border-zinc-800 flex items-center gap-2">
+<h3 class="text-sm font-medium text-zinc-100 flex-1">Inspetor</h3>
+<span class="text-[10px] px-2 py-0.5 rounded border bg-zinc-800/50 text-zinc-400 border-zinc-700 font-mono">v4.2</span>
+</header>
+<div class="flex border-b border-zinc-800">
+<button class="flex-1 py-3 text-[10px] font-medium tracking-wider text-zinc-200 relative hover:bg-zinc-800/30 transition-colors">
+PARÂMETROS
+<span class="absolute left-0 bottom-0 h-px w-full bg-indigo-500"></span>
+</button>
+<button class="flex-1 py-3 text-[10px] font-medium tracking-wider text-zinc-500 hover:bg-zinc-800/30 hover:text-zinc-300 transition-colors">STEMS</button>
+</div>
+<div class="flex-1 overflow-y-auto p-5 space-y-8">
+<div>
+<h4 class="text-xs font-medium text-zinc-300 mb-4 flex items-center justify-between">
+Configurações de Áudio
+<button class="text-zinc-500 hover:text-zinc-300 transition-colors"><i data-lucide="rotate-ccw" class="w-3 h-3"></i></button>
+</h4>
+<div class="space-y-5">
+<div class="space-y-2">
+<div class="flex justify-between text-[10px] font-medium">
+<span class="text-zinc-400">Criatividade</span>
+<span class="text-indigo-400 font-mono">0.85</span>
+</div>
+<div class="h-1 w-full bg-zinc-800 rounded-full overflow-hidden flex relative">
+<div class="absolute h-full bg-indigo-500 w-[85%] rounded-full"></div>
+<div class="absolute w-2 h-2 bg-white rounded-full left-[85%] top-1/2 -translate-y-1/2 -ml-1 shadow-sm"></div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-[10px] font-medium">
+<span class="text-zinc-400">Saturação</span>
+<span class="text-indigo-400 font-mono">42%</span>
+</div>
+<div class="h-1 w-full bg-zinc-800 rounded-full overflow-hidden flex relative">
+<div class="absolute h-full bg-indigo-500 w-[42%] rounded-full"></div>
+<div class="absolute w-2 h-2 bg-white rounded-full left-[42%] top-1/2 -translate-y-1/2 -ml-1 shadow-sm"></div>
+</div>
+</div>
+<div class="space-y-2 pt-2">
+<span class="text-[10px] font-medium text-zinc-400">Tonalidade</span>
+<button class="w-full flex items-center justify-between bg-[#0a0a0a] border border-zinc-800 rounded-md p-2 text-xs text-zinc-300 hover:border-zinc-700 transition-colors shadow-sm">
+<span class="font-normal tracking-wide">Dó Menor</span>
+<i data-lucide="chevron-down" class="text-zinc-500 w-3.5 h-3.5"></i>
+</button>
+</div>
+<div class="flex items-center justify-between pt-3">
+<span class="text-[10px] font-medium text-zinc-400">Calor Analógico</span>
+<div class="w-8 h-4 bg-indigo-500 rounded-full relative cursor-pointer flex items-center px-[2px]">
+<div class="w-3 h-3 bg-white rounded-full translate-x-4 shadow-sm transition-transform"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="pt-6 border-t border-zinc-800">
+<h4 class="text-xs font-medium text-zinc-300 mb-3">Conexão DAW</h4>
+<ul class="space-y-2 text-xs">
+<li class="flex items-center justify-between p-2.5 rounded-md bg-[#0a0a0a] border border-zinc-800">
+<div class="flex items-center gap-2.5">
+<div class="w-5 h-5 rounded-[4px] bg-zinc-800 flex items-center justify-center">
+<span class="text-[9px] font-bold text-zinc-300">AL</span>
+</div>
+<span class="text-zinc-300 font-normal">Ableton 11</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="text-[9px] text-emerald-400 font-medium uppercase tracking-widest">Sync</span>
+<div class="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.5)]"></div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</aside>
+</div>
+</main>
+</div>
+<div class="ds-cap"><code class="ds-meta">main.bg-[#0a0a0a] h-[700px] max-w-6xl rounded-xl · aside w-64 bg-[#0f0f11] · chat section · inspector aside w-64</code><p class="ds-note">The complete studio window: title bar, library sidebar, assistant thread with composer, and inspector. Below md it scrolls sideways (min-w-[52rem]) instead of clipping its panels.</p></div>
+</article>
+
+</section>
+
+</main>
+</div>
+</div>
+
+<script>
+(function () {
+  var COMPONENTS_ENABLED = true;           /* Overview approved */
+  var frame = document.getElementById('overview-frame');
+  var linkO = document.getElementById('nav-overview'), linkC = document.getElementById('nav-components');
+  var isComp = function (h) { return h === '#components' || h.indexOf('#components-') === 0; };
+  var mode = 'overview';
+
+  if (!COMPONENTS_ENABLED) linkC.setAttribute('aria-disabled', 'true');
+
+  function post() {
+    try { frame.contentWindow.postMessage({ ds: mode === 'components' ? 'bg' : 'page' }, '*'); } catch (e) {}
+  }
+  function route() {
+    var h = location.hash || '#overview';
+    if (isComp(h) && !COMPONENTS_ENABLED) { history.replaceState(null, '', '#overview'); h = '#overview'; }
+    mode = isComp(h) ? 'components' : 'overview';
+    document.body.classList.toggle('is-components', mode === 'components');
+    linkO.classList.toggle('is-on', mode === 'overview');
+    linkC.classList.toggle('is-on', mode === 'components');
+    post();
+    if (window.dsComponents) window.dsComponents(h);
+  }
+
+  addEventListener('message', function (e) {
+    if (e.source !== frame.contentWindow || !e.data) return;
+    if (e.data.ds === 'hero') document.body.classList.toggle('ds-overview-ready', !!e.data.ready);
+  });
+  frame.addEventListener('load', post);
+
+  if (!location.hash) history.replaceState(null, '', '#overview');
+  addEventListener('hashchange', route);
+  window.dsRoute = route;
+  route();
+})();
+</script>
+<!-- components view: GSAP for the live film specimen; the film and canvas scripts are
+     the Overview's own files, loaded once the view is displayed (they measure their boxes) -->
+<script src="assets/overview/assets/28033e449a31ebcc_gsap.min.js"></script>
+<script>
+(function () {
+  var main = document.getElementById('ds-main');
+  var groups = [].slice.call(main.querySelectorAll('.ds-group'));
+  var links = [].slice.call(document.querySelectorAll('#ds-side a'));
+  var side = document.querySelector('#ds-side nav');
+  var film = document.querySelector('[data-film]');
+  var started = false, visible = false, filmOnScreen = true;
+
+  function fitFilm() {
+    if (film && film.clientWidth) film.firstElementChild.style.zoom = film.clientWidth / innerWidth;
+  }
+  function load(src) { var s = document.createElement('script'); s.src = src; document.body.appendChild(s); }
+  function start() {
+    if (started) return; started = true;
+    fitFilm();
+    if (window.lucide) lucide.createIcons();
+    load('assets/overview/assets/js/pulsewave-intro.js');
+    load('assets/overview/assets/js/canvas-visuals.js');
+  }
+  function syncFilm() {
+    if (!window.gsap) return;
+    if (visible && filmOnScreen) gsap.globalTimeline.resume(); else gsap.globalTimeline.pause();
+  }
+  function spy() {
+    var y = main.scrollTop + 160, cur = groups[0];
+    groups.forEach(function (g) { if (g.offsetTop <= y) cur = g; });
+    links.forEach(function (a) {
+      var on = a.getAttribute('href') === '#' + cur.id;
+      if (on && !a.classList.contains('is-current') && side.scrollWidth > side.clientWidth)   /* mobile strip: keep the current group in view */
+        side.scrollLeft = a.offsetLeft - (side.clientWidth - a.offsetWidth) / 2;
+      a.classList.toggle('is-current', on);
+    });
+    document.body.classList.toggle('ds-scene-clear', cur.id === 'components-backgrounds');
+  }
+  main.addEventListener('scroll', spy, { passive: true });
+  addEventListener('resize', fitFilm, { passive: true });
+  if (film) new IntersectionObserver(function (es) { filmOnScreen = es[0].isIntersecting; syncFilm(); }, { root: main }).observe(film);
+
+  window.dsComponents = function (h) {
+    visible = h === '#components' || h.indexOf('#components-') === 0;
+    syncFilm();
+    if (!visible) return;
+    start();
+    if (h === '#components') main.scrollTop = 0;
+    else { var el = document.getElementById(h.slice(1)); if (el) main.scrollTop = el.offsetTop; }
+    spy();
+  };
+  if (window.dsRoute) window.dsRoute();
+})();
+</script>
+
+</body>
+</html>

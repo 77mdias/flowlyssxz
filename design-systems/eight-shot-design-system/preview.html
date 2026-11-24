@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Eight Shot — design system</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Eight Shot — gerado por ds_build.py a partir de tokens.json. Não edite à mão. */
+:root {
+  --color-bg: #F9F3ED;
+  --color-text: #000000;
+  --color-text-soft: #24231D;
+  --color-text-muted: #7D7A77;
+  --color-surface-1: #FCF9F7;
+  --color-surface-2: #FCF8F6;
+  --color-surface-3: #F8F5F3;
+  --color-surface-rose: #F3EDEF;
+  --color-surface-sage: #F0F1EC;
+  --color-surface-sand: #F2F0EB;
+  --color-brand-lilac: #A299BF;
+  --color-accent: #E2544F;
+  --color-label-plum: #9562A8;
+  --color-label-green: #219777;
+  --color-white: #FFFFFF;
+  --color-border: rgba(0, 0, 0, 0.18);
+  --color-logo-purple: #B749E0;
+  --color-logo-green: #00C548;
+  --color-logo-lime: #C8F000;
+  --color-logo-red: #FF0D18;
+  --font-body: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --text-display-size: clamp(38px, 4.3vw, 58px);
+  --text-display-line: 1.28;
+  --text-display-tracking: -0.018em;
+  --text-display-weight: 600;
+  --text-h-section-size: clamp(27px, 2.74vw, 37px);
+  --text-h-section-line: 1.16;
+  --text-h-section-tracking: -0.01em;
+  --text-h-section-weight: 600;
+  --text-h-cta-size: clamp(26px, 2.6vw, 35px);
+  --text-h-cta-line: 1.37;
+  --text-h-cta-tracking: 0;
+  --text-h-cta-weight: 600;
+  --text-h-feature-size: clamp(24px, 2.3vw, 31px);
+  --text-h-feature-line: 1.22;
+  --text-h-feature-tracking: -0.01em;
+  --text-h-feature-weight: 600;
+  --text-h-card-size: clamp(20px, 1.7vw, 23px);
+  --text-h-card-line: 1.26;
+  --text-h-card-tracking: 0;
+  --text-h-card-weight: 700;
+  --text-lede-size: clamp(16px, calc(14.5px + 0.38vw), 20px);
+  --text-lede-line: 1.7;
+  --text-lede-tracking: 0;
+  --text-lede-weight: 600;
+  --text-body-size: 16px;
+  --text-body-line: 26px;
+  --text-body-tracking: 0;
+  --text-body-weight: 500;
+  --text-body-sm-size: 15px;
+  --text-body-sm-line: 26px;
+  --text-body-sm-tracking: 0;
+  --text-body-sm-weight: 500;
+  --text-nav-size: 15px;
+  --text-nav-line: 26px;
+  --text-nav-tracking: 0;
+  --text-nav-weight: 600;
+  --text-eyebrow-size: 14px;
+  --text-eyebrow-line: 1.35;
+  --text-eyebrow-tracking: 0.02em;
+  --text-eyebrow-weight: 700;
+  --text-caption-size: 12px;
+  --text-caption-line: 20px;
+  --text-caption-tracking: 0;
+  --text-caption-weight: 700;
+  --space-1: 8px;
+  --space-2: 14px;
+  --space-3: 16px;
+  --space-4: 20px;
+  --space-5: 24px;
+  --space-6: 26px;
+  --space-7: 38px;
+  --space-8: 40px;
+  --space-9: 60px;
+  --space-10: 82px;
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-qr: 14px;
+  --radius-lg: 18px;
+  --radius-xl: 20px;
+  --radius-2xl: 24px;
+  --radius-round: 50%;
+  --shadow-card: 0 3px 2px rgba(0, 0, 0, 0.10);
+  --shadow-soft: 0 2px 2px rgba(0, 0, 0, 0.10);
+  --shadow-lift: 0 18px 34px -18px rgba(36, 35, 29, 0.34);
+  --shadow-btn: 0 10px 22px -10px rgba(0, 0, 0, 0.55);
+  --shadow-header: 0 1px 0 rgba(36, 35, 29, 0.08), 0 12px 24px -20px rgba(36, 35, 29, 0.5);
+  --border-icon: 1px solid var(--color-border);
+  --border-focus: 3px solid var(--color-accent);
+  --layout-shell: 1350px;
+  --layout-shell-pad: 20px;
+  --layout-nav-inset: 52px;
+  --layout-grid-cards: repeat(3, 1fr) / gap 19px;
+  --layout-grid-panels: 2 colunas / gap 13px;
+  --layout-grid-quotes: repeat(3, 1fr) / gap 38px;
+  --layout-section-gap: 20px;
+  --layout-pin-runway: 320svh;
+  --breakpoint-laptop: 1390px;
+  --breakpoint-tablet-l: 1180px;
+  --breakpoint-tablet: 1024px;
+  --breakpoint-mobile: 720px;
+  --breakpoint-small: 420px;
+  --gradient-sheen: linear-gradient(110deg, transparent 20%, rgba(255, 255, 255, 0.22) 45%, transparent 70%);
+  --gradient-stage: radial-gradient(55% 60% at 62% 48%, rgba(255, 255, 255, 0.7) 0%, transparent 70%);
+  --dur-press: 0.06s;
+  --dur-fast: 0.14s;
+  --dur-med: 0.24s;
+  --dur-pop: 0.42s;
+  --dur-slow: 0.62s;
+  --dur-draw: 0.72s;
+  --dur-enter: 0.98s;
+  --ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-pop: cubic-bezier(0.34, 1.4, 0.64, 1);
+  --ease-emerge: cubic-bezier(0.16, 0.84, 0.32, 1);
+  --stagger-reveal: 0.09s;
+  --stagger-hero: 0.14s;
+}
+
+/* tema: dark */
+[data-theme="dark"] {
+  --color-bg: #16141A;
+  --color-text: #F5F1EA;
+  --color-text-soft: #96908A;
+  --color-text-muted: #86838A;
+  --color-surface-1: #201D22;
+  --color-surface-2: #1F1C21;
+  --color-surface-3: #1E1B1F;
+  --color-surface-rose: #241E23;
+  --color-surface-sage: #1D211D;
+  --color-surface-sand: #201E1A;
+  --color-brand-lilac: #443C60;
+  --color-border: rgba(245, 241, 234, 0.18);
+  --shadow-card: 0 3px 2px rgba(0, 0, 0, 0.35);
+  --shadow-soft: 0 2px 2px rgba(0, 0, 0, 0.35);
+  --shadow-lift: 0 18px 34px -18px rgba(0, 0, 0, 0.6);
+}
+
+@keyframes ds-phone-in { from { opacity: 0; transform: translateY(72px) scale(.96) } to { opacity: 1; transform: none } }
+@keyframes ds-shot-emerge { from { opacity: 1; transform: translate(110%, 77%) scale(.82) rotate(-4deg) } to { opacity: 1; transform: none } }
+@keyframes ds-idle-float { 0%, 100% { transform: none } 50% { transform: translateY(8px) rotate(-.9deg) } }
+@keyframes ds-draw { from { clip-path: inset(0 100% 0 0) } to { clip-path: inset(0) } }
+@keyframes ds-reveal { from { opacity: 0; transform: translateY(26px) } to { opacity: 1; transform: none } }
+@keyframes ds-underline { from { transform: scaleX(0) } to { transform: scaleX(1) } }
+@keyframes ds-lift { 0%, 100% { transform: none; box-shadow: none } 40%, 70% { transform: translateY(-6px); box-shadow: 0 18px 34px -18px rgba(36,35,29,.5) } }
+@keyframes ds-pop { 0%, 100% { transform: none } 45%, 70% { transform: scale(1.045) rotate(1.2deg) } }
+@keyframes ds-badge { 0%, 100% { transform: none } 40%, 70% { transform: translateY(-6px) scale(1.06) } }
+
+.ds-text-display { font-family: var(--font-body); font-size: var(--text-display-size); line-height: var(--text-display-line); letter-spacing: var(--text-display-tracking); font-weight: var(--text-display-weight); }
+.ds-text-h-section { font-family: var(--font-body); font-size: var(--text-h-section-size); line-height: var(--text-h-section-line); letter-spacing: var(--text-h-section-tracking); font-weight: var(--text-h-section-weight); }
+.ds-text-h-cta { font-family: var(--font-body); font-size: var(--text-h-cta-size); line-height: var(--text-h-cta-line); letter-spacing: var(--text-h-cta-tracking); font-weight: var(--text-h-cta-weight); }
+.ds-text-h-feature { font-family: var(--font-body); font-size: var(--text-h-feature-size); line-height: var(--text-h-feature-line); letter-spacing: var(--text-h-feature-tracking); font-weight: var(--text-h-feature-weight); }
+.ds-text-h-card { font-family: var(--font-body); font-size: var(--text-h-card-size); line-height: var(--text-h-card-line); letter-spacing: var(--text-h-card-tracking); font-weight: var(--text-h-card-weight); }
+.ds-text-lede { font-family: var(--font-body); font-size: var(--text-lede-size); line-height: var(--text-lede-line); letter-spacing: var(--text-lede-tracking); font-weight: var(--text-lede-weight); }
+.ds-text-body { font-family: var(--font-body); font-size: var(--text-body-size); line-height: var(--text-body-line); letter-spacing: var(--text-body-tracking); font-weight: var(--text-body-weight); }
+.ds-text-body-sm { font-family: var(--font-body); font-size: var(--text-body-sm-size); line-height: var(--text-body-sm-line); letter-spacing: var(--text-body-sm-tracking); font-weight: var(--text-body-sm-weight); }
+.ds-text-nav { font-family: var(--font-body); font-size: var(--text-nav-size); line-height: var(--text-nav-line); letter-spacing: var(--text-nav-tracking); font-weight: var(--text-nav-weight); }
+.ds-text-eyebrow { font-family: var(--font-body); font-size: var(--text-eyebrow-size); line-height: var(--text-eyebrow-line); letter-spacing: var(--text-eyebrow-tracking); font-weight: var(--text-eyebrow-weight); text-transform: uppercase; }
+.ds-text-caption { font-family: var(--font-body); font-size: var(--text-caption-size); line-height: var(--text-caption-line); letter-spacing: var(--text-caption-tracking); font-weight: var(--text-caption-weight); }
+
+.ds-button { font-family: var(--font-body); font-size: var(--text-nav-size); line-height: var(--text-nav-line); letter-spacing: var(--text-nav-tracking); font-weight: var(--text-nav-weight); position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 8px; color: var(--color-bg); background: var(--color-text); border: 0; border-radius: var(--radius-sm); padding: 8px 18px; cursor: pointer; isolation: isolate; text-decoration: none; transition: transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-med) var(--ease-out); }
+.ds-button::after { content: ''; position: absolute; inset: 0; border-radius: inherit; z-index: -1; background: var(--gradient-sheen); background-size: 220% 100%; background-position: 130% 0; transition: background-position var(--dur-slow) var(--ease-out); }
+.ds-button:hover { transform: translateY(-2px); box-shadow: var(--shadow-btn); }
+.ds-button:hover::after { background-position: -30% 0; }
+.ds-button:active { transform: translateY(0) scale(.975); transition-duration: var(--dur-press); }
+.ds-button:focus-visible { outline: var(--border-focus); outline-offset: 3px; }
+.ds-nav-link { font-family: var(--font-body); font-size: var(--text-nav-size); line-height: var(--text-nav-line); letter-spacing: var(--text-nav-tracking); font-weight: var(--text-nav-weight); position: relative; color: var(--color-text-soft); padding-block: 2px; text-decoration: none; transition: color var(--dur-med) var(--ease-soft); }
+.ds-nav-link::after { content: ''; position: absolute; left: 0; bottom: -2px; height: 2px; width: 100%; background: var(--color-accent); border-radius: 2px; transform: scaleX(0); transform-origin: left center; transition: transform var(--dur-med) var(--ease-out); }
+.ds-nav-link:hover { color: var(--color-text); }
+.ds-nav-link:hover::after { transform: scaleX(1); }
+.ds-nav-link.is-active { color: var(--color-text); }
+.ds-nav-link.is-active::after { transform: scaleX(1); }
+.ds-icon-button { width: 36px; height: 36px; display: grid; place-items: center; cursor: pointer; color: var(--color-text); background: color-mix(in srgb, var(--color-bg) 50%, transparent); backdrop-filter: blur(10px); border: var(--border-icon); border-radius: var(--radius-round); transition: 0.3s var(--ease-soft); }
+.ds-icon-button:hover { border-color: var(--color-accent); color: var(--color-accent); transform: rotate(18deg); }
+.ds-eyebrow { font-family: var(--font-body); font-size: var(--text-eyebrow-size); line-height: var(--text-eyebrow-line); letter-spacing: var(--text-eyebrow-tracking); font-weight: var(--text-eyebrow-weight); text-transform: uppercase; color: var(--color-label-plum); margin: 0; }
+.ds-eyebrow.is-green { color: var(--color-label-green); }
+.ds-panel { position: relative; max-width: 520px; padding: 44px 37px; background: var(--color-surface-rose); border-radius: var(--radius-xl); box-shadow: var(--shadow-soft); transition: transform var(--dur-med) var(--ease-out), box-shadow var(--dur-med) var(--ease-out); }
+.ds-panel:hover { box-shadow: var(--shadow-soft), var(--shadow-lift); }
+.ds-panel h3 { font-family: var(--font-body); font-size: var(--text-h-feature-size); line-height: var(--text-h-feature-line); letter-spacing: var(--text-h-feature-tracking); font-weight: var(--text-h-feature-weight); margin: 10px 0 16px; color: var(--color-text); }
+.ds-panel p.txt { font-family: var(--font-body); font-size: var(--text-body-size); line-height: var(--text-body-line); letter-spacing: var(--text-body-tracking); font-weight: var(--text-body-weight); color: var(--color-text); opacity: .5; margin: 0; max-width: 28ch; }
+.ds-feature-card { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px; max-width: 360px; padding: 63px 38px 64px; background: var(--color-surface-2); border-radius: var(--radius-lg); box-shadow: var(--shadow-card); }
+.ds-feature-card h3 { font-family: var(--font-body); font-size: var(--text-h-card-size); line-height: var(--text-h-card-line); letter-spacing: var(--text-h-card-tracking); font-weight: var(--text-h-card-weight); margin: 0; color: var(--color-text); }
+.ds-feature-card p { font-family: var(--font-body); font-size: var(--text-body-sm-size); line-height: var(--text-body-sm-line); letter-spacing: var(--text-body-sm-tracking); font-weight: var(--text-body-sm-weight); margin: 0; color: var(--color-text); opacity: .5; }
+.ds-quote { display: flex; flex-direction: column; align-items: center; gap: 14px; max-width: 425px; padding: 41px 20px; text-align: center; background: var(--color-surface-3); border-radius: var(--radius-md); box-shadow: var(--shadow-soft); transition: transform var(--dur-med) var(--ease-out), box-shadow var(--dur-med) var(--ease-out); }
+.ds-quote:hover { box-shadow: var(--shadow-soft), var(--shadow-lift); }
+.ds-quote b { font-size: 22px; letter-spacing: 4px; color: var(--color-text); }
+.ds-quote h3 { font-size: 20px; line-height: 26px; font-weight: 700; margin: 0; color: var(--color-text); }
+.ds-quote p { font-size: 13px; line-height: 20px; font-weight: 500; margin: 0; color: var(--color-text); }
+.ds-cta-panel { padding: 56px 48px; max-width: 640px; background: var(--color-brand-lilac); border-radius: var(--radius-2xl); }
+.ds-cta-panel h2 { font-family: var(--font-body); font-size: var(--text-h-cta-size); line-height: var(--text-h-cta-line); letter-spacing: var(--text-h-cta-tracking); font-weight: var(--text-h-cta-weight); color: var(--color-white); margin: 0 0 12px; }
+.ds-cta-panel p { font-family: var(--font-body); font-size: var(--text-body-size); line-height: var(--text-body-line); letter-spacing: var(--text-body-tracking); font-weight: var(--text-body-weight); color: var(--color-white); opacity: .85; margin: 0 0 24px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+}
+
+/* ---- página-espécime (não faz parte do sistema) ---- */
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--color-bg); color: var(--color-text); font-family: var(--font-body, system-ui); }
+main { padding: 48px 5vw 96px; max-width: 1500px; margin: 0 auto; }
+section { padding: 56px 0; border-top: 1px solid color-mix(in srgb, currentColor 16%, transparent); }
+h2.k { font: 500 11px/1 var(--font-mono, ui-monospace, monospace); letter-spacing: .14em; text-transform: uppercase; opacity: .6; margin: 0 0 28px; }
+code { font: 12px/1.5 var(--font-mono, ui-monospace, monospace); opacity: .7; }
+em { font-style: normal; font-size: 12px; opacity: .55; display: block; }
+figure { margin: 0; } ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 20px; }
+.sw .chip { height: 96px; border-radius: 6px; border: 1px solid color-mix(in srgb, currentColor 18%, transparent); }
+.sw figcaption, figcaption { display: grid; gap: 2px; margin-top: 8px; font-size: 13px; } .sw span { font-size: 11px; opacity: .6; }
+.ty { display: grid; grid-template-columns: minmax(180px, 260px) 1fr; gap: 24px; align-items: baseline; padding: 22px 0; border-bottom: 1px dashed color-mix(in srgb, currentColor 12%, transparent); overflow: hidden; }
+.lab { display: grid; gap: 4px; font-size: 13px; align-content: start; }
+.row { display: grid; grid-template-columns: 160px 1fr; align-items: center; gap: 16px; padding: 5px 0; } .row i { display: block; height: 12px; background: var(--color-accent, currentColor); min-width: 1px; }
+.rbox { width: 100%; aspect-ratio: 3/2; border: 1px solid currentColor; background: color-mix(in srgb, currentColor 8%, transparent); }
+.sbox { width: 100%; aspect-ratio: 3/2; background: var(--color-surface, var(--color-bg)); border-radius: var(--radius-m, 8px); }
+.track { padding: 10px 0; cursor: pointer; } .rail { height: 28px; margin-top: 6px; position: relative; border-bottom: 1px solid color-mix(in srgb, currentColor 25%, transparent); }
+.rail i { position: absolute; left: 0; bottom: 4px; width: 20px; height: 20px; border-radius: 50%; background: var(--color-accent, currentColor); transition: left var(--dur-enter); }
+.go .rail i { left: calc(100% - 20px); }
+.comp { display: grid; grid-template-columns: minmax(180px, 260px) 1fr; gap: 24px; padding: 28px 0; border-bottom: 1px dashed color-mix(in srgb, currentColor 12%, transparent); }
+.stage { display: flex; flex-wrap: wrap; gap: 20px; align-items: center; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 5vw; } @media (max-width: 800px) { .two, .ty, .comp { grid-template-columns: 1fr; } }
+header p { max-width: 70ch; opacity: .75; line-height: 1.6; }
+.logo { display: inline-flex; padding: 28px 36px; border: 1px solid color-mix(in srgb, currentColor 16%, transparent); border-radius: 8px; } .logo img { height: 64px; width: auto; max-width: 100%; display: block; }
+.tag { font-size: 1.25rem; max-width: 46ch; } .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 32px; margin-top: 28px; } .cols li { font-size: 14px; line-height: 1.5; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; } th, td { text-align: left; padding: 10px 14px 10px 0; border-bottom: 1px solid color-mix(in srgb, currentColor 12%, transparent); vertical-align: top; } th { font: 500 11px/1 var(--font-mono, ui-monospace, monospace); letter-spacing: .12em; text-transform: uppercase; opacity: .6; }
+.an { display: grid; grid-template-columns: minmax(260px, 1fr) minmax(260px, 1.2fr); gap: 32px; padding: 26px 0; border-bottom: 1px dashed color-mix(in srgb, currentColor 12%, transparent); } .an p { margin: 8px 0 12px; font-size: 14px; line-height: 1.55; opacity: .85; } .an li { font-size: 13px; }
+.demo { height: 150px; display: grid; place-items: center; border: 1px solid color-mix(in srgb, currentColor 14%, transparent); border-radius: 8px; cursor: pointer; overflow: hidden; margin-bottom: 12px; }
+.demo i { width: 72px; height: 72px; border-radius: var(--radius-m, var(--radius-md, 10px)); background: var(--color-accent, currentColor); display: block; }
+pre { margin: 0; padding: 14px; font: 12px/1.55 var(--font-mono, ui-monospace, monospace); background: color-mix(in srgb, currentColor 7%, transparent); border-radius: 8px; overflow: auto; white-space: pre-wrap; }
+.tg { font: 500 12px/1 var(--font-mono, ui-monospace, monospace); padding: 9px 12px; border: 1px solid currentColor; background: none; color: inherit; border-radius: 6px; cursor: pointer; margin: 0 8px 8px 0; }
+@media (max-width: 800px) { .an { grid-template-columns: 1fr; } }
+</style></head><body><main>
+<header><h2 class="k">Design system medido no site · cookedapps.com/eight-shot · medido em 18/11/2026</h2>
+<div class="ds-text-display">Eight Shot</div>
+<p>Landing de um app de câmera instantânea: papel creme, preto puro, uma família tipográfica, cartões quase brancos e três momentos de motion (polaroides que saem do celular, aparelho dobrável 3D preso à rolagem, reveals discretos).</p>
+<div class="two"><div><h2 class="k">Princípios</h2><ul><li>Papel, não tela: fundo creme #F9F3ED e cartões 1–3% mais claros ou mais frios; nunca branco puro como fundo de página.</li><li>Uma família, três pesos: Be Vietnam Pro 500 para texto, 600 para títulos, 700 para rótulos e títulos de cartão.</li><li>Cor só onde há significado: roxo e verde nos rótulos de seção, vermelho só em interação (foco, sublinhado, hover de ícone), lilás só no bloco de download.</li><li>O produto é a ilustração: mockups do app e polaroides fazem o papel de imagem; não há foto de banco nem ícone decorativo grande.</li><li>Motion em três volumes: entrada coreografada do hero, uma cena 3D presa à rolagem, e todo o resto em 240 ms ou 620 ms com a mesma curva.</li></ul></div><div><h2 class="k">Grau de confiança</h2><ul><li><b>cor</b> exata (variáveis CSS do autor + estilos computados)</li><li><b>tipografia</b> exata (família, pesos e clamp() lidos no CSS; tamanhos conferidos em 1440 e 390 px)</li><li><b>layout</b> exato para desktop e mobile; breakpoints intermediários lidos no CSS, não vistos em tela</li><li><b>componentes</b> repouso e hover medidos; foco e ativo lidos no CSS</li><li><b>motion</b> exato para CSS e Web Animations; a cena 3D foi lida no código (duo.js) e vista em tela, não medida quadro a quadro</li></ul><ul style="margin-top:14px"><li>Nomes dos papéis (bg, surface-*, accent) são meus; a coluna de notas traz o nome original da variável no site.</li><li>text-muted é o preto a 50% de opacidade sobre o creme: 3,9:1, abaixo de AA para texto de 16 px. Mantido como no site; ao reutilizar, suba para 62% (≈ #5F5C5A, 5,9:1).</li><li>Estados que não aparecem em carga, rolagem e hover (menu mobile aberto, banner de consentimento) ficaram de fora.</li></ul></div></div></header>
+<section><h2 class="k">Marca</h2><div class="logo"><img src="assets/logo.svg" alt="logo"></div><p class="tag">The instant camera you’ll never run out of.</p><p>Eight Shot vende limite como prazer: 8 fotos por pacote, como filme de verdade. O visual sustenta isso com materiais de papel fotográfico (creme, sombras curtas, cantos pouco arredondados), polaroides reais como ilustração e uma interface que quase não tem cor própria, para que as fotos carreguem a cor.</p><div class="cols"><div><h2 class="k">Personalidade</h2><ul><li>Analógico sem nostalgia forçada ← papel creme e polaroides, mas tipografia grotesca limpa e 3D em tempo real</li><li>Contido ← uma família, preto puro, cor de acento usada em menos de 1% da área</li><li>Brincalhão nos detalhes ← sublinhado desenhado à mão, tira de cabine inclinada, ícones que giram 18° no hover</li><li>Tátil ← botões e selos sobem 2–3 px; cartões ganham sombra longa e o conteúdo se mexe, como objeto sobre a mesa</li></ul></div><div><h2 class="k">Voz e texto</h2><ul><li>Frases curtas, com ponto final, em duas ou três batidas: “Fold it shut. Shoot. Open it up.”</li><li>Números concretos no lugar de adjetivos: “just 8 shots”, “Four shots.”, “Nine frames. One memory.”</li><li>Rótulo de seção em caixa alta com 2–4 palavras antes do título: “SHOOT LIKE REAL FILM”, “PHOTO BOOTH”</li><li>CTA de uma palavra: “Download”. Sem “Get started”, sem “Learn more”.</li><li>Inglês, segunda pessoa, tom de amigo que explica um brinquedo, não de empresa de tecnologia</li></ul></div><div><h2 class="k">Imagem e ícones</h2><ul><li>Mockups do app em celular com moldura laranja-cobre, sempre retos ou com no máximo 4° de rotação</li><li>Polaroides com foto de pessoas em close, luz quente, borda branca ou colorida (amarelo, preto), sombra projetada suave</li><li>Um modelo 3D (celular dobrável) com material fosco e ambiente de estúdio neutro; sem cenário</li><li>Ícones de traço fino 16–20 px em preto; as únicas ilustrações são um rabisco de sublinhado em vermelho e as estrelas dos depoimentos</li><li>Faixa de quatro cores do logo (roxo, verde, lima, vermelho) reaparece como detalhe no topo dos mockups</li></ul></div><div><h2 class="k">Não fazer</h2><ul><li>Fundo branco puro ou cinza frio na página</li><li>Gradientes, vidro fosco ou brilho neon (o único blur é o dos dois botões-ícone fixos)</li><li>Segundo tipo de letra, itálico ou peso 800+ em títulos</li><li>Vermelho como cor de superfície ou de botão principal: ele é só de interação</li><li>Mais de um momento 3D ou parallax por página</li></ul></div></div></section>
+<section><h2 class="k">Cor</h2><div class="grid"><figure class="sw"><div class="chip" style="background:#F9F3ED"></div><figcaption><b>bg</b><code>#F9F3ED</code><em>--c-page · fundo da página e texto do botão escuro</em></figcaption></figure><figure class="sw"><div class="chip" style="background:#000000"></div><figcaption><b>text</b><code>#000000</code><span>19.07:1 s/ fundo</span><em>--c-ink · títulos, texto, botão principal</em></figcaption></figure><figure class="sw"><div class="chip" style="background:#24231D"></div><figcaption><b>text-soft</b><code>#24231D</code><span>14.31:1 s/ fundo</span><em>--c-ink-soft · links da navegação em repouso</em></figcaption></figure><figure class="sw"><div class="chip" style="background:#7D7A77"></div><figcaption><b>text-muted</b><code>#7D7A77</code><span>3.87:1 s/ fundo</span><em>preto com opacity .5 sobre o creme (.body-muted) · 3,9:1</em></figcaption></figure><figure class="sw"><div class="chip" style="background:#FCF9F7"></div><figcaption><b>surface-1</b><code>#FCF9F7</code><span>1.05:1 s/ fundo</span><em>--c-card-film · cartão grande e palco do 3D</em></figcaption></figure><figure class="sw"><div class="chip" style="background:#FCF8F6"></div><figcaption><b>surface-2</b><code>#FCF8F6</code><span>1.04:1 s/ fundo</span><em>--c-card-step · três cartões de recurso</em></figcaption></figure><figure class="sw"><div class="chip" style="background:#F8F5F3"></div><figcaption><b>surface-3</b><code>#F8F5F3</code><span>1.01:1 s/ fundo</span><em>--c-card-quote · depoimentos</em></figcaption></figure><figure class="sw"><div class="chip" style="background:#F3EDEF"></div><figcaption><b>surface-rose</b><code>#F3EDEF</code><span>1.05:1 s/ fundo</span><em>--c-card-booth · painel Photo booth</em></figcaption></figure><figure class="sw"><div class="chip" style="background:#F0F1EC"></div><figcaption><b>surface-sage</b><code>#F0F1EC</code><span>1.03:1 s/ fundo</span><em>--c-card-collage · painel Collage</em></figcaption></figure><figure class="sw"><div class="chip" style="background:#F2F0EB"></div><figcaption><b>surface-sand</b><code>#F2F0EB</code><span>1.03:1 s/ fundo</span><em>--c-card-drops · painel Limited edition</em></figcaption></figure><figure class="sw"><div class="chip" style="background:#A299BF"></div><figcaption><b>brand-lilac</b><code>#A299BF</code><span>2.43:1 s/ fundo</span><em>--c-cta · só o painel de download</em></figcaption></figure><figure class="sw"><div class="chip" style="background:#E2544F"></div><figcaption><b>accent</b><code>#E2544F</code><span>3.4:1 s/ fundo</span><em>--c-accent-red · foco, sublinhado do nav, hover de ícone, rabisco</em></figcaption></figure><figure class="sw"><div class="chip" style="background:#9562A8"></div><figcaption><b>label-plum</b><code>#9562A8</code><span>4.15:1 s/ fundo</span><em>--c-eyebrow-plum · rótulos de seção</em></figcaption></figure><figure class="sw"><div class="chip" style="background:#219777"></div><figcaption><b>label-green</b><code>#219777</code><span>3.31:1 s/ fundo</span><em>--c-eyebrow-green · rótulo alternativo</em></figcaption></figure><figure class="sw"><div class="chip" style="background:#FFFFFF"></div><figcaption><b>white</b><code>#FFFFFF</code><span>1.1:1 s/ fundo</span><em>--c-white · título do CTA, cartão do QR</em></figcaption></figure><figure class="sw"><div class="chip" style="background:rgba(0, 0, 0, 0.18)"></div><figcaption><b>border</b><code>rgba(0, 0, 0, 0.18)</code><em>color-mix(ink 18%) · contorno dos botões-ícone</em></figcaption></figure><figure class="sw"><div class="chip" style="background:#B749E0"></div><figcaption><b>logo-purple</b><code>#B749E0</code><span>3.78:1 s/ fundo</span><em>faixa do logo</em></figcaption></figure><figure class="sw"><div class="chip" style="background:#00C548"></div><figcaption><b>logo-green</b><code>#00C548</code><span>2.1:1 s/ fundo</span><em>faixa do logo</em></figcaption></figure><figure class="sw"><div class="chip" style="background:#C8F000"></div><figcaption><b>logo-lime</b><code>#C8F000</code><span>1.2:1 s/ fundo</span><em>faixa do logo</em></figcaption></figure><figure class="sw"><div class="chip" style="background:#FF0D18"></div><figcaption><b>logo-red</b><code>#FF0D18</code><span>3.58:1 s/ fundo</span><em>faixa do logo</em></figcaption></figure></div><h2 class="k" style="margin-top:36px">Tema dark · <code>[data-theme=&quot;dark&quot;]</code></h2><div class="grid"><figure class="sw"><div class="chip" style="background:#16141A"></div><figcaption><b>bg</b><code>#16141A</code></figcaption></figure><figure class="sw"><div class="chip" style="background:#F5F1EA"></div><figcaption><b>text</b><code>#F5F1EA</code><span>16.23:1 s/ fundo</span></figcaption></figure><figure class="sw"><div class="chip" style="background:#96908A"></div><figcaption><b>text-soft</b><code>#96908A</code><span>5.79:1 s/ fundo</span></figcaption></figure><figure class="sw"><div class="chip" style="background:#86838A"></div><figcaption><b>text-muted</b><code>#86838A</code><span>4.9:1 s/ fundo</span></figcaption></figure><figure class="sw"><div class="chip" style="background:#201D22"></div><figcaption><b>surface-1</b><code>#201D22</code><span>1.1:1 s/ fundo</span></figcaption></figure><figure class="sw"><div class="chip" style="background:#1F1C21"></div><figcaption><b>surface-2</b><code>#1F1C21</code><span>1.08:1 s/ fundo</span></figcaption></figure><figure class="sw"><div class="chip" style="background:#1E1B1F"></div><figcaption><b>surface-3</b><code>#1E1B1F</code><span>1.07:1 s/ fundo</span></figcaption></figure><figure class="sw"><div class="chip" style="background:#241E23"></div><figcaption><b>surface-rose</b><code>#241E23</code><span>1.12:1 s/ fundo</span></figcaption></figure><figure class="sw"><div class="chip" style="background:#1D211D"></div><figcaption><b>surface-sage</b><code>#1D211D</code><span>1.12:1 s/ fundo</span></figcaption></figure><figure class="sw"><div class="chip" style="background:#201E1A"></div><figcaption><b>surface-sand</b><code>#201E1A</code><span>1.1:1 s/ fundo</span></figcaption></figure><figure class="sw"><div class="chip" style="background:#443C60"></div><figcaption><b>brand-lilac</b><code>#443C60</code><span>1.79:1 s/ fundo</span></figcaption></figure><figure class="sw"><div class="chip" style="background:rgba(245, 241, 234, 0.18)"></div><figcaption><b>border</b><code>rgba(245, 241, 234, 0.18)</code></figcaption></figure></div><p style="margin-top:24px"><button class="tg" data-kind="attr" data-a="data-theme" data-b="dark">alternar tema dark</button></p></section>
+<section><h2 class="k">Tipografia</h2><ul style="margin-bottom:24px"><li><b>body</b> <code>&#x27;Be Vietnam Pro&#x27;, -apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, Roboto, Helvetica, Arial, sans-serif</code> <em>família real do site, hospedada pelo próprio site em woff2 (latin 500/600/700, 13 KB cada). O CSS declara 300–800, mas só três pesos são baixados.</em></li></ul><div class="ty"><div class="lab"><b>display</b><code>clamp(38px, 4.3vw, 58px) · lh 1.28 · ls -0.018em · 600 · body</code><em>.hero__title · mobile: clamp(30px, 8.4vw, 42px), entrelinha 1.24</em></div><div class="ds-text-display">The instant camera you’ll never run out of.</div></div><div class="ty"><div class="lab"><b>h-section</b><code>clamp(27px, 2.74vw, 37px) · lh 1.16 · ls -0.01em · 600 · body</code><em>.h-section · mobile: clamp(24px, 6.6vw, 30px)</em></div><div class="ds-text-h-section">Every pack starts with just 8 shots.</div></div><div class="ty"><div class="lab"><b>h-cta</b><code>clamp(26px, 2.6vw, 35px) · lh 1.37 · ls 0 · 600 · body</code><em>.h-cta · branco sobre lilás</em></div><div class="ds-text-h-cta">Every pack starts with just 8 shots.</div></div><div class="ty"><div class="lab"><b>h-feature</b><code>clamp(24px, 2.3vw, 31px) · lh 1.22 · ls -0.01em · 600 · body</code><em>.h-feature · títulos dos painéis</em></div><div class="ds-text-h-feature">Every pack starts with just 8 shots.</div></div><div class="ty"><div class="lab"><b>h-card</b><code>clamp(20px, 1.7vw, 23px) · lh 1.26 · ls 0 · 700 · body</code><em>.h-card · peso 700 compensa o tamanho menor</em></div><div class="ds-text-h-card">Every pack starts with just 8 shots.</div></div><div class="ty"><div class="lab"><b>lede</b><code>clamp(16px, calc(14.5px + 0.38vw), 20px) · lh 1.7 · ls 0 · 600 · body</code><em>.hero__lede · 20/34 no desktop, 16 no mobile (clamp derivado dos dois pontos medidos)</em></div><div class="ds-text-lede">Every pack starts with just 8 shots.</div></div><div class="ty"><div class="lab"><b>body</b><code>16px · lh 26px · ls 0 · 500 · body</code><em>.body-muted · sempre com opacidade .5 · 15px no mobile</em></div><div class="ds-text-body">Load a film pack, watch the counter tick down and think before you press the shutter.</div></div><div class="ty"><div class="lab"><b>body-sm</b><code>15px · lh 26px · ls 0 · 500 · body</code><em>.body-muted--sm</em></div><div class="ds-text-body-sm">Load classic Colour 600, B&amp;W and limited edition packs.</div></div><div class="ty"><div class="lab"><b>nav</b><code>15px · lh 26px · ls 0 · 600 · body</code><em>.nav__link e .btn</em></div><div class="ds-text-nav">Features · Film Packs · Create · About</div></div><div class="ty"><div class="lab"><b>eyebrow</b><code>14px · lh 1.35 · ls 0.02em · 700 · body</code><em>.eyebrow</em></div><div class="ds-text-eyebrow">Shoot like real film</div></div><div class="ty"><div class="lab"><b>caption</b><code>12px · lh 20px · ls 0 · 700 · body</code><em>rodapé</em></div><div class="ds-text-caption">2026 Eight Shot App, All rights reserved.</div></div></section>
+<section class="two"><div><h2 class="k">Espaço</h2><div class="row"><code>1 · 8px</code><i style="width:var(--space-1)"></i></div><div class="row"><code>2 · 14px</code><i style="width:var(--space-2)"></i></div><div class="row"><code>3 · 16px</code><i style="width:var(--space-3)"></i></div><div class="row"><code>4 · 20px</code><i style="width:var(--space-4)"></i></div><div class="row"><code>5 · 24px</code><i style="width:var(--space-5)"></i></div><div class="row"><code>6 · 26px</code><i style="width:var(--space-6)"></i></div><div class="row"><code>7 · 38px</code><i style="width:var(--space-7)"></i></div><div class="row"><code>8 · 40px</code><i style="width:var(--space-8)"></i></div><div class="row"><code>9 · 60px</code><i style="width:var(--space-9)"></i></div><div class="row"><code>10 · 82px</code><i style="width:var(--space-10)"></i></div></div><div><h2 class="k">Layout</h2><ul><li><b>shell</b> <code>1350px</code> <em>--shell · coluna de conteúdo (desenhada para 1440)</em></li><li><b>shell-pad</b> <code>20px</code> <em>--shell-pad · margem lateral mínima</em></li><li><b>nav-inset</b> <code>52px</code> <em>o nav é mais estreito que a coluna (1246 de 1350)</em></li><li><b>grid-cards</b> <code>repeat(3, 1fr) / gap 19px</code> <em>três cartões de recurso</em></li><li><b>grid-panels</b> <code>2 colunas / gap 13px</code> <em>Photo booth + Collage</em></li><li><b>grid-quotes</b> <code>repeat(3, 1fr) / gap 38px</code> <em>depoimentos</em></li><li><b>section-gap</b> <code>20px</code> <em>os blocos são cartões empilhados com 20 px entre si</em></li><li><b>pin-runway</b> <code>320svh</code> <em>altura da pista da cena 3D (280svh no mobile)</em></li></ul></div></section>
+<section class="two"><div><h2 class="k">Raio</h2><div class="grid"><figure><div class="rbox" style="border-radius:var(--radius-xs)"></div><figcaption><b>xs</b><code>4px</code></figcaption></figure><figure><div class="rbox" style="border-radius:var(--radius-sm)"></div><figcaption><b>sm</b><code>6px</code></figcaption></figure><figure><div class="rbox" style="border-radius:var(--radius-md)"></div><figcaption><b>md</b><code>10px</code></figcaption></figure><figure><div class="rbox" style="border-radius:var(--radius-qr)"></div><figcaption><b>qr</b><code>14px</code></figcaption></figure><figure><div class="rbox" style="border-radius:var(--radius-lg)"></div><figcaption><b>lg</b><code>18px</code></figcaption></figure><figure><div class="rbox" style="border-radius:var(--radius-xl)"></div><figcaption><b>xl</b><code>20px</code></figcaption></figure><figure><div class="rbox" style="border-radius:var(--radius-2xl)"></div><figcaption><b>2xl</b><code>24px</code></figcaption></figure><figure><div class="rbox" style="border-radius:var(--radius-round)"></div><figcaption><b>round</b><code>50%</code></figcaption></figure></div></div><div><h2 class="k">Sombra / elevação</h2><div class="grid"><figure><div class="sbox" style="box-shadow:var(--shadow-card)"></div><figcaption><b>card</b></figcaption></figure><figure><div class="sbox" style="box-shadow:var(--shadow-soft)"></div><figcaption><b>soft</b></figcaption></figure><figure><div class="sbox" style="box-shadow:var(--shadow-lift)"></div><figcaption><b>lift</b></figcaption></figure><figure><div class="sbox" style="box-shadow:var(--shadow-btn)"></div><figcaption><b>btn</b></figcaption></figure><figure><div class="sbox" style="box-shadow:var(--shadow-header)"></div><figcaption><b>header</b></figcaption></figure></div></div></section>
+<section><h2 class="k">Motion — clique numa curva para repetir</h2><div class="two"><div id="mo"><div class="track"><code>out · cubic-bezier(0.22, 0.61, 0.36, 1) · gsap power2.out</code><div class="rail"><i style="transition-timing-function:var(--ease-out)"></i></div></div><div class="track"><code>soft · cubic-bezier(0.4, 0, 0.2, 1) · gsap power2.inOut</code><div class="rail"><i style="transition-timing-function:var(--ease-soft)"></i></div></div><div class="track"><code>pop · cubic-bezier(0.34, 1.4, 0.64, 1) · gsap back.out(1.4)</code><div class="rail"><i style="transition-timing-function:var(--ease-pop)"></i></div></div><div class="track"><code>emerge · cubic-bezier(0.16, 0.84, 0.32, 1) · gsap expo.out</code><div class="rail"><i style="transition-timing-function:var(--ease-emerge)"></i></div></div></div><div><ul><li><b>press</b> <code>0.06s</code> <em>:active</em></li><li><b>fast</b> <code>0.14s</code> <em>--t-fast · resposta de botão</em></li><li><b>med</b> <code>0.24s</code> <em>--t-med · hover, cor, cabeçalho</em></li><li><b>pop</b> <code>0.42s</code> <em>ícones e QR com mola</em></li><li><b>slow</b> <code>0.62s</code> <em>--t-slow · reveal</em></li><li><b>draw</b> <code>0.72s</code> <em>sublinhado desenhado</em></li><li><b>enter</b> <code>0.98s</code> <em>polaroides do hero</em></li><li><b>stagger reveal</b> <code>0.09s</code></li><li><b>stagger hero</b> <code>0.14s</code></li></ul>
+<p><code>scroll: {&quot;smooth&quot;: false, &quot;lerp&quot;: 0.12}</code></p></div></div></section>
+<section><h2 class="k">Catálogo de animações — clique numa demonstração para repetir</h2><article class="an"><div><div class="lab"><b>phone-in</b><em>carga · CSS @keyframes</em></div><p>O celular do hero sobe 72 px e cresce de 96% a 100% enquanto aparece. É o primeiro movimento da página e ancora o olhar no produto.</p><ul><li><b>gatilho</b> <code>carga da página</code></li><li><b>alvo</b> <code>.hero__phone</code></li><li><b>duração</b> <code>760ms</code></li><li><b>easing</b> <code>cubic-bezier(0.22, 0.61, 0.36, 1)</code></li><li><b>atraso</b> <code>80ms</code></li><li><b>feito com</b> <code>CSS animation</code></li><li><b>fonte</b> <code>styles.css</code></li></ul></div><div><div class="demo" data-anim="ds-phone-in 760ms var(--ease-out) 80ms both"><i></i></div><pre>.hero__phone { opacity: 0; animation: phone-in 760ms 80ms var(--e-out) forwards; }</pre></div></article><article class="an"><div><div class="lab"><b>shot-emerge</b><em>carga · CSS @keyframes com variáveis por elemento</em></div><p>Quatro polaroides saem de trás do celular, cada uma partindo do centro (--tx/--ty em % do próprio tamanho), a 82% de escala e com 3–4° de rotação, e pousam no lugar. Conta a história do produto em um segundo: as fotos saem da câmera.</p><ul><li><b>gatilho</b> <code>carga, depois do celular</code></li><li><b>alvo</b> <code>.hero__shot--1…4</code></li><li><b>duração</b> <code>980ms</code></li><li><b>easing</b> <code>cubic-bezier(0.16, 0.84, 0.32, 1)</code></li><li><b>atraso</b> <code>620 / 760 / 900 / 1040ms</code></li><li><b>stagger</b> <code>140ms</code></li><li><b>feito com</b> <code>CSS animation + custom properties</code></li><li><b>fonte</b> <code>styles.css</code></li></ul></div><div><div class="demo" data-anim="ds-shot-emerge 980ms var(--ease-emerge) 300ms both"><i></i></div><pre>.hero__shot { opacity: 0; animation: shot-emerge 980ms var(--e-emerge) forwards; }
+.hero__shot--1 { --tx: 110.9%; --ty: 76.9%; --r0: -4deg; animation-delay: 620ms; }
+@keyframes shot-emerge {
+  0%   { opacity: 1; transform: translate(var(--tx), var(--ty)) scale(.82) rotate(var(--r0)); }
+  100% { opacity: 1; transform: none; }
+}</pre></div></article><article class="an"><div><div class="lab"><b>idle-float</b><em>contínua · Web Animations API</em></div><p>Depois de pousar, cada polaroide flutua 7–9 px e gira menos de 1°, com período diferente (6,4 a 7,6 s) para nunca sincronizarem. Mantém o hero vivo sem chamar atenção.</p><ul><li><b>gatilho</b> <code>evento animationend de shot-emerge</code></li><li><b>alvo</b> <code>.hero__shot</code></li><li><b>duração</b> <code>6400 / 7200 / 6800 / 7600ms</code></li><li><b>easing</b> <code>ease-in-out</code></li><li><b>atraso</b> <code>i × 240ms</code></li><li><b>feito com</b> <code>element.animate()</code></li><li><b>fonte</b> <code>main.js</code></li></ul></div><div><div class="demo" data-anim="ds-idle-float 6400ms ease-in-out infinite"><i></i></div><pre>shot.addEventListener(&#x27;animationend&#x27;, (ev) =&gt; {
+  if (ev.animationName !== &#x27;shot-emerge&#x27;) return
+  shot.animate(
+    [{ transform: &#x27;translateY(0) rotate(0)&#x27; }, { transform: `translateY(${d.y}px) rotate(${d.r}deg)` }, { transform: &#x27;translateY(0) rotate(0)&#x27; }],
+    { duration: d.dur, iterations: Infinity, easing: &#x27;ease-in-out&#x27;, delay: i * 240 })
+})
+/* o hover usa a propriedade `scale` separada, para compor com o transform animado */</pre></div></article><article class="an"><div><div class="lab"><b>draw-underline</b><em>carga e rolagem · CSS clip-path</em></div><p>O rabisco vermelho sob “never” (hero) e “instant” (CTA) é desenhado da esquerda para a direita, como caneta. É a assinatura gráfica da marca.</p><ul><li><b>gatilho</b> <code>carga (atraso 620ms) · no CTA, quando o painel recebe .is-in (atraso 200ms)</code></li><li><b>alvo</b> <code>.hero__underline, .cta__underline</code></li><li><b>duração</b> <code>720ms</code></li><li><b>easing</b> <code>cubic-bezier(0.22, 0.61, 0.36, 1)</code></li><li><b>feito com</b> <code>CSS animation em clip-path: inset()</code></li><li><b>fonte</b> <code>styles.css</code></li></ul></div><div><div class="demo" data-anim="ds-draw 720ms var(--ease-out) 300ms both"><i></i></div><pre>.hero__underline { clip-path: inset(0 100% 0 0); animation: draw-underline 720ms 620ms var(--e-out) forwards; }
+@keyframes draw-underline { to { clip-path: inset(0 0 0 0); } }</pre></div></article><article class="an"><div><div class="lab"><b>reveal</b><em>rolagem · IntersectionObserver + CSS transition</em></div><p>Cartões e painéis sobem 26 px e aparecem quando entram na tela. Irmãos entram em escada (0, 90, 180 ms). Acontece uma vez só.</p><ul><li><b>gatilho</b> <code>IntersectionObserver · rootMargin 0px 0px -12% 0px · threshold 0.08 · unobserve após disparar</code></li><li><b>alvo</b> <code>.reveal (11 elementos)</code></li><li><b>duração</b> <code>620ms</code></li><li><b>easing</b> <code>cubic-bezier(0.22, 0.61, 0.36, 1)</code></li><li><b>atraso</b> <code>--d: 0 / 90 / 180ms (style inline)</code></li><li><b>feito com</b> <code>CSS transition + 10 linhas de JS</code></li><li><b>fonte</b> <code>styles.css + main.js</code></li></ul></div><div><div class="demo" data-anim="ds-reveal 620ms var(--ease-out) both"><i></i></div><pre>.reveal { opacity: 0; transform: translateY(26px);
+  transition: opacity var(--t-slow) var(--e-out), transform var(--t-slow) var(--e-out);
+  transition-delay: var(--d, 0ms); }
+.reveal.is-in { opacity: 1; transform: none; }
+
+const io = new IntersectionObserver((entries) =&gt; entries.forEach((e) =&gt; {
+  if (!e.isIntersecting) return
+  e.target.classList.add(&#x27;is-in&#x27;); io.unobserve(e.target)
+}), { rootMargin: &#x27;0px 0px -12% 0px&#x27;, threshold: 0.08 })
+document.querySelectorAll(&#x27;.reveal&#x27;).forEach((el) =&gt; io.observe(el))</pre></div></article><article class="an"><div><div class="lab"><b>duo-fold</b><em>rolagem · Three.js com cena presa (sticky)</em></div><p>Um celular dobrável 3D fica preso na tela por 2,2 alturas de viewport. A rolagem controla a abertura: fechado mostra a tela externa, aberto mostra a interna, e o texto ao lado troca junto. O aparelho inclina de leve na direção do mouse (ou do giroscópio no celular).</p><ul><li><b>gatilho</b> <code>progresso = rolagem dentro de .duo__runway (320svh) com .duo__stage sticky de 100svh</code></li><li><b>alvo</b> <code>canvas.duo__canvas (WebGL2)</code></li><li><b>duração</b> <code>amarrada à rolagem</code></li><li><b>easing</b> <code>cubic in-out sobre o progresso + suavização 0.12 por quadro</code></li><li><b>feito com</b> <code>Three.js r186 · GLTFLoader · RoomEnvironment · import() preguiçoso</code></li><li><b>fonte</b> <code>duo.js</code></li></ul></div><div><pre>/* CSS: o &#x27;pin&#x27; é só sticky */
+.duo__runway { height: 320svh; }
+.duo__stage  { position: sticky; top: 0; height: 100svh; }
+
+// JS: rolagem → 0..1, suavizado, e só renderiza com o bloco na tela
+const readProgress = () =&gt; {
+  const span = runway.offsetHeight - stage.offsetHeight
+  return Math.min(1, Math.max(0, -runway.getBoundingClientRect().top / span))
+}
+const ease = (t) =&gt; (t &lt; .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2)
+function frame() {
+  current += (readProgress() - current) * 0.12      // lerp
+  const t = ease(current)
+  fold((Math.PI / 2) * (1 - t))                      // dobra a malha
+  holder.rotation.y = Math.PI - (Math.PI / 2) * t    // vira da capa para a tela interna
+  lean.x += (input.x - lean.x) * 0.08                // mouse/giroscópio, ±0.2 rad
+  renderer.render(scene, camera)
+  if (running) requestAnimationFrame(frame)
+}</pre></div></article><article class="an"><div><div class="lab"><b>header-stuck</b><em>rolagem · classe + transição</em></div><p>O cabeçalho é transparente no topo e ganha fundo creme e sombra depois de 12 px de rolagem.</p><ul><li><b>gatilho</b> <code>scroll (passive) · scrollY &gt; 12 → .is-stuck</code></li><li><b>alvo</b> <code>.site-header</code></li><li><b>duração</b> <code>240ms</code></li><li><b>easing</b> <code>cubic-bezier(0.4, 0, 0.2, 1)</code></li><li><b>feito com</b> <code>CSS transition</code></li><li><b>fonte</b> <code>styles.css + main.js</code></li></ul></div><div><pre>.site-header { position: sticky; top: 0; background: transparent;
+  transition: background-color var(--t-med) var(--e-soft), box-shadow var(--t-med) var(--e-soft); }
+.site-header.is-stuck { background: var(--c-page);
+  box-shadow: 0 1px 0 rgba(36,35,29,.08), 0 12px 24px -20px rgba(36,35,29,.5); }
+
+addEventListener(&#x27;scroll&#x27;, () =&gt; header.classList.toggle(&#x27;is-stuck&#x27;, scrollY &gt; 12), { passive: true })</pre></div></article><article class="an"><div><div class="lab"><b>nav-underline</b><em>hover e rolagem · scaleX</em></div><p>Uma linha vermelha de 2 px cresce da esquerda sob o link. A mesma linha marca a seção atual (scroll-spy).</p><ul><li><b>gatilho</b> <code>:hover, :focus-visible e .is-active (IntersectionObserver com rootMargin -45% 0px -50% 0px: uma faixa de 5% no meio da tela)</code></li><li><b>alvo</b> <code>.nav__link::after</code></li><li><b>duração</b> <code>240ms</code></li><li><b>easing</b> <code>cubic-bezier(0.22, 0.61, 0.36, 1)</code></li><li><b>feito com</b> <code>CSS transition</code></li><li><b>fonte</b> <code>styles.css + main.js</code></li></ul></div><div><pre>.nav__link::after { content: &#x27;&#x27;; position: absolute; left: 0; bottom: -2px; height: 2px; width: 100%;
+  background: var(--c-accent-red); transform: scaleX(0); transform-origin: left center;
+  transition: transform var(--t-med) var(--e-out); }
+.nav__link:hover::after, .nav__link.is-active::after { transform: scaleX(1); }</pre></div></article><article class="an"><div><div class="lab"><b>button-lift + sheen</b><em>hover · transform + gradiente deslizante</em></div><p>O botão sobe 2 px em 140 ms, ganha sombra longa, e um brilho diagonal atravessa da direita para a esquerda em 620 ms. No clique, afunda para 97,5% em 60 ms.</p><ul><li><b>gatilho</b> <code>:hover / :active</code></li><li><b>alvo</b> <code>.btn e .btn::after</code></li><li><b>duração</b> <code>140ms (subida) · 240ms (sombra) · 620ms (brilho)</code></li><li><b>easing</b> <code>cubic-bezier(0.22, 0.61, 0.36, 1)</code></li><li><b>feito com</b> <code>CSS transition</code></li><li><b>fonte</b> <code>styles.css</code></li></ul></div><div><div class="demo" data-anim="ds-lift 1600ms var(--ease-out) 300ms"><i></i></div><pre>.btn::after { content: &#x27;&#x27;; position: absolute; inset: 0; z-index: -1; border-radius: inherit;
+  background: linear-gradient(110deg, transparent 20%, rgba(255,255,255,.22) 45%, transparent 70%);
+  background-size: 220% 100%; background-position: 130% 0;
+  transition: background-position 620ms var(--e-out); }
+.btn:hover { transform: translateY(-2px); box-shadow: var(--sh-btn); }
+.btn:hover::after { background-position: -30% 0; }
+.btn:active { transform: translateY(0) scale(.975); transition-duration: 60ms; }</pre></div></article><article class="an"><div><div class="lab"><b>card-lift</b><em>hover · sombra no pai, movimento no filho</em></div><p>O cartão soma a sombra longa em 240 ms e o conteúdo interno faz um movimento próprio, mais lento: a tira de fotos inclina -3,2°, a colagem cresce 4,5% e gira 1,2°, ícones saltam com mola. O CSS também pede translateY(-4px) no cartão, mas .reveal.is-in { transform: none } vem depois na folha e anula: medido, o cartão não sobe.</p><ul><li><b>gatilho</b> <code>:hover no cartão</code></li><li><b>alvo</b> <code>.panel, .quote, .film__card e seus filhos</code></li><li><b>duração</b> <code>240ms (cartão) · 420–560ms (filho)</code></li><li><b>easing</b> <code>cubic-bezier(0.22, 0.61, 0.36, 1) · filhos com ícone usam cubic-bezier(0.34, 1.4, 0.64, 1)</code></li><li><b>feito com</b> <code>CSS transition</code></li><li><b>fonte</b> <code>styles.css</code></li></ul></div><div><div class="demo" data-anim="ds-pop 1800ms var(--ease-out) 300ms"><i></i></div><pre>.panel { transition: transform var(--t-med) var(--e-out), box-shadow var(--t-med) var(--e-out); }
+.panel:hover { transform: translateY(-4px); /* anulado por .reveal.is-in */ box-shadow: var(--sh-panel), var(--sh-lift); }
+.panel__strip { transition: transform 520ms var(--e-out); }
+.panel--booth:hover .panel__strip { transform: rotate(-3.2deg) translateY(6px); }
+.panel--collage:hover .panel__collage { transform: scale(1.045) rotate(1.2deg); }
+.film__card:hover .film__cardIcon { transform: translateY(-3px) scale(1.08); }  /* 420ms, --e-pop */</pre></div></article><article class="an"><div><div class="lab"><b>badge-pop</b><em>hover · mola</em></div><p>Selos das lojas sobem 3 px e crescem 2,5% com a curva de mola; a sombra é um drop-shadow (acompanha o contorno do PNG).</p><ul><li><b>gatilho</b> <code>:hover</code></li><li><b>alvo</b> <code>.badge-btn</code></li><li><b>duração</b> <code>240ms</code></li><li><b>easing</b> <code>cubic-bezier(0.34, 1.4, 0.64, 1)</code></li><li><b>feito com</b> <code>CSS transition em transform + filter</code></li><li><b>fonte</b> <code>styles.css</code></li></ul></div><div><div class="demo" data-anim="ds-badge 1500ms var(--ease-pop) 300ms"><i></i></div><pre>.badge-btn { transition: transform var(--t-med) var(--e-pop), filter var(--t-med) var(--e-out);
+  filter: drop-shadow(0 0 0 rgba(0,0,0,0)); }
+.badge-btn:hover { transform: translateY(-3px) scale(1.025); filter: drop-shadow(0 14px 22px rgba(0,0,0,.28)); }</pre></div></article><article class="an"><div><div class="lab"><b>theme-swap</b><em>clique · variáveis CSS</em></div><p>Trocar o tema muda 11 cores e 4 sombras de uma vez; o corpo faz a transição de fundo e texto em 240 ms. O botão do tema gira 18° no hover.</p><ul><li><b>gatilho</b> <code>clique em #themeToggle → data-theme no &lt;html&gt; + localStorage</code></li><li><b>alvo</b> <code>body e tudo que usa as variáveis</code></li><li><b>duração</b> <code>240ms</code></li><li><b>easing</b> <code>cubic-bezier(0.4, 0, 0.2, 1)</code></li><li><b>feito com</b> <code>CSS custom properties</code></li><li><b>fonte</b> <code>styles.css + main.js</code></li></ul></div><div><pre>themeToggle.addEventListener(&#x27;click&#x27;, () =&gt; {
+  const next = html.getAttribute(&#x27;data-theme&#x27;) === &#x27;dark&#x27; ? &#x27;light&#x27; : &#x27;dark&#x27;
+  html.setAttribute(&#x27;data-theme&#x27;, next); localStorage.setItem(&#x27;theme&#x27;, next)
+})
+body { transition: background-color var(--t-med) var(--e-soft), color var(--t-med) var(--e-soft); }</pre></div></article></section>
+<section><h2 class="k">Componentes</h2><div class="comp"><div class="lab"><b>button</b><em>.btn · hover medido, foco e ativo lidos no CSS</em></div><div class="stage"><a class="ds-button" href="#">Download</a></div></div><div class="comp"><div class="lab"><b>nav-link</b><em>.nav__link · espaçamento de 40 px entre links</em></div><div class="stage"><span style="display:flex;gap:40px"><a class="ds-nav-link is-active" href="#">Features</a><a class="ds-nav-link" href="#">Film Packs</a><a class="ds-nav-link" href="#">Create</a></span></div></div><div class="comp"><div class="lab"><b>icon-button</b><em>.iconbtn · fixos nos cantos (24 px), acima do cabeçalho; a rotação é só do botão de tema</em></div><div class="stage"><button class="ds-icon-button" aria-label="Tema"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button></div></div><div class="comp"><div class="lab"><b>eyebrow</b><em>.eyebrow--plum / --green</em></div><div class="stage"><p class="ds-eyebrow">Shoot like real film</p><p class="ds-eyebrow is-green" style="margin-top:12px">Collage</p></div></div><div class="comp"><div class="lab"><b>panel</b><em>.panel · três tons: rose, sage, sand · hover medido: só a sombra muda no painel (a imagem interna é que se move)</em></div><div class="stage"><article class="ds-panel"><p class="ds-eyebrow">Photo booth</p><h3>Four shots.<br>Endless personalities.</h3><p class="txt">Pose, laugh, pull faces and print your own classic photo booth strips.</p></article></div></div><div class="comp"><div class="lab"><b>feature-card</b><em>.film__card · no site há 60 px entre ícone, texto e mockup</em></div><div class="stage"><article class="ds-feature-card"><h3>Collect Film packs.</h3><p>Load classic Colour 600, B&amp;W and limited edition packs.</p></article></div></div><div class="comp"><div class="lab"><b>quote</b><em>.quote · hover medido: fundo clareia, sombra longa, estrelas crescem 5%</em></div><div class="stage"><figure class="ds-quote" style="margin:0"><b>★★★★★</b><h3>Shared Albums!</h3><p>I’ve been looking for a camera app like this for ages. My favourite part is the shared albums!</p><p>— Xvth</p></figure></div></div><div class="comp"><div class="lab"><b>cta-panel</b><em>.cta__panel · 83,6% da coluna, deslocado 10% para a direita; no site os botões são os selos das lojas</em></div><div class="stage"><div class="ds-cta-panel"><h2>Your moments deserve to be instant.</h2><p>Download Eight Shot and start creating your instant memories today.</p><a class="ds-button" href="#">Download</a></div></div></div></section>
+<section><h2 class="k">Stack e ferramentas</h2><table><tr><th>ferramenta</th><th>versão</th><th>para quê</th><th>evidência</th></tr><tr><td><b>HTML + CSS + JS sem framework</b></td><td><code>—</code></td><td>página estática única; sem build visível, sem bundler, scripts servidos como arquivos legíveis</td><td><em>index.html com &lt;script src&gt; diretos; nenhum chunk/hash; tech.json sem builder</em></td></tr><tr><td><b>Three.js</b></td><td><code>r186</code></td><td>cena 3D do celular dobrável (WebGL2)</td><td><em>importmap + import(&#x27;three&#x27;) em duo.js; canvas[data-engine]</em></td></tr><tr><td><b>GLTFLoader · RoomEnvironment · BufferGeometryUtils · SkeletonUtils</b></td><td><code>three/addons r186</code></td><td>carregar o modelo, iluminar por ambiente de estúdio procedural, manipular a malha na dobra</td><td><em>arquivos em /assets/vendor/three/</em></td></tr><tr><td><b>glTF-Transform</b></td><td><code>4.1.1</code></td><td>otimização do modelo iphone-duo.glb (19 malhas, 8 materiais, 1 textura, 1,37 MB)</td><td><em>campo asset.generator dentro do GLB</em></td></tr><tr><td><b>Web Animations API</b></td><td><code>nativa</code></td><td>flutuação contínua das polaroides</td><td><em>4 chamadas a element.animate() registradas</em></td></tr><tr><td><b>IntersectionObserver</b></td><td><code>nativa</code></td><td>reveal, scroll-spy do menu, ligar/desligar o render 3D</td><td><em>4 observadores registrados com seus rootMargin</em></td></tr><tr><td><b>CSS custom properties</b></td><td><code>nativa</code></td><td>sistema de tokens (34 variáveis) e tema escuro (15 sobrescritas)</td><td><em>:root e [data-theme=dark] em styles.css</em></td></tr><tr><td><b>Be Vietnam Pro</b></td><td><code>woff2 próprio</code></td><td>única família; 3 arquivos de 13 KB</td><td><em>@font-face em be-vietnam-pro.css</em></td></tr><tr><td><b>Figma</b></td><td><code>—</code></td><td>origem do layout (quadro de 1440 px)</td><td><em>comentário no topo do styles.css: Built from Figma &quot;Landing page&quot;</em></td></tr><tr><td><b>Google Analytics (gtag)</b></td><td><code>—</code></td><td>eventos de clique nas lojas, atrás de consentimento</td><td><em>chamadas gtag() em main.js; consent.js</em></td></tr><tr><td><b>Não usa</b></td><td><code>—</code></td><td>GSAP, Lenis, React, Tailwind, Lottie, smooth scroll por JS</td><td><em>nenhuma assinatura na captura; scroll nativo com scroll-behavior: smooth</em></td></tr></table></section>
+<section><h2 class="k">Outros tokens</h2><div class="cols"><div><h2 class="k">breakpoint</h2><ul><li><b>laptop</b> <code>1390px</code> <em>max-width · a coluna de 1350 vira fluida</em></li><li><b>tablet-l</b> <code>1180px</code> <em>max-width · hero reorganiza</em></li><li><b>tablet</b> <code>1024px</code> <em>max-width · grids 3→2 colunas</em></li><li><b>mobile</b> <code>720px</code> <em>max-width · uma coluna, menu some, logo 178 px (60 regras: o maior salto)</em></li><li><b>small</b> <code>420px</code> <em>max-width · ajustes finos</em></li></ul></div><div><h2 class="k">gradient</h2><ul><li><b>sheen</b> <code>linear-gradient(110deg, transparent 20%, rgba(255, 255, 255, 0.22) 45%, transparent 70%)</code> <em>brilho que atravessa o botão no hover</em></li><li><b>stage</b> <code>radial-gradient(55% 60% at 62% 48%, rgba(255, 255, 255, 0.7) 0%, transparent 70%)</code> <em>luz atrás do aparelho 3D</em></li></ul></div></div></section>
+</main><script>
+const mo = document.getElementById('mo'); const play = () => { mo.classList.remove('go'); void mo.offsetWidth; mo.classList.add('go') };
+mo.addEventListener('click', play); setTimeout(play, 400);
+for (const d of document.querySelectorAll('.demo')) { const run = () => { const i = d.firstElementChild; i.style.animation = 'none'; void i.offsetWidth; i.style.animation = d.dataset.anim }; d.addEventListener('click', run); setTimeout(run, 600) }
+for (const b of document.querySelectorAll('.tg')) b.addEventListener('click', () => { const r = document.documentElement; if (b.dataset.kind === 'class') r.classList.toggle(b.dataset.a); else if (r.getAttribute(b.dataset.a) === b.dataset.b) r.removeAttribute(b.dataset.a); else r.setAttribute(b.dataset.a, b.dataset.b) });
+</script></body></html>
