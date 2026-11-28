@@ -316,7 +316,7 @@ const PAGE_TECH = () => {
 const RESERVED = /^(con|prn|aux|nul|com\d|lpt\d)$/i
 function safeSeg(s) {
   try { s = decodeURIComponent(s) } catch { /* fica como veio */ }
-  s = s.replace(/[<>:"|?*\\\x00-\x1f]/g, '_').replace(/[. ]+$/, '')
+  s = s.replace(/[<>:"|?*\\/\x00-\x1f]/g, '_').replace(/[. ]+$/, '') // a barra vem de %2F decodificado: sem trocar, "..%2F.." sai da pasta
   if (!s || s === '.' || s === '..') s = '_'
   if (RESERVED.test(s.split('.')[0])) s = '_' + s
   return s.length > 100 ? s.slice(0, 80) + '_' + sha('sha1', s).slice(0, 8) : s
@@ -400,6 +400,8 @@ function writeCapture(outDir, meta, entries, tech) {
   for (const e of entries) {
     if (!e.file) continue
     const full = path.join(outDir, ...e.file.split('/'))
+    const rel = path.relative(path.join(outDir, 'site'), full)
+    if (rel.startsWith('..') || path.isAbsolute(rel)) { e.file = null; continue } // nome montado pelo site nunca grava fora de site/
     fs.mkdirSync(path.dirname(full), { recursive: true })
     fs.writeFileSync(full, e.body)
     bytes += e.body.length
@@ -455,12 +457,12 @@ Dentro desta pasta:
 
 | Sistema | Comando |
 |---|---|
-| Linux / Mac | \`./abrir.sh\` ou \`python3 serve.py --open\` |
-| Windows | duplo clique em \`abrir.bat\` ou \`py serve.py --open\` |
+| Linux / Mac | \`./abrir.sh\` ou \`python3 -I serve.py --open\` |
+| Windows | duplo clique em \`abrir.bat\` ou \`py -I serve.py --open\` |
 
 O navegador abre o site vivo, com as animações. Deixe o terminal aberto; \`Ctrl+C\` encerra.
 
-- \`python3 serve.py --offline\`: nada é buscado na internet (o que não foi capturado simplesmente falta).
+- \`python3 -I serve.py --offline\`: nada é buscado na internet (o que não foi capturado simplesmente falta).
 - Abrir o \`index.html\` direto mostra só um retrato da página.
 - Use Chrome, Edge ou Firefox (fora do modo privado). Precisa de Python 3.8 ou mais novo.
 
@@ -475,7 +477,7 @@ O conteúdo pertence aos donos do site. Esta cópia é para estudar como ele foi
 async function verify(browser, outDir, meta) {
   const py = ['python3', 'python', 'py'].find((c) => { try { execSync(`${c} --version`, { stdio: 'ignore' }); return true } catch { return false } })
   if (!py) return { skipped: 'Python não encontrado' }
-  const server = spawn(py, ['serve.py', '--offline'], { cwd: outDir, stdio: ['ignore', 'pipe', 'pipe'] })
+  const server = spawn(py, ['-I', 'serve.py', '--offline'], { cwd: outDir, stdio: ['ignore', 'pipe', 'pipe'] })
   let out = ''
   server.stdout.on('data', (d) => { out += d })
   try {
