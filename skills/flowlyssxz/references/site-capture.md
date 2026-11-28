@@ -63,7 +63,7 @@ cd captures/exemplo.com_produto && ./abrir.sh
 | `--keep-trackers` | não bloqueia analytics/chat (raramente necessário) |
 | `--out PASTA`, `--no-verify`, `--timeout MS` | saída, pular conferência, tempo máximo de navegação |
 
-Player: `python3 serve.py --open` · `--offline` (nada vem da internet) · `--port N`.
+Player: `python3 -I serve.py --open` · `--offline` (nada vem da internet) · `--port N`.
 
 ## Passo a passo do agente
 
